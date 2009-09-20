@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd bin/
+java -cp .:../lib/mysql-connector-java-5.1.8-bin.jar:../lib/args4j-2.0.12.jar com.infosys.setlabs.formatter.Formatter $@
