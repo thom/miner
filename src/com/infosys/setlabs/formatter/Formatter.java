@@ -27,7 +27,7 @@ public class Formatter {
 	private static String usage = "formatter [options...] arguments...";
 	private static Properties properties;
 
-	public static void format(Connection conn, boolean allFiles, boolean ids) {
+	public static void format(Connection conn, boolean allFiles, boolean revs) {
 		Statement stmt = null;
 		ResultSet rs = null;
 
@@ -35,9 +35,9 @@ public class Formatter {
 			stmt = conn.createStatement();
 
 			// Build the statement
-			String sqlStatement = "SELECT a.commit_id, f.id AS modified_files, f.file_name, ft.type "
-					+ "FROM actions a, files f, file_types ft "
-					+ "WHERE f.id = a.file_id AND f.id = ft.file_id ";
+			String sqlStatement = "SELECT a.commit_id, s.rev, f.id AS modified_files, f.file_name, ft.type "
+					+ "FROM actions a, files f, file_types ft, scmlog s "
+					+ "WHERE f.id = a.file_id AND f.id = ft.file_id AND s.id = a.commit_id ";
 			String sqlOrder = "ORDER BY a.commit_id asc, modified_files asc;";
 			if (allFiles) {
 				sqlStatement += sqlOrder;
@@ -61,8 +61,8 @@ public class Formatter {
 
 					counter = commitId;
 
-					if (ids) {
-						System.out.println("# " + commitId);
+					if (revs) {
+						System.out.println("# " + rs.getString("rev"));
 					}
 				} else {
 					System.out.print(" ");
@@ -115,7 +115,7 @@ public class Formatter {
 					.getProperty("db.host"), values.getDb(), values.getUser(),
 					values.getPw());
 
-			format(conn, values.getAllFiles(), values.getIds());
+			format(conn, values.getAllFiles(), values.getRevs());
 		} catch (SQLException sqlEx) {
 			System.out.println("SQLException: " + sqlEx.getMessage());
 		} finally {
