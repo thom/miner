@@ -19,6 +19,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
 import com.infosys.setlabs.db.ConnectionManager;
+import com.infosys.setlabs.util.DatabaseUtil;
 import com.infosys.setlabs.util.PropertiesLoader;
 
 public class Formatter {
@@ -26,6 +27,59 @@ public class Formatter {
 	private static String usage = "formatter [options...] arguments...";
 	private static Properties properties;
 
+	public static void format(Connection conn, boolean allFiles, boolean ids) {
+		Statement stmt = null;
+		ResultSet rs = null;
+
+		try {
+			stmt = conn.createStatement();
+
+			// Build the statement
+			String sqlStatement = "SELECT a.commit_id, f.id AS modified_files, f.file_name, ft.type "
+					+ "FROM actions a, files f, file_types ft "
+					+ "WHERE f.id = a.file_id AND f.id = ft.file_id ";
+			String sqlOrder = "ORDER BY a.commit_id asc, modified_files asc;";
+			if (allFiles) {
+				sqlStatement += sqlOrder;
+			} else {
+				sqlStatement += "AND ft.type = 'code'" + sqlOrder;
+			}
+
+			// Execute the query
+			rs = stmt.executeQuery(sqlStatement);
+
+			int counter = -1;
+
+			// Retrieve the data from the result set
+			rs.beforeFirst();
+			while (rs.next()) {
+				int commitId = rs.getInt("commit_id");
+
+				if (counter < commitId) {
+					if (counter > -1)
+						System.out.print("\n");
+
+					counter = commitId;
+
+					if (ids) {
+						System.out.println("# " + commitId);
+					}
+				} else {
+					System.out.print(" ");
+				}
+
+				System.out.print(rs.getString("modified_files"));
+			}
+
+			// Print newline at the end
+			System.out.println();
+		} catch (SQLException e) {
+			System.out.println("SQLException: " + e.getMessage());
+		} finally {
+			DatabaseUtil.close(rs);
+			DatabaseUtil.close(stmt);
+		}
+	}
 	/**
 	 * @param args
 	 *            Database name, user and password
@@ -53,95 +107,19 @@ public class Formatter {
 		properties = PropertiesLoader.load("config.properties");
 
 		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
 
-		// Get a connection to the database
 		try {
+			// Get a connection to the database
 			conn = ConnectionManager.getConnection(properties
 					.getProperty("db.vendor"), properties
 					.getProperty("db.host"), values.getDb(), values.getUser(),
 					values.getPw());
 
-			try {
-				stmt = conn.createStatement();
-
-				// Build the statement
-				String sqlStatement = "SELECT a.commit_id, f.id AS modified_files, f.file_name, ft.type "
-						+ "FROM actions a, files f, file_types ft "
-						+ "WHERE f.id = a.file_id AND f.id = ft.file_id ";
-				String sqlOrder = "ORDER BY a.commit_id asc, modified_files asc;";
-				if (values.getAllFiles()) {
-					sqlStatement += sqlOrder;
-				} else {
-					sqlStatement += "AND ft.type = 'code'" + sqlOrder;
-				}
-
-				// Execute the query
-				rs = stmt.executeQuery(sqlStatement);
-
-				int counter = -1;
-
-				// Retrieve the data from the result set
-				rs.beforeFirst();
-				while (rs.next()) {
-					int commitId = rs.getInt("commit_id");
-
-					if (counter < commitId) {
-						if (counter > -1)
-							System.out.print("\n");
-
-						counter = commitId;
-
-						if (values.getIds()) {
-							System.out.println("# " + commitId);
-						}
-					} else {
-						System.out.print(" ");
-					}
-
-					System.out.print(rs.getString("modified_files"));
-				}
-
-				// Print newline at the end
-				System.out.println();
-			} finally {
-				// Release the resources
-				if (rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException sqlEx) {
-						System.out.println("SQLException: "
-								+ sqlEx.getMessage());
-					}
-					rs = null;
-				}
-
-				if (stmt != null) {
-					try {
-						stmt.close();
-					} catch (SQLException sqlEx) {
-						System.out.println("SQLException: "
-								+ sqlEx.getMessage());
-					}
-
-					stmt = null;
-				}
-
-				if (conn != null) {
-					try {
-						conn.close();
-					} catch (SQLException sqlEx) {
-						// Ignore
-					}
-
-					conn = null;
-				}
-			}
-		} catch (SQLException e) {
-			System.out.println("SQLException: " + e.getMessage());
-			System.out.println("SQLState: " + e.getSQLState());
-			System.out.println("VendorError: " + e.getErrorCode());
+			format(conn, values.getAllFiles(), values.getIds());
+		} catch (SQLException sqlEx) {
+			System.out.println("SQLException: " + sqlEx.getMessage());
+		} finally {
+			DatabaseUtil.close(conn);
 		}
 	}
 }
