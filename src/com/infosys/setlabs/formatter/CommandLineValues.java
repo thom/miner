@@ -12,9 +12,6 @@ public class CommandLineValues {
 	@Option(name = "-p", aliases = {"password", "pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 	private String pw;
 
-	@Option(name = "-np", aliases = {"no-password", "nopw"}, usage = "don't use a password to connect to the database")
-	private boolean nopw = false;
-
 	@Option(name = "-i", aliases = {"ids", "commitids"}, usage = "print commit ids in transaction file")
 	private boolean ids = false;
 	
@@ -31,10 +28,6 @@ public class CommandLineValues {
 
 	public String getPw() {
 		return pw;
-	}
-
-	public boolean getNopw() {
-		return nopw;
 	}
 
 	public boolean getIds() {

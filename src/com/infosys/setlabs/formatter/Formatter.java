@@ -10,17 +10,21 @@ package com.infosys.setlabs.formatter;
  */
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import com.infosys.setlabs.db.ConnectionManager;
+import com.infosys.setlabs.util.PropertiesLoader;
+
 public class Formatter {
 
-	public static String usage = "formatter [options...] arguments...";
+	private static String usage = "formatter [options...] arguments...";
+	private static Properties properties;
 
 	/**
 	 * @param args
@@ -45,20 +49,19 @@ public class Formatter {
 			System.exit(1);
 		}
 
+		// Load the properties
+		properties = PropertiesLoader.load("config.properties");
+
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 
 		// Get a connection to the database
 		try {
-			String connString = "jdbc:mysql://localhost:3306/" + values.getDb()
-					+ "?" + "user=" + values.getUser();
-
-			if (!values.getNopw()) {
-				connString += "&password=" + values.getPw();
-			}
-
-			conn = DriverManager.getConnection(connString);
+			conn = ConnectionManager.getConnection(properties
+					.getProperty("db.vendor"), properties
+					.getProperty("db.host"), values.getDb(), values.getUser(),
+					values.getPw());
 
 			try {
 				stmt = conn.createStatement();
@@ -73,7 +76,7 @@ public class Formatter {
 				} else {
 					sqlStatement += "AND ft.type = 'code'" + sqlOrder;
 				}
-				
+
 				// Execute the query
 				rs = stmt.executeQuery(sqlStatement);
 
