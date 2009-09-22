@@ -13,7 +13,7 @@ public class CommandLineValues {
 	private String pw;
 
 	@Option(name = "-i", aliases = {"id"}, usage = "ID of the file", required = true)
-	private Integer id;
+	private long id;
 
 	@Option(name = "-n", aliases = {"name", "nameonly"}, usage = "get only the name and not the path of the file")
 	private Boolean nameOnly = false;
@@ -30,7 +30,7 @@ public class CommandLineValues {
 		return pw;
 	}
 
-	public Integer getId() {
+	public long getId() {
 		return id;
 	}
 
