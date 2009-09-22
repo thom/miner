@@ -80,10 +80,7 @@ public class Formatter {
 			DatabaseUtil.close(stmt);
 		}
 	}
-	/**
-	 * @param args
-	 *            Database name, user and password
-	 */
+
 	public static void main(String[] args) {
 		// Parse the command line arguments and options
 		CommandLineValues values = new CommandLineValues();
