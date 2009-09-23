@@ -1,4 +1,4 @@
-package com.infosys.setlabs.formatter;
+package com.infosys.setlabs.fism.formatter;
 
 import org.kohsuke.args4j.Option;
 

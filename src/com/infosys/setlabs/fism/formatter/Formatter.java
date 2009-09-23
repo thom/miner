@@ -1,4 +1,4 @@
-package com.infosys.setlabs.formatter;
+package com.infosys.setlabs.fism.formatter;
 
 /**
  * Formats revision history transactions extracted from databases created by
