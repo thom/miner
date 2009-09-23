@@ -42,13 +42,13 @@ public class Filename {
 	 * @return Filename if nameOnly or path of the file
 	 * @throws NoSuchFileException
 	 */
-	public String filename(long id, boolean nameOnly)
+	public String idToFilename(long id, boolean nameOnly)
 			throws NoSuchFileException {
-		return filenameRecursive(id, nameOnly);
+		return idToFilenameRecursive(id, nameOnly);
 	}
 
 	// Recursive filename method called by filename method
-	private String filenameRecursive(long id, boolean nameOnly)
+	private String idToFilenameRecursive(long id, boolean nameOnly)
 			throws NoSuchFileException {
 		// Base case
 		if (id == -1) {
@@ -74,12 +74,12 @@ public class Filename {
 			rs.beforeFirst();
 			if (rs.next()) {
 				if (rs.getLong("parent_id") == -1) {
-					return filenameRecursive(rs.getLong("parent_id"), nameOnly)
+					return idToFilenameRecursive(rs.getLong("parent_id"), nameOnly)
 							+ rs.getString("file_name");
 				} else if (nameOnly) {
 					return rs.getString("file_name");
 				} else {
-					return filenameRecursive(rs.getLong("parent_id"), nameOnly)
+					return idToFilenameRecursive(rs.getLong("parent_id"), nameOnly)
 							+ "/" + rs.getString("file_name");
 				}
 			} else {
@@ -134,7 +134,7 @@ public class Filename {
 
 			Filename fn = new Filename(connection);
 			System.out.println(fn
-					.filename(values.getId(), values.getNameOnly()));
+					.idToFilename(values.getId(), values.getNameOnly()));
 		} catch (SQLException sqlEx) {
 			System.out.println("SQLException: " + sqlEx.getMessage());
 		} catch (NoSuchFileException e) {
