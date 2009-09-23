@@ -1,4 +1,4 @@
-package com.infosys.setlabs.filename;
+package com.infosys.setlabs.fism.filename;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
