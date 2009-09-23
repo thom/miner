@@ -2,7 +2,7 @@ package com.infosys.setlabs.formatter;
 
 /**
  * Formats revision history transactions extracted from databases created by
- * CVSanaly2 into the market-basket format used by
+ * CVSAnaly2 into the market-basket format used by
  * http://www.borgelt.net/apriori.html
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
