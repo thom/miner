@@ -1,4 +1,4 @@
-package com.infosys.setlabs.db;
+package com.infosys.setlabs.fism.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

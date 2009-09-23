@@ -8,7 +8,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import com.infosys.setlabs.db.ConnectionManager;
+import com.infosys.setlabs.fism.db.ConnectionManager;
 import com.infosys.setlabs.fism.filename.FileName;
 import com.infosys.setlabs.fism.filename.NoSuchFileException;
 import com.infosys.setlabs.util.DatabaseUtil;
