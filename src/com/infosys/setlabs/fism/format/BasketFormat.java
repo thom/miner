@@ -1,4 +1,4 @@
-package com.infosys.setlabs.fism.formatter;
+package com.infosys.setlabs.fism.format;
 
 /**
  * Formats revision history transactions extracted from databases created by
@@ -12,16 +12,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-
-import com.infosys.setlabs.fism.db.ConnectionManager;
 import com.infosys.setlabs.fism.util.DatabaseUtil;
-import com.infosys.setlabs.fism.util.PropertiesLoader;
 
-public class Formatter {
+public class BasketFormat {
 
 	// Database connection
 	private Connection connection;
@@ -44,7 +38,7 @@ public class Formatter {
 	 *            Should the revisions get added as comments to the transaction
 	 *            file?
 	 */
-	public Formatter(Connection connection, boolean allFiles, boolean revs) {
+	public BasketFormat(Connection connection, boolean allFiles, boolean revs) {
 		this.connection = connection;
 		this.allFiles = allFiles;
 		this.revs = revs;
@@ -106,52 +100,6 @@ public class Formatter {
 		} finally {
 			DatabaseUtil.close(rs);
 			DatabaseUtil.close(stmt);
-		}
-	}
-
-	/**
-	 * Formatter application
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// Parse the command line arguments and options
-		CommandLineValues values = new CommandLineValues();
-		CmdLineParser parser = new CmdLineParser(values);
-
-		// Set width of the error display area
-		parser.setUsageWidth(80);
-
-		try {
-			parser.parseArgument(args);
-		} catch (CmdLineException e) {
-			System.err.println("formatter [options...] arguments...\n");
-			System.err.println(e.getMessage() + "\n");
-
-			// Print the list of available options
-			parser.printUsage(System.err);
-			System.exit(1);
-		}
-
-		// Load the properties
-		Properties properties = PropertiesLoader.load("config.properties");
-
-		Connection connection = null;
-
-		try {
-			// Get a connection to the database
-			connection = ConnectionManager.getConnection(properties
-					.getProperty("db.vendor"), properties
-					.getProperty("db.host"), values.getDb(), values.getUser(),
-					values.getPw());
-
-			Formatter formatter = new Formatter(connection, values
-					.getAllFiles(), values.getRevs());
-			formatter.format();
-		} catch (SQLException sqlEx) {
-			System.out.println("SQLException: " + sqlEx.getMessage());
-		} finally {
-			DatabaseUtil.close(connection);
 		}
 	}
 }
