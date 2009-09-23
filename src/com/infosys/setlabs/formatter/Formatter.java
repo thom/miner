@@ -3,8 +3,7 @@ package com.infosys.setlabs.formatter;
 /**
  * Formats revision history transactions extracted from databases created by
  * CVSanaly2 into the market-basket format used by
- * http://www.borgelt.net/apriori.html and
- * http://www.cs.bme.hu/~bodon/en/fim_env/index.html
+ * http://www.borgelt.net/apriori.html
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
@@ -24,15 +23,44 @@ import com.infosys.setlabs.util.PropertiesLoader;
 
 public class Formatter {
 
-	private static String usage = "formatter [options...] arguments...";
-	private static Properties properties;
+	// Database connection
+	private Connection connection;
 
-	public static void format(Connection conn, boolean allFiles, boolean revs) {
+	// Should all files be included? Normally only code files are included in
+	// the transactions generated
+	private boolean allFiles;
+
+	// Should the revision id be included in the transaction file as a comment?
+	private boolean revs;
+
+	/**
+	 * Create a new formatter object
+	 * 
+	 * @param connection
+	 *            Database connection
+	 * @param allFiles
+	 *            Should all files be included in the transaction file?
+	 * @param revs
+	 *            Should the revisions get added as comments to the transaction
+	 *            file?
+	 */
+	public Formatter(Connection connection, boolean allFiles, boolean revs) {
+		this.connection = connection;
+		this.allFiles = allFiles;
+		this.revs = revs;
+	}
+
+	/**
+	 * Formats a database populated by CVSAnaly2 into market-basket format used
+	 * by Borgelt's Association Rule Induction / Frequent Item Set Mining
+	 * algorithm (http://www.borgelt.net/apriori.html)
+	 */
+	public void format() {
 		Statement stmt = null;
 		ResultSet rs = null;
 
 		try {
-			stmt = conn.createStatement();
+			stmt = connection.createStatement();
 
 			// Build the statement
 			String sqlStatement = "SELECT a.commit_id, s.rev, f.id AS modified_files, f.file_name, ft.type "
@@ -81,6 +109,11 @@ public class Formatter {
 		}
 	}
 
+	/**
+	 * Formatter application
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		// Parse the command line arguments and options
 		CommandLineValues values = new CommandLineValues();
@@ -92,7 +125,7 @@ public class Formatter {
 		try {
 			parser.parseArgument(args);
 		} catch (CmdLineException e) {
-			System.err.println(usage + "\n");
+			System.err.println("formatter [options...] arguments...\n");
 			System.err.println(e.getMessage() + "\n");
 
 			// Print the list of available options
@@ -101,22 +134,24 @@ public class Formatter {
 		}
 
 		// Load the properties
-		properties = PropertiesLoader.load("config.properties");
+		Properties properties = PropertiesLoader.load("config.properties");
 
-		Connection conn = null;
+		Connection connection = null;
 
 		try {
 			// Get a connection to the database
-			conn = ConnectionManager.getConnection(properties
+			connection = ConnectionManager.getConnection(properties
 					.getProperty("db.vendor"), properties
 					.getProperty("db.host"), values.getDb(), values.getUser(),
 					values.getPw());
 
-			format(conn, values.getAllFiles(), values.getRevs());
+			Formatter formatter = new Formatter(connection, values
+					.getAllFiles(), values.getRevs());
+			formatter.format();
 		} catch (SQLException sqlEx) {
 			System.out.println("SQLException: " + sqlEx.getMessage());
 		} finally {
-			DatabaseUtil.close(conn);
+			DatabaseUtil.close(connection);
 		}
 	}
 }
