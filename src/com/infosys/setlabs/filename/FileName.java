@@ -18,7 +18,7 @@ import com.infosys.setlabs.util.PropertiesLoader;
  * 
  * @author "Thomas Weibel <thomas_401709@infosys.com>"
  */
-public class Filename {
+public class FileName {
 
 	// Database connection
 	private Connection connection;
@@ -29,7 +29,7 @@ public class Filename {
 	 * @param connection
 	 *            Database connection
 	 */
-	public Filename(Connection connection) {
+	public FileName(Connection connection) {
 		this.connection = connection;
 	}
 
@@ -42,13 +42,13 @@ public class Filename {
 	 * @return Filename if nameOnly or path of the file
 	 * @throws NoSuchFileException
 	 */
-	public String idToFilename(long id, boolean nameOnly)
+	public String idToFileName(long id, boolean nameOnly)
 			throws NoSuchFileException {
-		return idToFilenameRecursive(id, nameOnly);
+		return idToFileNameRecursive(id, nameOnly);
 	}
 
 	// Recursive filename method called by filename method
-	private String idToFilenameRecursive(long id, boolean nameOnly)
+	private String idToFileNameRecursive(long id, boolean nameOnly)
 			throws NoSuchFileException {
 		// Base case
 		if (id == -1) {
@@ -74,12 +74,12 @@ public class Filename {
 			rs.beforeFirst();
 			if (rs.next()) {
 				if (rs.getLong("parent_id") == -1) {
-					return idToFilenameRecursive(rs.getLong("parent_id"), nameOnly)
+					return idToFileNameRecursive(rs.getLong("parent_id"), nameOnly)
 							+ rs.getString("file_name");
 				} else if (nameOnly) {
 					return rs.getString("file_name");
 				} else {
-					return idToFilenameRecursive(rs.getLong("parent_id"), nameOnly)
+					return idToFileNameRecursive(rs.getLong("parent_id"), nameOnly)
 							+ "/" + rs.getString("file_name");
 				}
 			} else {
@@ -132,9 +132,9 @@ public class Filename {
 					.getProperty("db.host"), values.getDb(), values.getUser(),
 					values.getPw());
 
-			Filename fn = new Filename(connection);
+			FileName fn = new FileName(connection);
 			System.out.println(fn
-					.idToFilename(values.getId(), values.getNameOnly()));
+					.idToFileName(values.getId(), values.getNameOnly()));
 		} catch (SQLException sqlEx) {
 			System.out.println("SQLException: " + sqlEx.getMessage());
 		} catch (NoSuchFileException e) {
