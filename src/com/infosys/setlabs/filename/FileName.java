@@ -4,14 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-
-import com.infosys.setlabs.db.ConnectionManager;
 import com.infosys.setlabs.util.DatabaseUtil;
-import com.infosys.setlabs.util.PropertiesLoader;
 
 /**
  * Maps file IDs in a database created by CVSAnaly2 to filenames/paths.
@@ -74,12 +68,14 @@ public class FileName {
 			rs.beforeFirst();
 			if (rs.next()) {
 				if (rs.getLong("parent_id") == -1) {
-					return idToFileNameRecursive(rs.getLong("parent_id"), nameOnly)
+					return idToFileNameRecursive(rs.getLong("parent_id"),
+							nameOnly)
 							+ rs.getString("file_name");
 				} else if (nameOnly) {
 					return rs.getString("file_name");
 				} else {
-					return idToFileNameRecursive(rs.getLong("parent_id"), nameOnly)
+					return idToFileNameRecursive(rs.getLong("parent_id"),
+							nameOnly)
 							+ "/" + rs.getString("file_name");
 				}
 			} else {
@@ -95,53 +91,4 @@ public class FileName {
 		// Never reach here
 		return "";
 	}
-
-	/**
-	 * Filename application
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// Parse the command line arguments and options
-		CommandLineValues values = new CommandLineValues();
-		CmdLineParser parser = new CmdLineParser(values);
-
-		// Set width of the error display area
-		parser.setUsageWidth(80);
-
-		try {
-			parser.parseArgument(args);
-		} catch (CmdLineException e) {
-			System.err.println("filename [options...] arguments...\n");
-			System.err.println(e.getMessage() + "\n");
-
-			// Print the list of available options
-			parser.printUsage(System.err);
-			System.exit(1);
-		}
-
-		// Load the properties
-		Properties properties = PropertiesLoader.load("config.properties");
-
-		Connection connection = null;
-
-		try {
-			// Get a connection to the database
-			connection = ConnectionManager.getConnection(properties
-					.getProperty("db.vendor"), properties
-					.getProperty("db.host"), values.getDb(), values.getUser(),
-					values.getPw());
-
-			FileName fn = new FileName(connection);
-			System.out.println(fn
-					.idToFileName(values.getId(), values.getNameOnly()));
-		} catch (SQLException sqlEx) {
-			System.out.println("SQLException: " + sqlEx.getMessage());
-		} catch (NoSuchFileException e) {
-			System.out.println("NoSuchFileException: " + e.getMessage());
-		} finally {
-			DatabaseUtil.close(connection);
-		}
-	}
-
 }
