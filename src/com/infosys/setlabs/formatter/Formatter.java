@@ -18,8 +18,8 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
 import com.infosys.setlabs.fism.db.ConnectionManager;
-import com.infosys.setlabs.util.DatabaseUtil;
-import com.infosys.setlabs.util.PropertiesLoader;
+import com.infosys.setlabs.fism.util.DatabaseUtil;
+import com.infosys.setlabs.fism.util.PropertiesLoader;
 
 public class Formatter {
 

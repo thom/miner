@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.infosys.setlabs.util.DatabaseUtil;
+import com.infosys.setlabs.fism.util.DatabaseUtil;
 
 /**
  * Maps file IDs in a database created by CVSAnaly2 to filenames/paths.

@@ -11,8 +11,8 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.fism.db.ConnectionManager;
 import com.infosys.setlabs.fism.filename.FileName;
 import com.infosys.setlabs.fism.filename.NoSuchFileException;
-import com.infosys.setlabs.util.DatabaseUtil;
-import com.infosys.setlabs.util.PropertiesLoader;
+import com.infosys.setlabs.fism.util.DatabaseUtil;
+import com.infosys.setlabs.fism.util.PropertiesLoader;
 
 /**
  * Maps file IDs in a database created by CVSAnaly2 to filenames/paths.
