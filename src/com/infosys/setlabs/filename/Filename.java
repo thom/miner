@@ -13,18 +13,43 @@ import com.infosys.setlabs.db.ConnectionManager;
 import com.infosys.setlabs.util.DatabaseUtil;
 import com.infosys.setlabs.util.PropertiesLoader;
 
+/**
+ * Maps file IDs in a database created by CVSAnaly2 to filenames/paths.
+ * 
+ * @author "Thomas Weibel <thomas_401709@infosys.com>"
+ */
 public class Filename {
 
-	private static String usage = "filename [options...] arguments...";
-	private static Properties properties;
+	// Database connection
+	private Connection connection;
 
-	public static String filename(Connection conn, long id, boolean nameOnly)
-			throws NoSuchFileException {
-		return filenameRecursive(conn, id, nameOnly);
+	/**
+	 * Create a new filename object
+	 * 
+	 * @param connection
+	 *            Database connection
+	 */
+	public Filename(Connection connection) {
+		this.connection = connection;
 	}
 
-	private static String filenameRecursive(Connection conn, long id,
-			boolean nameOnly) throws NoSuchFileException {
+	/**
+	 * Maps file ID id to either a filename (if nameOnly is specified) or to a
+	 * path
+	 * 
+	 * @param id
+	 * @param nameOnly
+	 * @return Filename if nameOnly or path of the file
+	 * @throws NoSuchFileException
+	 */
+	public String filename(long id, boolean nameOnly)
+			throws NoSuchFileException {
+		return filenameRecursive(id, nameOnly);
+	}
+
+	// Recursive filename method called by filename method
+	private String filenameRecursive(long id, boolean nameOnly)
+			throws NoSuchFileException {
 		// Base case
 		if (id == -1) {
 			return "";
@@ -35,7 +60,7 @@ public class Filename {
 
 		// Recursion
 		try {
-			stmt = conn.createStatement();
+			stmt = connection.createStatement();
 
 			// Build the statement
 			String sqlStatement = "SELECT f.id, f.file_name, fl.parent_id "
@@ -49,14 +74,12 @@ public class Filename {
 			rs.beforeFirst();
 			if (rs.next()) {
 				if (rs.getLong("parent_id") == -1) {
-					return filenameRecursive(conn, rs.getLong("parent_id"),
-							nameOnly)
+					return filenameRecursive(rs.getLong("parent_id"), nameOnly)
 							+ rs.getString("file_name");
 				} else if (nameOnly) {
 					return rs.getString("file_name");
 				} else {
-					return filenameRecursive(conn, rs.getLong("parent_id"),
-							nameOnly)
+					return filenameRecursive(rs.getLong("parent_id"), nameOnly)
 							+ "/" + rs.getString("file_name");
 				}
 			} else {
@@ -73,6 +96,11 @@ public class Filename {
 		return "";
 	}
 
+	/**
+	 * Filename application
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		// Parse the command line arguments and options
 		CommandLineValues values = new CommandLineValues();
@@ -84,7 +112,7 @@ public class Filename {
 		try {
 			parser.parseArgument(args);
 		} catch (CmdLineException e) {
-			System.err.println(usage + "\n");
+			System.err.println("filename [options...] arguments...\n");
 			System.err.println(e.getMessage() + "\n");
 
 			// Print the list of available options
@@ -93,25 +121,26 @@ public class Filename {
 		}
 
 		// Load the properties
-		properties = PropertiesLoader.load("config.properties");
+		Properties properties = PropertiesLoader.load("config.properties");
 
-		Connection conn = null;
+		Connection connection = null;
 
 		try {
 			// Get a connection to the database
-			conn = ConnectionManager.getConnection(properties
+			connection = ConnectionManager.getConnection(properties
 					.getProperty("db.vendor"), properties
 					.getProperty("db.host"), values.getDb(), values.getUser(),
 					values.getPw());
 
-			System.out.println(filename(conn, values.getId(), values
-					.getNameOnly()));
+			Filename fn = new Filename(connection);
+			System.out.println(fn
+					.filename(values.getId(), values.getNameOnly()));
 		} catch (SQLException sqlEx) {
 			System.out.println("SQLException: " + sqlEx.getMessage());
 		} catch (NoSuchFileException e) {
 			System.out.println("NoSuchFileException: " + e.getMessage());
 		} finally {
-			DatabaseUtil.close(conn);
+			DatabaseUtil.close(connection);
 		}
 	}
 
