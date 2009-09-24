@@ -2,7 +2,6 @@ package com.infosys.setlabs.fism;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -11,7 +10,6 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.fism.db.ConnectionManager;
 import com.infosys.setlabs.fism.filename.FileName;
 import com.infosys.setlabs.fism.filename.NoSuchFileException;
-import com.infosys.setlabs.fism.util.Configuration;
 import com.infosys.setlabs.fism.util.DatabaseUtil;
 
 /**
@@ -45,17 +43,12 @@ public class IdToFileName {
 			System.exit(1);
 		}
 
-		// Load the properties
-		Properties properties = Configuration.load("db");
-
 		Connection connection = null;
 
 		try {
 			// Get a connection to the database
-			connection = ConnectionManager.getConnection(properties
-					.getProperty("db.vendor"), properties
-					.getProperty("db.host"), values.getDb(), values.getUser(),
-					values.getPw());
+			connection = ConnectionManager.getConnection(values.getDb(), values
+					.getUser(), values.getPw());
 
 			FileName fn = new FileName(connection);
 			System.out.println(fn.idToFileName(values.getId(), values
