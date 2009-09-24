@@ -10,8 +10,8 @@ import org.kohsuke.args4j.Option;
 
 import com.infosys.setlabs.fism.db.ConnectionManager;
 import com.infosys.setlabs.fism.format.BasketFormat;
+import com.infosys.setlabs.fism.util.Configuration;
 import com.infosys.setlabs.fism.util.DatabaseUtil;
-import com.infosys.setlabs.fism.util.PropertiesLoader;
 
 public class Formatter {
 
@@ -41,7 +41,7 @@ public class Formatter {
 		}
 
 		// Load the properties
-		Properties properties = PropertiesLoader.load("config.properties");
+		Properties properties = Configuration.load("db");
 
 		Connection connection = null;
 
