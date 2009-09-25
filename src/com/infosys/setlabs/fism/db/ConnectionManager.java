@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import com.infosys.setlabs.fism.util.Configuration;
+import com.infosys.setlabs.fism.common.Configuration;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
