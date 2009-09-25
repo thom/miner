@@ -1,4 +1,4 @@
-package com.infosys.setlabs.fism.filename;
+package com.infosys.setlabs.miner.filename;
 
 public class NoSuchFileException extends Exception {
 	private static final long serialVersionUID = 1L;

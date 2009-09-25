@@ -1,4 +1,4 @@
-package com.infosys.setlabs.fism.common;
+package com.infosys.setlabs.miner.common;
 
 import java.util.Enumeration;
 import java.util.Properties;

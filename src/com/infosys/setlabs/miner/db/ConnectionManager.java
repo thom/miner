@@ -1,4 +1,4 @@
-package com.infosys.setlabs.fism.db;
+package com.infosys.setlabs.miner.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import com.infosys.setlabs.fism.common.Configuration;
+import com.infosys.setlabs.miner.common.Configuration;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**

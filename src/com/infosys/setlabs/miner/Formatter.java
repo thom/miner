@@ -1,4 +1,4 @@
-package com.infosys.setlabs.fism;
+package com.infosys.setlabs.miner;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -7,20 +7,14 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import com.infosys.setlabs.fism.common.DatabaseUtil;
-import com.infosys.setlabs.fism.db.ConnectionManager;
-import com.infosys.setlabs.fism.filename.FileName;
-import com.infosys.setlabs.fism.filename.NoSuchFileException;
+import com.infosys.setlabs.miner.common.DatabaseUtil;
+import com.infosys.setlabs.miner.db.ConnectionManager;
+import com.infosys.setlabs.miner.format.BasketFormat;
 
-/**
- * Maps file IDs in a database created by CVSAnaly2 to filenames/paths.
- * 
- * @author "Thomas Weibel <thomas_401709@infosys.com>"
- */
-public class IdToFileName {
+public class Formatter {
 
 	/**
-	 * ID to filename mapper
+	 * Formatter application
 	 * 
 	 * @param args
 	 */
@@ -35,7 +29,7 @@ public class IdToFileName {
 		try {
 			parser.parseArgument(args);
 		} catch (CmdLineException e) {
-			System.err.println("id2filename [options...] arguments...\n");
+			System.err.println("formatter [options...] arguments...\n");
 			System.err.println(e.getMessage() + "\n");
 
 			// Print the list of available options
@@ -50,13 +44,11 @@ public class IdToFileName {
 			connection = ConnectionManager.getConnection(values.getDb(), values
 					.getUser(), values.getPw());
 
-			FileName fn = new FileName(connection);
-			System.out.println(fn.idToFileName(values.getId(), values
-					.getNameOnly()));
+			BasketFormat basketFormat = new BasketFormat(connection, values
+					.getAllFiles(), values.getRevs());
+			basketFormat.format();
 		} catch (SQLException sqlEx) {
 			System.out.println("SQLException: " + sqlEx.getMessage());
-		} catch (NoSuchFileException e) {
-			System.out.println("NoSuchFileException: " + e.getMessage());
 		} finally {
 			DatabaseUtil.close(connection);
 		}
@@ -72,11 +64,11 @@ public class IdToFileName {
 		@Option(name = "-p", aliases = {"password", "pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
-		@Option(name = "-i", aliases = {"id"}, usage = "ID of the file", required = true)
-		private long id;
+		@Option(name = "-r", aliases = {"revs", "revisions"}, usage = "print revisions in transaction file")
+		private boolean revs = false;
 
-		@Option(name = "-n", aliases = {"name", "nameonly"}, usage = "get only the name and not the path of the file")
-		private Boolean nameOnly = false;
+		@Option(name = "-a", aliases = {"all", "all-files"}, usage = "print all files affect by a transaction, including non-code files")
+		private boolean allFiles = false;
 
 		public String getDb() {
 			return db;
@@ -90,12 +82,12 @@ public class IdToFileName {
 			return pw;
 		}
 
-		public long getId() {
-			return id;
+		public boolean getRevs() {
+			return revs;
 		}
 
-		public boolean getNameOnly() {
-			return nameOnly;
+		public boolean getAllFiles() {
+			return allFiles;
 		}
 	}
 

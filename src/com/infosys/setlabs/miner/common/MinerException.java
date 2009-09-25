@@ -1,4 +1,4 @@
-package com.infosys.setlabs.fism.common;
+package com.infosys.setlabs.miner.common;
 
 public class MinerException extends Exception {
 	private static final long serialVersionUID = 1L;

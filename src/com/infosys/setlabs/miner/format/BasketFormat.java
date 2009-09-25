@@ -1,4 +1,4 @@
-package com.infosys.setlabs.fism.format;
+package com.infosys.setlabs.miner.format;
 
 /**
  * Formats revision history transactions extracted from databases created by
@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.infosys.setlabs.fism.common.DatabaseUtil;
+import com.infosys.setlabs.miner.common.DatabaseUtil;
 
 public class BasketFormat {
 
