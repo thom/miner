@@ -1,4 +1,4 @@
-package com.infosys.setlabs.fism.util;
+package com.infosys.setlabs.fism.common;
 
 import java.sql.*;
 

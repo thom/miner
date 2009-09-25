@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.infosys.setlabs.fism.util.DatabaseUtil;
+import com.infosys.setlabs.fism.common.DatabaseUtil;
 
 public class BasketFormat {
 

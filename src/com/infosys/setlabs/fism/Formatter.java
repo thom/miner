@@ -7,9 +7,9 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import com.infosys.setlabs.fism.common.DatabaseUtil;
 import com.infosys.setlabs.fism.db.ConnectionManager;
 import com.infosys.setlabs.fism.format.BasketFormat;
-import com.infosys.setlabs.fism.util.DatabaseUtil;
 
 public class Formatter {
 
