@@ -21,7 +21,6 @@ public interface DAOSession {
 
 	/**
 	 * Closes session. Should be called to release resources.
-	 * 
 	 */
 	public void close() throws DataAccessException;
 }
