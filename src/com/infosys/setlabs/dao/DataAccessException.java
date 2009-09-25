@@ -17,5 +17,4 @@ public class DataAccessException extends Exception {
 		super(e.getMessage());
 		e.printStackTrace();
 	}
-
 }
