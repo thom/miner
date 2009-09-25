@@ -7,7 +7,10 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.DatabaseUtil;
+import com.infosys.setlabs.miner.dao.DAOFactory;
+import com.infosys.setlabs.miner.dao.mysql.MysqlDAOFactory;
 import com.infosys.setlabs.miner.db.ConnectionManager;
 import com.infosys.setlabs.miner.format.BasketFormat;
 
@@ -17,8 +20,9 @@ public class Formatter {
 	 * Formatter application
 	 * 
 	 * @param args
+	 * @throws DataAccessException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws DataAccessException {
 		// Parse the command line arguments and options
 		CommandLineValues values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -41,14 +45,14 @@ public class Formatter {
 
 		try {
 			// Get a connection to the database
-			connection = ConnectionManager.getConnection(values.getDb(), values
-					.getUser(), values.getPw());
+			MysqlDAOFactory daoFactory = (MysqlDAOFactory) DAOFactory.getDAOFactory(DAOFactory.DatabaseEngine.MYSQL);
+			String[] connectionArgs = {values.getDb(), values.getUser(), values.getPw()};
+			daoFactory.setConnectionArgs(connectionArgs);
+			connection = daoFactory.getConnection();
 
 			BasketFormat basketFormat = new BasketFormat(connection, values
 					.getAllFiles(), values.getRevs());
 			basketFormat.format();
-		} catch (SQLException sqlEx) {
-			System.out.println("SQLException: " + sqlEx.getMessage());
 		} finally {
 			DatabaseUtil.close(connection);
 		}

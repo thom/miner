@@ -22,7 +22,7 @@ public class MysqlDAOFactory extends DAOFactory {
 	// Database connection information
 	private String database, user, password;
 
-	private Connection getConnection() throws DataAccessException {
+	public Connection getConnection() throws DataAccessException {
 		try {
 			// Load the properties
 			Properties prop = Configuration.load("db");
@@ -37,7 +37,7 @@ public class MysqlDAOFactory extends DAOFactory {
 				database = prop.getProperty("mysql.user");
 			if (password == null)
 				password = prop.getProperty("mysql.password");
-			
+
 			mds.setDatabaseName(database);
 			mds.setServerName(prop.getProperty("mysql.server"));
 			mds.setPortNumber(Integer.parseInt(prop.getProperty("mysql.port")));
@@ -51,16 +51,20 @@ public class MysqlDAOFactory extends DAOFactory {
 		}
 	}
 
+	/**
+	 * Set the connection arguments with an array
+	 * 
+	 * @param args
+	 *            Array of strings: args[0]: database, args[1]: user, args[2]:
+	 *            password
+	 */
 	@Override
-	public DAOSession getSession() throws DataAccessException {
-		return new JdbcDAOSession(this.getConnection());
+	public void setConnectionArgs(String[] args) {
+		this.database = args[0];
+		this.user = args[1];
+		this.password = args[2];
 	}
 
-	@Override
-	public int getFileDAO(int foo) throws DataAccessException {
-		return 23;
-	}
-	
 	public String getDatabase() {
 		return database;
 	}
@@ -83,5 +87,15 @@ public class MysqlDAOFactory extends DAOFactory {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}	
+	}
+
+	@Override
+	public DAOSession getSession() throws DataAccessException {
+		return new JdbcDAOSession(this.getConnection());
+	}
+
+	@Override
+	public int getFileDAO(int foo) throws DataAccessException {
+		return 23;
+	}
 }

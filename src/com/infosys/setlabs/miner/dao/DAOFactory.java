@@ -1,5 +1,7 @@
 package com.infosys.setlabs.miner.dao;
 
+import java.sql.Connection;
+
 import com.infosys.setlabs.dao.DAOSession;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.dao.mysql.MysqlDAOFactory;
@@ -37,6 +39,16 @@ public abstract class DAOFactory {
 				return null;
 		}
 	}
+	
+	/**
+	 * Set connection arguments
+	 * 
+	 * @param args
+	 */
+	public abstract void setConnectionArgs(String args[]);
+	
+	// TODO: Remove later!
+	public abstract Connection getConnection() throws DataAccessException;
 
 	/**
 	 * Abstract method for creation of the session object for access to data
