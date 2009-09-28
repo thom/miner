@@ -2,6 +2,7 @@ package com.infosys.setlabs.miner.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -20,18 +21,22 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
  */
 public class MysqlDAOFactory extends DAOFactory {
 	// Database connection information
-	private String database, user, password;
-	
+	private String server, user, password, database;
+	private int port;
+
+	// Properties
 	private Properties prop;
-	
+
 	public MysqlDAOFactory() {
 		// Load the properties
 		prop = Configuration.load("db");
-		
+
 		// Initialize connection parameters
+		server = prop.getProperty("mysql.server");
+		port = Integer.parseInt(prop.getProperty("mysql.port"));
+		database = prop.getProperty("mysql.database");
 		user = prop.getProperty("mysql.user");
 		password = prop.getProperty("mysql.password");
-		database = prop.getProperty("mysql.database");
 	}
 
 	// TODO: Make private later!
@@ -40,9 +45,9 @@ public class MysqlDAOFactory extends DAOFactory {
 			// Use MySQL directly for the moment, this will be replaced by a DAO
 			MysqlDataSource mds = new MysqlDataSource();
 
+			mds.setServerName(server);
+			mds.setPortNumber(port);
 			mds.setDatabaseName(database);
-			mds.setServerName(prop.getProperty("mysql.server"));
-			mds.setPortNumber(Integer.parseInt(prop.getProperty("mysql.port")));
 
 			// Cast into a data source
 			DataSource ds = (DataSource) mds;
@@ -56,18 +61,36 @@ public class MysqlDAOFactory extends DAOFactory {
 	/**
 	 * Set the connection arguments with an array
 	 * 
-	 * @param args
-	 *            Array of strings: args[0]: database, args[1]: user, args[2]:
-	 *            password
+	 * @param properties
 	 */
 	@Override
-	public void setConnectionArgs(String[] args) {
-		if (args[0] != null)
-			this.database = args[0];
-		if (args[1] != null)
-			this.user = args[1];
-		if (args[2] != null)
-			this.password = args[2];
+	public void setConnectionArgs(HashMap<String, String> connectionArgs) {
+		if (connectionArgs.get("mysql.server") != null)
+			setServer(connectionArgs.get("mysql.server"));
+		if (connectionArgs.get("mysql.port") != null)
+			setPort(Integer.parseInt(connectionArgs.get("mysql.port")));
+		if (connectionArgs.get("mysql.database") != null)
+			setDatabase(connectionArgs.get("mysql.database"));
+		if (connectionArgs.get("mysql.user") != null)
+			setUser(connectionArgs.get("mysql.user"));
+		if (connectionArgs.get("mysql.password") != null)
+			setPassword(connectionArgs.get("mysql.password"));
+	}
+
+	public String getServer() {
+		return server;
+	}
+
+	public void setServer(String server) {
+		this.server = server;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
 	}
 
 	public String getDatabase() {

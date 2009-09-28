@@ -1,6 +1,7 @@
 package com.infosys.setlabs.miner;
 
 import java.sql.Connection;
+import java.util.HashMap;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -24,7 +25,7 @@ public class IdToFileName {
 	 * ID to filename mapper
 	 * 
 	 * @param args
-	 * @throws DataAccessException 
+	 * @throws DataAccessException
 	 */
 	public static void main(String[] args) throws DataAccessException {
 		// Parse the command line arguments and options
@@ -49,8 +50,12 @@ public class IdToFileName {
 
 		try {
 			// Get a connection to the database
-			MysqlDAOFactory daoFactory = (MysqlDAOFactory) DAOFactory.getDAOFactory(DAOFactory.DatabaseEngine.MYSQL);
-			String[] connectionArgs = {values.getDb(), values.getUser(), values.getPw()};
+			MysqlDAOFactory daoFactory = (MysqlDAOFactory) DAOFactory
+					.getDAOFactory(DAOFactory.DatabaseEngine.MYSQL);
+			HashMap<String, String> connectionArgs = new HashMap<String, String>();
+			connectionArgs.put("mysql.database", values.getDb());
+			connectionArgs.put("mysql.user", values.getUser());
+			connectionArgs.put("mysql.password", values.getPw());
 			daoFactory.setConnectionArgs(connectionArgs);
 			connection = daoFactory.getConnection();
 

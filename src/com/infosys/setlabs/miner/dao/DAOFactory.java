@@ -1,6 +1,7 @@
 package com.infosys.setlabs.miner.dao;
 
 import java.sql.Connection;
+import java.util.HashMap;
 
 import com.infosys.setlabs.dao.DAOSession;
 import com.infosys.setlabs.dao.DataAccessException;
@@ -31,7 +32,8 @@ public abstract class DAOFactory {
 	 * @return factory for data access objects
 	 * @throws DataAccessException
 	 */
-	public static DAOFactory getDAOFactory(DatabaseEngine dbe) throws DataAccessException {
+	public static DAOFactory getDAOFactory(DatabaseEngine dbe)
+			throws DataAccessException {
 		switch (dbe) {
 			case MYSQL :
 				return new MysqlDAOFactory();
@@ -39,14 +41,15 @@ public abstract class DAOFactory {
 				return null;
 		}
 	}
-	
+
 	/**
 	 * Set connection arguments
 	 * 
 	 * @param args
 	 */
-	public abstract void setConnectionArgs(String args[]);
-	
+	public abstract void setConnectionArgs(
+			HashMap<String, String> connectionArgs);
+
 	// TODO: Remove later!
 	public abstract Connection getConnection() throws DataAccessException;
 
