@@ -34,6 +34,7 @@ public class MysqlDAOFactory extends DAOFactory {
 		database = prop.getProperty("mysql.database");
 	}
 
+	// TODO: Make private later!
 	public Connection getConnection() throws DataAccessException {
 		try {
 			// Use MySQL directly for the moment, this will be replaced by a DAO
