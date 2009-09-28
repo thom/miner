@@ -21,22 +21,23 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 public class MysqlDAOFactory extends DAOFactory {
 	// Database connection information
 	private String database, user, password;
+	
+	private Properties prop;
+	
+	public MysqlDAOFactory() {
+		// Load the properties
+		prop = Configuration.load("db");
+		
+		// Initialize connection parameters
+		user = prop.getProperty("mysql.user");
+		password = prop.getProperty("mysql.password");
+		database = prop.getProperty("mysql.database");
+	}
 
 	public Connection getConnection() throws DataAccessException {
 		try {
-			// Load the properties
-			Properties prop = Configuration.load("db");
-
 			// Use MySQL directly for the moment, this will be replaced by a DAO
 			MysqlDataSource mds = new MysqlDataSource();
-
-			// Initialize connection parameters
-			if (database == null)
-				database = prop.getProperty("mysql.database");
-			if (user == null)
-				database = prop.getProperty("mysql.user");
-			if (password == null)
-				password = prop.getProperty("mysql.password");
 
 			mds.setDatabaseName(database);
 			mds.setServerName(prop.getProperty("mysql.server"));
@@ -60,9 +61,12 @@ public class MysqlDAOFactory extends DAOFactory {
 	 */
 	@Override
 	public void setConnectionArgs(String[] args) {
-		this.database = args[0];
-		this.user = args[1];
-		this.password = args[2];
+		if (args[0] != null)
+			this.database = args[0];
+		if (args[1] != null)
+			this.user = args[1];
+		if (args[2] != null)
+			this.password = args[2];
 	}
 
 	public String getDatabase() {

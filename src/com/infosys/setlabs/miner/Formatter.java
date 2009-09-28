@@ -1,7 +1,6 @@
 package com.infosys.setlabs.miner;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -11,7 +10,6 @@ import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.DatabaseUtil;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.dao.mysql.MysqlDAOFactory;
-import com.infosys.setlabs.miner.db.ConnectionManager;
 import com.infosys.setlabs.miner.format.BasketFormat;
 
 public class Formatter {
@@ -62,7 +60,7 @@ public class Formatter {
 		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
 
-		@Option(name = "-u", aliases = {"user", "login"}, usage = "user name to log in to the database", metaVar = "USER", required = true)
+		@Option(name = "-u", aliases = {"user", "login"}, usage = "user name to log in to the database", metaVar = "USER")
 		private String user;
 
 		@Option(name = "-p", aliases = {"password", "pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
