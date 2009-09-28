@@ -65,16 +65,16 @@ public class MysqlDAOFactory extends DAOFactory {
 	 */
 	@Override
 	public void setConnectionArgs(HashMap<String, String> connectionArgs) {
-		if (connectionArgs.get("mysql.server") != null)
-			setServer(connectionArgs.get("mysql.server"));
-		if (connectionArgs.get("mysql.port") != null)
-			setPort(Integer.parseInt(connectionArgs.get("mysql.port")));
-		if (connectionArgs.get("mysql.database") != null)
-			setDatabase(connectionArgs.get("mysql.database"));
-		if (connectionArgs.get("mysql.user") != null)
-			setUser(connectionArgs.get("mysql.user"));
-		if (connectionArgs.get("mysql.password") != null)
-			setPassword(connectionArgs.get("mysql.password"));
+		if (connectionArgs.get("server") != null)
+			setServer(connectionArgs.get("server"));
+		if (connectionArgs.get("port") != null)
+			setPort(Integer.parseInt(connectionArgs.get("port")));
+		if (connectionArgs.get("database") != null)
+			setDatabase(connectionArgs.get("database"));
+		if (connectionArgs.get("user") != null)
+			setUser(connectionArgs.get("user"));
+		if (connectionArgs.get("password") != null)
+			setPassword(connectionArgs.get("password"));
 	}
 
 	public String getServer() {

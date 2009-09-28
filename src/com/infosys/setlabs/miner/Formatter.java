@@ -47,9 +47,9 @@ public class Formatter {
 			MysqlDAOFactory daoFactory = (MysqlDAOFactory) DAOFactory
 					.getDAOFactory(DAOFactory.DatabaseEngine.MYSQL);
 			HashMap<String, String> connectionArgs = new HashMap<String, String>();
-			connectionArgs.put("mysql.database", values.getDb());
-			connectionArgs.put("mysql.user", values.getUser());
-			connectionArgs.put("mysql.password", values.getPw());
+			connectionArgs.put("database", values.getDb());
+			connectionArgs.put("user", values.getUser());
+			connectionArgs.put("password", values.getPw());
 			daoFactory.setConnectionArgs(connectionArgs);
 			connection = daoFactory.getConnection();
 
