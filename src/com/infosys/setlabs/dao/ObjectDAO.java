@@ -10,20 +10,28 @@ package com.infosys.setlabs.dao;
  */
 public interface ObjectDAO<Type> {
 	/**
+	 * Finds an existing persistent object by its ID.
+	 * 
+	 * @param id
+	 * @return object
+	 */
+	public Type find(int id) throws DataAccessException;
+	
+	/**
+	 * Finds all existing persistent objects.
+	 * 
+	 * @param id
+	 * @return object
+	 */
+	public Type findAll() throws DataAccessException;		
+	
+	/**
 	 * Creates new persistent object.
 	 * 
 	 * @param object
 	 * @throws DataAccessException
 	 */
 	public void create(Type object) throws DataAccessException;
-
-	/**
-	 * Retrieves an existing persistent object.
-	 * 
-	 * @param id
-	 * @return object
-	 */
-	public Type retrieve(int id) throws DataAccessException;
 
 	/**
 	 * Updates existing persistent object.
