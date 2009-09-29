@@ -44,18 +44,21 @@ public class Formatter {
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
 
+		BasketFormatManager basketFormatManager = null;
+
 		try {
 			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
 
 			// Connect to MySQL database
-			BasketFormatManager basketFormatManager = new BasketFormatManager(
-					connectionArgs);
+			basketFormatManager = new BasketFormatManager(connectionArgs);
 
 			// Format
-			System.out.println(basketFormatManager.format(values
-					.getAllFiles(), values.getRevs()));
-		} catch (DataAccessException e) {
-			e.printStackTrace();
+			System.out.println(basketFormatManager.format(values.getAllFiles(),
+					values.getRevs()));
+		} finally {
+			if (basketFormatManager != null) {
+				basketFormatManager.close();
+			}
 		}
 	}
 	private static class CommandLineValues {

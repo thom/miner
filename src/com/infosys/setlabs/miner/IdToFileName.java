@@ -24,7 +24,7 @@ public class IdToFileName {
 	 * @param args
 	 * @throws DataAccessException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws DataAccessException {
 		// Parse the command line arguments and options
 		CommandLineValues values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -48,18 +48,22 @@ public class IdToFileName {
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
+		
+		FileManager fileManager = null;
 
 		try {
 			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
 			
 			// Connect to MySQL database
-			FileManager fileManager = new FileManager(connectionArgs);
+			fileManager = new FileManager(connectionArgs);
 			
 			// Get file path
 			System.out.println(fileManager.findPath(values.getId(), values
-					.getNameOnly()));			
-		} catch (DataAccessException e) {
-			e.printStackTrace();
+					.getNameOnly()));
+		} finally {
+			if (fileManager != null) {
+				fileManager.close();
+			}
 		}
 	}
 	private static class CommandLineValues {
