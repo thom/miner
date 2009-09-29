@@ -1,6 +1,5 @@
 package com.infosys.setlabs.miner;
 
-import java.sql.Connection;
 import java.util.HashMap;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -8,10 +7,9 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import com.infosys.setlabs.dao.DataAccessException;
-import com.infosys.setlabs.miner.common.DatabaseUtil;
 import com.infosys.setlabs.miner.dao.DAOFactory;
-import com.infosys.setlabs.miner.dao.mysql.MysqlDAOFactory;
-import com.infosys.setlabs.miner.format.BasketFormat;
+import com.infosys.setlabs.miner.manage.BasketFormatManager;
+import com.infosys.setlabs.miner.manage.Manager;
 
 public class Formatter {
 
@@ -40,29 +38,26 @@ public class Formatter {
 			System.exit(1);
 		}
 
-		Connection connection = null;
+		// Set connection arguments
+		HashMap<String, String> connectionArgs = new HashMap<String, String>();
+		connectionArgs.put("database", values.getDb());
+		connectionArgs.put("user", values.getUser());
+		connectionArgs.put("password", values.getPw());
 
 		try {
-			// Get a connection to the database
-			MysqlDAOFactory daoFactory = (MysqlDAOFactory) DAOFactory
-					.getDAOFactory(DAOFactory.DatabaseEngine.MYSQL);
-			HashMap<String, String> connectionArgs = new HashMap<String, String>();
-			connectionArgs.put("database", values.getDb());
-			connectionArgs.put("user", values.getUser());
-			connectionArgs.put("password", values.getPw());
-			daoFactory.setConnectionArgs(connectionArgs);
-			connection = daoFactory.getConnection();
+			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
 
-			BasketFormat basketFormat = new BasketFormat(connection, values
-					.getAllFiles(), values.getRevs());
-			basketFormat.format();
-		} catch (Exception e) {
-			System.out.println("Error: " + e.getMessage());
-		} finally {
-			DatabaseUtil.close(connection);
+			// Connect to MySQL database
+			BasketFormatManager basketFormatManager = new BasketFormatManager(
+					connectionArgs);
+
+			// Format
+			System.out.println(basketFormatManager.format(values
+					.getAllFiles(), values.getRevs()));
+		} catch (DataAccessException e) {
+			e.printStackTrace();
 		}
 	}
-
 	private static class CommandLineValues {
 		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
@@ -99,5 +94,4 @@ public class Formatter {
 			return allFiles;
 		}
 	}
-
 }

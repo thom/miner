@@ -11,7 +11,9 @@ import com.infosys.setlabs.dao.DAOSession;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAOSession;
 import com.infosys.setlabs.miner.common.Configuration;
+import com.infosys.setlabs.miner.dao.BasketFormatDAO;
 import com.infosys.setlabs.miner.dao.DAOFactory;
+import com.infosys.setlabs.miner.dao.FileDAO;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
@@ -123,7 +125,12 @@ public class MysqlDAOFactory extends DAOFactory {
 	}
 
 	@Override
-	public int getFileDAO(int foo) throws DataAccessException {
-		return 23;
+	public FileDAO getFileDAO(DAOSession session) throws DataAccessException {
+		return new MysqlFileDAO(((JdbcDAOSession) session).getConnection());
 	}
+	
+	@Override
+	public BasketFormatDAO getBasketFormatDAO(DAOSession session) throws DataAccessException {
+		return new MysqlBasketFormatDAO(((JdbcDAOSession) session).getConnection());
+	}	
 }

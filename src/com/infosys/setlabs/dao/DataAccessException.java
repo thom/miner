@@ -16,4 +16,13 @@ public class DataAccessException extends Exception {
 	public DataAccessException(Exception e) {
 		super(e.getMessage());
 	}
+	
+	/**
+	 * Create a new exception
+	 * 
+	 * @param string
+	 */
+	public DataAccessException(String msg) {
+		super(msg);
+	}
 }

@@ -8,44 +8,5 @@ package com.infosys.setlabs.dao;
  * @param <Type>
  *            Class of a domain object.
  */
-public interface ObjectDAO<Type> {
-	/**
-	 * Finds an existing persistent object by its ID.
-	 * 
-	 * @param id
-	 * @return object
-	 */
-	public Type find(int id) throws DataAccessException;
-	
-	/**
-	 * Finds all existing persistent objects.
-	 * 
-	 * @param id
-	 * @return object
-	 */
-	public Type findAll() throws DataAccessException;		
-	
-	/**
-	 * Creates new persistent object.
-	 * 
-	 * @param object
-	 * @throws DataAccessException
-	 */
-	public void create(Type object) throws DataAccessException;
-
-	/**
-	 * Updates existing persistent object.
-	 * 
-	 * @param object
-	 * @throws DataAccessException
-	 */
-	public void update(Type object) throws DataAccessException;
-	
-	/**
-	 * Deletes existing persistent object.
-	 * 
-	 * @param object
-	 * @throws DataAccessException
-	 */
-	public void delete(Type object) throws DataAccessException;	
+public interface ObjectDAO<Type> extends ReadObjectDAO<Type>, WriteObjectDAO<Type> {
 }

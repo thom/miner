@@ -1,6 +1,5 @@
 package com.infosys.setlabs.miner;
 
-import java.sql.Connection;
 import java.util.HashMap;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -8,10 +7,9 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import com.infosys.setlabs.dao.DataAccessException;
-import com.infosys.setlabs.miner.common.DatabaseUtil;
 import com.infosys.setlabs.miner.dao.DAOFactory;
-import com.infosys.setlabs.miner.dao.mysql.MysqlDAOFactory;
-import com.infosys.setlabs.miner.filename.FileName;
+import com.infosys.setlabs.miner.manage.FileManager;
+import com.infosys.setlabs.miner.manage.Manager;
 
 /**
  * Maps file IDs in a database created by CVSAnaly2 to filenames/paths.
@@ -26,7 +24,7 @@ public class IdToFileName {
 	 * @param args
 	 * @throws DataAccessException
 	 */
-	public static void main(String[] args) throws DataAccessException {
+	public static void main(String[] args) {
 		// Parse the command line arguments and options
 		CommandLineValues values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -45,29 +43,25 @@ public class IdToFileName {
 			System.exit(1);
 		}
 
-		Connection connection = null;
+		// Set connection arguments
+		HashMap<String, String> connectionArgs = new HashMap<String, String>();
+		connectionArgs.put("database", values.getDb());
+		connectionArgs.put("user", values.getUser());
+		connectionArgs.put("password", values.getPw());
 
 		try {
-			// Get a connection to the database
-			MysqlDAOFactory daoFactory = (MysqlDAOFactory) DAOFactory
-					.getDAOFactory(DAOFactory.DatabaseEngine.MYSQL);
-			HashMap<String, String> connectionArgs = new HashMap<String, String>();
-			connectionArgs.put("database", values.getDb());
-			connectionArgs.put("user", values.getUser());
-			connectionArgs.put("password", values.getPw());
-			daoFactory.setConnectionArgs(connectionArgs);
-			connection = daoFactory.getConnection();
-
-			FileName fn = new FileName(connection);
-			System.out.println(fn.idToFileName(values.getId(), values
-					.getNameOnly()));
-		} catch (Exception e) {
-			System.out.println("Error: " + e.getMessage());
-		} finally {
-			DatabaseUtil.close(connection);
+			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
+			
+			// Connect to MySQL database
+			FileManager fileManager = new FileManager(connectionArgs);
+			
+			// Get file path
+			System.out.println(fileManager.getPath(values.getId(), values
+					.getNameOnly()));			
+		} catch (DataAccessException e) {
+			e.printStackTrace();
 		}
 	}
-
 	private static class CommandLineValues {
 		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
@@ -79,7 +73,7 @@ public class IdToFileName {
 		private String pw;
 
 		@Option(name = "-i", aliases = {"id"}, usage = "ID of the file", required = true)
-		private long id;
+		private int id;
 
 		@Option(name = "-n", aliases = {"name", "nameonly"}, usage = "get only the name and not the path of the file")
 		private Boolean nameOnly = false;
@@ -96,7 +90,7 @@ public class IdToFileName {
 			return pw;
 		}
 
-		public long getId() {
+		public int getId() {
 			return id;
 		}
 
@@ -104,5 +98,4 @@ public class IdToFileName {
 			return nameOnly;
 		}
 	}
-
 }

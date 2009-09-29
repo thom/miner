@@ -1,6 +1,5 @@
 package com.infosys.setlabs.miner.dao;
 
-import java.sql.Connection;
 import java.util.HashMap;
 
 import com.infosys.setlabs.dao.DAOSession;
@@ -50,9 +49,6 @@ public abstract class DAOFactory {
 	public abstract void setConnectionArgs(
 			HashMap<String, String> connectionArgs);
 
-	// TODO: Remove later!
-	public abstract Connection getConnection() throws DataAccessException;
-
 	/**
 	 * Abstract method for creation of the session object for access to data
 	 * source. Sub-classes should return concrete session objects.
@@ -65,12 +61,21 @@ public abstract class DAOFactory {
 
 	/**
 	 * Abstract method for file data access object.
-	 * 
-	 * @return session
+	 *
+	 * @param session
+	 * @return FileDAO
 	 * @throws DataAccessException
-	 * @see dao.FileDAO
 	 */
-	public abstract int getFileDAO(int foo) throws DataAccessException;
-	// public abstract FileDAO getFileDAO(DAOSession session)
-	// throws DataAccessException;
+	public abstract FileDAO getFileDAO(DAOSession session)
+			throws DataAccessException;
+
+	/**
+	 * Abstract method for basket format data access object
+	 * 
+	 * @param session
+	 * @return BasketFormatDAO
+	 * @throws DataAccessException
+	 */
+	public abstract BasketFormatDAO getBasketFormatDAO(DAOSession session)
+			throws DataAccessException;
 }
