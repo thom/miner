@@ -6,11 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import com.infosys.setlabs.dao.jdbc.AbstractJdbcDAO;
+import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.BasketFormatDAO;
 import com.infosys.setlabs.miner.domain.File;
 
-public class JdbcBasketFormatDOA extends AbstractJdbcDAO
+public class JdbcBasketFormatDOA extends JdbcDAO
 		implements
 			BasketFormatDAO {
 

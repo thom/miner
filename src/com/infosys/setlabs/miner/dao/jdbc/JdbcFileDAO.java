@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.infosys.setlabs.dao.DataAccessException;
-import com.infosys.setlabs.dao.jdbc.AbstractJdbcDAO;
+import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.FileDAO;
 import com.infosys.setlabs.miner.domain.File;
 
-public abstract class JdbcFileDAO extends AbstractJdbcDAO implements FileDAO {
+public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 
 	protected static String SELECT_FILE_SQL = ""
 			+ "SELECT id, file_name, repository_id "

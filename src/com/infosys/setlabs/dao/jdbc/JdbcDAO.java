@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * 
  * @author "Thomas Weibel <thomas_401709@infosys.com>
  */
-public abstract class AbstractJdbcDAO {
+public abstract class JdbcDAO {
 	
 	// JDBC connection to the database
 	private Connection connection;
@@ -21,7 +21,7 @@ public abstract class AbstractJdbcDAO {
 	 * @param conn
 	 *            connection
 	 */
-	public AbstractJdbcDAO(Connection conn) {
+	public JdbcDAO(Connection conn) {
 		this.setConnection(conn);
 	}
 
