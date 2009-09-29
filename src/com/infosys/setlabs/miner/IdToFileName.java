@@ -56,7 +56,7 @@ public class IdToFileName {
 			FileManager fileManager = new FileManager(connectionArgs);
 			
 			// Get file path
-			System.out.println(fileManager.getPath(values.getId(), values
+			System.out.println(fileManager.findPath(values.getId(), values
 					.getNameOnly()));			
 		} catch (DataAccessException e) {
 			e.printStackTrace();

@@ -17,15 +17,15 @@ public class FileManager extends Manager {
 		super(connectionArgs);
 	}
 
-	public File getFile(int id) throws DataAccessException {
+	public File find(int id) throws DataAccessException {
 		return this.getFactory().getFileDAO(this.getSession()).find(id);
 	}
 
-	public Collection<File> getAllFiles(File file) throws DataAccessException {
+	public Collection<File> findAll(File file) throws DataAccessException {
 		return this.getFactory().getFileDAO(this.getSession()).findAll();
 	}
 
-	public String getPath(int id, boolean nameOnly) throws DataAccessException {
+	public String findPath(int id, boolean nameOnly) throws DataAccessException {
 		if (nameOnly) {
 			return this.getFactory().getFileDAO(this.getSession()).find(id)
 					.getFileName();
@@ -34,7 +34,7 @@ public class FileManager extends Manager {
 		}
 	}
 
-	public String getPath(File file, boolean nameOnly) throws DataAccessException {
-		return getPath(file.getId(), nameOnly);
+	public String findPath(File file, boolean nameOnly) throws DataAccessException {
+		return findPath(file.getId(), nameOnly);
 	}
 }
