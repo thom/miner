@@ -12,7 +12,6 @@ import com.infosys.setlabs.miner.common.DatabaseUtil;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.dao.mysql.MysqlDAOFactory;
 import com.infosys.setlabs.miner.filename.FileName;
-import com.infosys.setlabs.miner.filename.NoSuchFileException;
 
 /**
  * Maps file IDs in a database created by CVSAnaly2 to filenames/paths.
@@ -62,8 +61,8 @@ public class IdToFileName {
 			FileName fn = new FileName(connection);
 			System.out.println(fn.idToFileName(values.getId(), values
 					.getNameOnly()));
-		} catch (NoSuchFileException e) {
-			System.out.println("NoSuchFileException: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Error: " + e.getMessage());
 		} finally {
 			DatabaseUtil.close(connection);
 		}

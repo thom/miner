@@ -56,6 +56,8 @@ public class Formatter {
 			BasketFormat basketFormat = new BasketFormat(connection, values
 					.getAllFiles(), values.getRevs());
 			basketFormat.format();
+		} catch (Exception e) {
+			System.out.println("Error: " + e.getMessage());
 		} finally {
 			DatabaseUtil.close(connection);
 		}
