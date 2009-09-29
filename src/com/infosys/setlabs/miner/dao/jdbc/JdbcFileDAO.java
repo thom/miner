@@ -23,6 +23,10 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 			+ "SELECT f.id, f.file_name, fl.parent_id "
 			+ "FROM files f, file_links fl "
 			+ "WHERE f.id = fl.file_id AND f.id = ?";
+	protected static String SELECT_NEWEST_FILE_NAME = ""
+			+ "SELECT * FROM file_copies "
+			+ "WHERE new_file_name <> '' AND from_id = to_id AND from_id = ? "
+			+ "ORDER BY to_id, from_commit_id";
 
 	public JdbcFileDAO(Connection conn) {
 		super(conn);
@@ -39,8 +43,11 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
+				// Create a new file
 				file = new File(rs.getInt("id"));
-				file.setFileName(rs.getString("file_name"));
+
+				// Get the newest file name
+				file.setFileName(getNewestName(id, rs.getString("file_name")));
 			}
 			rs.close();
 			ps.close();
@@ -56,14 +63,22 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 	@Override
 	public Collection<File> findAll() throws DataAccessException {
 		ArrayList<File> result = new ArrayList<File>();
+		File file = null;
+		int id;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			ps = this.getConnection().prepareStatement(SELECT_FILES_SQL);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				File file = new File(rs.getInt("id"));
-				file.setFileName(rs.getString("file_name"));
+				id = rs.getInt("id");
+
+				// Create a new file
+				file = new File(id);
+
+				// Get the newest file name
+				file.setFileName(getNewestName(id, rs.getString("file_name")));
+
 				result.add(file);
 			}
 			rs.close();
@@ -75,18 +90,6 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 			this.closeStatement(ps);
 		}
 		return result;
-	}
-
-	@Override
-	public File findLatest(int id) throws DataAccessException {
-		// TODO
-		return null;
-	}
-
-	@Override
-	public File findLatest(File file) throws DataAccessException {
-		// TODO
-		return null;
 	}
 
 	@Override
@@ -117,10 +120,10 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 			if (rs.next()) {
 				if (rs.getInt("parent_id") == -1) {
 					return findPathRecursive(rs.getInt("parent_id"))
-							+ rs.getString("file_name");
+							+ getNewestName(id, rs.getString("file_name"));
 				} else {
 					return findPathRecursive(rs.getInt("parent_id")) + "/"
-							+ rs.getString("file_name");
+							+ getNewestName(id, rs.getString("file_name"));
 				}
 			} else {
 				throw new DataAccessException("Couldn't find file with ID '"
@@ -135,5 +138,34 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 
 		// This is never reached!
 		return "";
+	}
+
+	private String getNewestName(int id, String oldFileName)
+			throws DataAccessException {
+		String newFileName = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = this.getConnection().prepareStatement(SELECT_NEWEST_FILE_NAME);
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				newFileName = rs.getString("new_file_name");
+			}
+			rs.close();
+			ps.close();
+		} catch (SQLException e) {
+			// Do nothing!
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
+
+		if (newFileName != null) {
+			return newFileName;
+		} else {
+			return oldFileName;
+		}
 	}
 }

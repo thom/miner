@@ -25,14 +25,6 @@ public class FileManager extends Manager {
 		return this.getFactory().getFileDAO(this.getSession()).findAll();
 	}
 
-	public File getLatest(int id) throws DataAccessException {
-		return this.getFactory().getFileDAO(this.getSession()).findLatest(id);
-	}
-
-	public File getLatest(File file) throws DataAccessException {
-		return this.getFactory().getFileDAO(this.getSession()).findLatest(file);
-	}
-
 	public String getPath(int id, boolean nameOnly) throws DataAccessException {
 		if (nameOnly) {
 			return this.getFactory().getFileDAO(this.getSession()).find(id)
