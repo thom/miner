@@ -11,7 +11,6 @@ import java.sql.SQLException;
  * @author "Thomas Weibel <thomas_401709@infosys.com>
  */
 public abstract class JdbcDAO {
-	
 	// JDBC connection to the database
 	private Connection connection;
 

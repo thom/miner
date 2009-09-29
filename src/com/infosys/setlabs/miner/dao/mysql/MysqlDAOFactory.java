@@ -41,8 +41,7 @@ public class MysqlDAOFactory extends DAOFactory {
 		password = prop.getProperty("mysql.password");
 	}
 
-	// TODO: Make private later!
-	public Connection getConnection() throws DataAccessException {
+	private Connection getConnection() throws DataAccessException {
 		try {
 			// Use MySQL directly for the moment, this will be replaced by a DAO
 			MysqlDataSource mds = new MysqlDataSource();
