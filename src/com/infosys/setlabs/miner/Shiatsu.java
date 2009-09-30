@@ -6,12 +6,20 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import com.infosys.setlabs.dao.DataAccessException;
+import com.infosys.setlabs.miner.dao.DAOFactory;
+import com.infosys.setlabs.miner.manage.Manager;
+import com.infosys.setlabs.miner.manage.ShiatsuManager;
+
 public class Shiatsu {
 
 	/**
+	 * Massage data
+	 * 
 	 * @param args
+	 * @throws DataAccessException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws DataAccessException {
 		// Parse the command line arguments and options
 		CommandLineValues values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -36,7 +44,23 @@ public class Shiatsu {
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
 		
-		// TODO: Call ShiatsuManager
+		ShiatsuManager shiatsuManager = null;
+
+		try {
+			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
+			
+			// Connect to MySQL database
+			shiatsuManager = new ShiatsuManager(connectionArgs);
+			
+			// Massage data
+			shiatsuManager.massage();
+			
+			System.out.println("Done.");
+		} finally {
+			if (shiatsuManager != null) {
+				shiatsuManager.close();
+			}
+		}
 	}
 
 	private static class CommandLineValues {

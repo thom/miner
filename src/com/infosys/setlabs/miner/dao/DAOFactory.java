@@ -61,7 +61,7 @@ public abstract class DAOFactory {
 
 	/**
 	 * Abstract method for file data access object.
-	 *
+	 * 
 	 * @param session
 	 * @return FileDAO
 	 * @throws DataAccessException
@@ -77,5 +77,15 @@ public abstract class DAOFactory {
 	 * @throws DataAccessException
 	 */
 	public abstract BasketFormatDAO getBasketFormatDAO(DAOSession session)
+			throws DataAccessException;
+
+	/**
+	 * Abstract method for shiatsu (data massaging) data access object
+	 * 
+	 * @param session
+	 * @return ShiatsuDAO
+	 * @throws DataAccessException
+	 */
+	public abstract ShiatsuDAO getShiatsuDAO(DAOSession session)
 			throws DataAccessException;
 }
