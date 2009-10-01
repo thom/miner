@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.infosys.setlabs.dao.DAOSession;
 import com.infosys.setlabs.dao.DataAccessException;
+import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.dao.DAOFactory.DatabaseEngine;
 
@@ -44,22 +45,30 @@ public abstract class Manager {
 	 * Constructor initializes data source factory and session. Should be called
 	 * from inherited classes.
 	 * 
-	 * @throws DataAccessException
+	 * @throws MinerException
 	 */
 	public Manager(HashMap<String, String> connectionArgs)
-			throws DataAccessException {
-		this.setFactory(DAOFactory.getDAOFactory(currentDatabaseEngine));
-		this.getFactory().setConnectionArgs(connectionArgs);		
-		this.setSession(this.getFactory().getSession());
+			throws MinerException {
+		try {
+			this.setFactory(DAOFactory.getDAOFactory(currentDatabaseEngine));
+			this.getFactory().setConnectionArgs(connectionArgs);
+			this.setSession(this.getFactory().getSession());
+		} catch (DataAccessException e) {
+			throw new MinerException(e);
+		}
 	}
 
 	/**
 	 * Closes the session associated to manager instance.
 	 * 
-	 * @throws DataAccessException
+	 * @throws MinerException
 	 */
-	public void close() throws DataAccessException {
-		this.getSession().close();
+	public void close() throws MinerException {
+		try {
+			this.getSession().close();
+		} catch (DataAccessException e) {
+			throw new MinerException(e);
+		}
 	}
 
 	/**

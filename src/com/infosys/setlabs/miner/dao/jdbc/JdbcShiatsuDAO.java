@@ -29,12 +29,7 @@ public abstract class JdbcShiatsuDAO extends JdbcDAO implements ShiatsuDAO {
 	}
 
 	@Override
-	public void massage() throws DataAccessException {
-		createTables();
-		initializeTables();
-	}
-
-	private void createTables() throws DataAccessException {
+	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
 			ps = this.getConnection().prepareStatement(
@@ -48,9 +43,5 @@ public abstract class JdbcShiatsuDAO extends JdbcDAO implements ShiatsuDAO {
 		} finally {
 			this.closeStatement(ps);
 		}
-	}
-
-	private void initializeTables() throws DataAccessException {
-		// TODO
 	}
 }

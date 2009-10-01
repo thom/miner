@@ -6,6 +6,9 @@ public class MinerFile {
 	private String path;
 	private MinerModule module;
 	
+	public MinerFile() {
+	}
+	
 	public MinerFile(int id) {
 		setId(id);
 	}

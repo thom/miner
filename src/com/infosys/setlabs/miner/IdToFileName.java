@@ -6,7 +6,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import com.infosys.setlabs.dao.DataAccessException;
+import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.manage.FileManager;
 import com.infosys.setlabs.miner.manage.Manager;
@@ -22,9 +22,9 @@ public class IdToFileName {
 	 * ID to filename mapper
 	 * 
 	 * @param args
-	 * @throws DataAccessException
+	 * @throws MinerException
 	 */
-	public static void main(String[] args) throws DataAccessException {
+	public static void main(String[] args) throws MinerException {
 		// Parse the command line arguments and options
 		CommandLineValues values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);

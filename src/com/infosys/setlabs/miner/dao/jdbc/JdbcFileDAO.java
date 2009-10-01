@@ -34,7 +34,7 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 
 	@Override
 	public File find(int id) throws DataAccessException {
-		File file = null;
+		File result = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
@@ -44,20 +44,18 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				// Create a new file
-				file = new File(rs.getInt("id"));
+				result = new File(rs.getInt("id"));
 
 				// Get the newest file name
-				file.setFileName(getNewestName(id, rs.getString("file_name")));
+				result.setFileName(getNewestName(id, rs.getString("file_name")));
 			}
-			rs.close();
-			ps.close();
 		} catch (SQLException e) {
-			// Do nothing!
+			e.printStackTrace();
 		} finally {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);
 		}
-		return file;
+		return result;
 	}
 
 	@Override
@@ -81,10 +79,8 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 
 				result.add(file);
 			}
-			rs.close();
-			ps.close();
 		} catch (SQLException e) {
-			// Do nothing!
+			e.printStackTrace();
 		} finally {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);
@@ -130,7 +126,7 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 						+ id + "'");
 			}
 		} catch (SQLException e) {
-			// Do nothing!
+			e.printStackTrace();
 		} finally {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);
@@ -153,10 +149,8 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 			while (rs.next()) {
 				newFileName = rs.getString("new_file_name");
 			}
-			rs.close();
-			ps.close();
 		} catch (SQLException e) {
-			// Do nothing!
+			e.printStackTrace();
 		} finally {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);

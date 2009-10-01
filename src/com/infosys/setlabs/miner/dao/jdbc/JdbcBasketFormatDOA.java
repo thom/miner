@@ -61,10 +61,8 @@ public class JdbcBasketFormatDOA extends JdbcDAO
 
 				System.out.print(rs.getString("modified_files"));
 			}
-			rs.close();
-			ps.close();
 		} catch (SQLException e) {
-			// Do nothing!
+			e.printStackTrace();			
 		} finally {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);

@@ -5,8 +5,12 @@ public class MinerModule {
 	private String moduleName;
 	
 	public MinerModule(int id) {
-		setId(id);
+		this.setId(id);
 	}
+	
+	public MinerModule(String moduleName) {
+		this.setModuleName(moduleName);
+	}	
 	
 	public int getId() {
 		return id;
