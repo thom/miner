@@ -12,16 +12,18 @@ public abstract class JdbcShiatsuDAO extends JdbcDAO implements ShiatsuDAO {
 
 	protected static String CREATE_MINER_FILES_TABLE = ""
 			+ "CREATE TABLE miner_files ("
-			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+			+ "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
 			+ "file_name VARCHAR(255), " + "path MEDIUMTEXT, "
-			+ "miner_module_id INT, " + "INDEX(file_name), "
+			+ "file_id INT NOT NULL, " + "miner_module_id INT NOT NULL, "
+			+ "INDEX(file_name), " + "INDEX(file_id), "
+			+ "FOREIGN KEY(file_id) REFERENCES files(id), "
 			+ "FOREIGN KEY(miner_module_id) REFERENCES miner_modules(id)"
-			+ ") ENGINE=InnoDB  DEFAULT CHARSET=utf8";
+			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
 	protected static String CREATE_MINER_MODULES_TABLE = ""
 			+ "CREATE TABLE miner_modules ("
 			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,"
 			+ "module_name MEDIUMTEXT," + "INDEX(module_name(255))"
-			+ ") ENGINE=InnoDB DEFAULT CHARSET=utf8";
+			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
 	protected static String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS ";
 
 	public JdbcShiatsuDAO(Connection conn) {
@@ -35,7 +37,7 @@ public abstract class JdbcShiatsuDAO extends JdbcDAO implements ShiatsuDAO {
 			ps = this.getConnection().prepareStatement(
 					DROP_TABLE_IF_EXISTS + "miner_files");
 			ps.executeUpdate();
-			ps.executeUpdate(DROP_TABLE_IF_EXISTS + "miner_modules");			
+			ps.executeUpdate(DROP_TABLE_IF_EXISTS + "miner_modules");
 			ps.executeUpdate(CREATE_MINER_MODULES_TABLE);
 			ps.executeUpdate(CREATE_MINER_FILES_TABLE);
 		} catch (SQLException e) {
