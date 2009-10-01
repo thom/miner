@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Abstract JDBC Data Access Object.
@@ -55,6 +56,22 @@ public abstract class JdbcDAO {
 			}
 		}
 	}
+	
+	/**
+	 * Close a statement.
+	 * 
+	 * @param statement
+	 *            statement to close
+	 */
+	protected void closeStatement(Statement statement) {
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				System.out.println("SQLException: " + e.getMessage());
+			}
+		}
+	}	
 
 	/**
 	 * Get a connection.
