@@ -8,5 +8,10 @@ package com.infosys.setlabs.dao;
  * @param <Type>
  *            Class of a domain object.
  */
-public interface ObjectDAO<Type> extends ReadObjectDAO<Type>, WriteObjectDAO<Type> {
+public interface ObjectDAO<Type>
+		extends
+			ReadObjectDAO<Type>,
+			CreateObjectDAO<Type>,
+			UpdateObjectDAO<Type>,
+			DeleteObjectDAO<Type> {
 }
