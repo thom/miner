@@ -10,14 +10,7 @@ public interface FileDAO extends ReadObjectDAO<File> {
 	 * 
 	 * @param id
 	 * @return path
+	 * @throws DataAccessException
 	 */
-	public String findPath(int id) throws DataAccessException;
-	
-	/**
-	 * Find the path of a file.
-	 * 
-	 * @param file
-	 * @return path
-	 */
-	public String findPath(File file) throws DataAccessException;
+	public String getPath(int id) throws DataAccessException;
 }

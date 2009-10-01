@@ -47,7 +47,11 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 				result = new File(rs.getInt("id"));
 
 				// Get the newest file name
-				result.setFileName(getNewestName(id, rs.getString("file_name")));
+				result.setFileName(getNewestFileName(id, rs
+						.getString("file_name")));
+				
+				// Get path
+				result.setPath(getPath(id));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -75,7 +79,11 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 				file = new File(id);
 
 				// Get the newest file name
-				file.setFileName(getNewestName(id, rs.getString("file_name")));
+				file.setFileName(getNewestFileName(id, rs
+						.getString("file_name")));
+				
+				// Get path
+				file.setPath(getPath(id));				
 
 				result.add(file);
 			}
@@ -89,19 +97,14 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 	}
 
 	@Override
-	public String findPath(int id) throws DataAccessException {
-		return findPathRecursive(id);
+	public String getPath(int id) throws DataAccessException {
+		return getPathRecursive(id);
 	}
 
-	@Override
-	public String findPath(File file) throws DataAccessException {
-		return findPath(file.getId());
-	}
-
-	private String findPathRecursive(int id) throws DataAccessException {
-		// Base case
+	private String getPathRecursive(int id) throws DataAccessException {
+		// Base case: "./"
 		if (id == -1) {
-			return "";
+			return "." + System.getProperty("file.separator");
 		}
 
 		PreparedStatement ps = null;
@@ -115,11 +118,12 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 			rs.beforeFirst();
 			if (rs.next()) {
 				if (rs.getInt("parent_id") == -1) {
-					return findPathRecursive(rs.getInt("parent_id"))
-							+ getNewestName(id, rs.getString("file_name"));
+					return getPathRecursive(rs.getInt("parent_id"))
+							+ getNewestFileName(id, rs.getString("file_name"));
 				} else {
-					return findPathRecursive(rs.getInt("parent_id")) + "/"
-							+ getNewestName(id, rs.getString("file_name"));
+					return getPathRecursive(rs.getInt("parent_id"))
+							+ System.getProperty("file.separator")
+							+ getNewestFileName(id, rs.getString("file_name"));
 				}
 			} else {
 				throw new DataAccessException("Couldn't find file with ID '"
@@ -136,7 +140,7 @@ public abstract class JdbcFileDAO extends JdbcDAO implements FileDAO {
 		return "";
 	}
 
-	private String getNewestName(int id, String oldFileName)
+	private String getNewestFileName(int id, String oldFileName)
 			throws DataAccessException {
 		String newFileName = null;
 		PreparedStatement ps = null;

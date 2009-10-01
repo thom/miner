@@ -25,27 +25,12 @@ public class FileManager extends Manager {
 			throw new MinerException(e);
 		}
 	}
+
 	public Collection<File> findAll(File file) throws MinerException {
 		try {
 			return this.getFactory().getFileDAO(this.getSession()).findAll();
 		} catch (DataAccessException e) {
 			throw new MinerException(e);
 		}
-	}
-	public String findPath(int id, boolean nameOnly) throws MinerException {
-		try {
-			if (nameOnly) {
-				return this.getFactory().getFileDAO(this.getSession()).find(id)
-						.getFileName();
-			} else {
-				return this.getFactory().getFileDAO(this.getSession())
-						.findPath(id);
-			}
-		} catch (DataAccessException e) {
-			throw new MinerException(e);
-		}
-	}
-	public String findPath(File file, boolean nameOnly) throws MinerException {
-		return findPath(file.getId(), nameOnly);
 	}
 }
