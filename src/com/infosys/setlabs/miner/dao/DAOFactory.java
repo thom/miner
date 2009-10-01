@@ -88,4 +88,14 @@ public abstract class DAOFactory {
 	 */
 	public abstract ShiatsuDAO getShiatsuDAO(DAOSession session)
 			throws DataAccessException;
+	
+	/**
+	 * Abstract method for miner module data access object
+	 * 
+	 * @param session
+	 * @return MinerModuleDAO
+	 * @throws DataAccessException
+	 */
+	public abstract MinerModuleDAO getMinerModuleDAO(DAOSession session)
+			throws DataAccessException;	
 }
