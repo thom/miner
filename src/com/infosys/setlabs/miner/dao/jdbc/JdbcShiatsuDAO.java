@@ -18,11 +18,15 @@ public abstract class JdbcShiatsuDAO extends JdbcDAO implements ShiatsuDAO {
 			+ "INDEX(file_name), " + "INDEX(file_id), "
 			+ "FOREIGN KEY(file_id) REFERENCES files(id), "
 			+ "FOREIGN KEY(miner_module_id) REFERENCES miner_modules(id)"
+			// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses MyISAM
+			// too, we can't use InnoDB here
 			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
 	protected static String CREATE_MINER_MODULES_TABLE = ""
 			+ "CREATE TABLE miner_modules ("
 			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,"
 			+ "module_name MEDIUMTEXT," + "INDEX(module_name(255))"
+			// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses MyISAM
+			// too, we can't use InnoDB here
 			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
 	protected static String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS ";
 
