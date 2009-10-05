@@ -4,6 +4,7 @@ public class MinerFile {
 	private int id;
 	private String fileName;
 	private String path;
+	private File file;
 	private MinerModule module;
 	
 	public MinerFile() {
@@ -43,5 +44,13 @@ public class MinerFile {
 
 	public void setModule(MinerModule module) {
 		this.module = module;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+	public File getFile() {
+		return file;
 	}
 }

@@ -7,5 +7,5 @@ public interface CreateObjectDAO<Type> {
 	 * @param object
 	 * @throws DataAccessException
 	 */
-	public void create(Type object) throws DataAccessException;
+	public int create(Type object) throws DataAccessException;
 }
