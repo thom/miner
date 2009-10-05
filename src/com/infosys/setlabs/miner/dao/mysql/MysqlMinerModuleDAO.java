@@ -16,15 +16,18 @@ import com.infosys.setlabs.miner.domain.MinerModule;
 public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 
 	protected static String SELECT_MINER_MODULE_SQL = ""
-			+ "SELECT id, module_name FROM \"minder_modules\" WHERE id=?";
+			+ "SELECT id, module_name FROM miner_modules WHERE id=?";
+	protected static String SELECT_MINER_MODULE_BY_NAME_SQL = ""
+			+ "SELECT id, module_name FROM miner_modules "
+			+ "WHERE module_name like ?";
 	protected static String SELECT_MINER_MODULES_SQL = ""
-			+ "SELECT id, module_name FROM \"miner_modules\"";
+			+ "SELECT id, module_name FROM miner_modules";
 	protected static String CREATE_MINER_MODULE_SQL = ""
 			+ "INSERT INTO miner_modules (id, module_name) VALUES (?,?)";
 	protected static String DELETE_MINER_MODULE_SQL = ""
-			+ "DELETE FROM \"miner_modules\" WHERE id=?";
+			+ "DELETE FROM miner_modules WHERE id=?";
 	protected static String UPDATE_MINER_MODULE_SQL = ""
-			+ "UPDATE \"miner_modules\" SET module_name=? WHERE id=?)";
+			+ "UPDATE miner_modules SET module_name=? WHERE id=?)";
 
 	public MysqlMinerModuleDAO(Connection conn) {
 		super(conn);
@@ -38,6 +41,28 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		try {
 			ps = this.getConnection().prepareStatement(SELECT_MINER_MODULE_SQL);
 			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				result = new MinerModule(rs.getInt("id"));
+				result.setModuleName(rs.getString("module_name"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
+		return result;
+	}
+
+	public MinerModule find(String moduleName) throws DataAccessException {
+		MinerModule result = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = this.getConnection().prepareStatement(
+					SELECT_MINER_MODULE_BY_NAME_SQL);
+			ps.setString(1, moduleName);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = new MinerModule(rs.getInt("id"));
@@ -80,20 +105,29 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		int result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		try {
-			ps = this.getConnection().prepareStatement(CREATE_MINER_MODULE_SQL,
-					Statement.RETURN_GENERATED_KEYS);
-			ps.setInt(1, minerModule.getId());
-			ps.setString(2, minerModule.getModuleName());
-			ps.execute();
+		MinerModule minerModuleDB = find(minerModule.getModuleName());
 
-			rs = ps.getGeneratedKeys();
-			if (rs != null && rs.next())
-				result = rs.getInt(1);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.closeStatement(ps);
+		// Only add miner module if it doesn't already exist in the database.
+		// Else return the ID of the existing database entry.
+		if (minerModuleDB != null)
+			result = minerModuleDB.getId();
+		else {
+			try {
+				ps = this.getConnection().prepareStatement(
+						CREATE_MINER_MODULE_SQL,
+						Statement.RETURN_GENERATED_KEYS);
+				ps.setInt(1, minerModule.getId());
+				ps.setString(2, minerModule.getModuleName());
+				ps.execute();
+
+				rs = ps.getGeneratedKeys();
+				if (rs != null && rs.next())
+					result = rs.getInt(1);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				this.closeStatement(ps);
+			}
 		}
 		return result;
 	}

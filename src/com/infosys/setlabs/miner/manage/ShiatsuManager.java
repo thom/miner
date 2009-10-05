@@ -4,8 +4,11 @@ import java.util.HashMap;
 
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
+import com.infosys.setlabs.miner.dao.FileDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.dao.MinerModuleDAO;
+import com.infosys.setlabs.miner.domain.File;
+import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.domain.MinerModule;
 
 public class ShiatsuManager extends Manager {
@@ -31,20 +34,22 @@ public class ShiatsuManager extends Manager {
 
 	private void fillTables() throws MinerException {
 		try {
-			// TODO:
-			// * Get fileFactory
-			// * Get all files
-			// * Iterate over array, insert into miner_files table
-			// * Insert module name into miner_modules table (only if it doesn't
-			//   exist yet!)
-			MinerModuleDAO moduleDAO = this.getFactory().getMinerModuleDAO(this.getSession());
-			System.out.println(moduleDAO.create(new MinerModule("foo/bar")));
-			System.out.println(moduleDAO.create(new MinerModule("bar/foo")));
-			MinerModule foo = new MinerModule("test");
-			foo.setId(23);
-			System.out.println(moduleDAO.create(foo));
-			
-			MinerFileDAO fileDAO = this.getFactory().getMinerFileDAO(this.getSession());
+			FileDAO fileDAO = this.getFactory().getFileDAO(this.getSession());
+			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
+					this.getSession());
+			MinerModuleDAO minerModuleDAO = this.getFactory().getMinerModuleDAO(
+					this.getSession());
+			MinerFile minerFile = null;
+
+			for (File file : fileDAO.findAll()) {
+				minerFile = new MinerFile();
+				minerFile.setFileName(file.getFileName());
+				minerFile.setPath(file.getPath());
+				minerFile.setFile(file);
+				minerFile.setModule(minerModuleDAO.find(minerModuleDAO
+						.create(new MinerModule(file.getDirectory()))));
+				minerFileDAO.create(minerFile);
+			}
 		} catch (DataAccessException e) {
 			throw new MinerException(e);
 		}
