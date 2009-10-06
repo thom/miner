@@ -38,7 +38,7 @@ public class MinerModuleManager extends Manager {
 		}
 	}
 
-	public void create(MinerModule object) throws MinerException {
+	public void create(MinerModule minerModule) throws MinerException {
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
@@ -46,7 +46,7 @@ public class MinerModuleManager extends Manager {
 			trans.begin();
 
 			this.getFactory().getMinerModuleDAO(this.getSession()).create(
-					object);
+					minerModule);
 
 			// Commit transaction
 			trans.commit();
@@ -62,14 +62,14 @@ public class MinerModuleManager extends Manager {
 		}
 	}
 
-	public void delete(MinerModule object) throws MinerException {
+	public void delete(MinerModule minerModule) throws MinerException {
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getMinerModuleDAO(this.getSession()).delete(object);			
+			this.getFactory().getMinerModuleDAO(this.getSession()).delete(minerModule);			
 
 			// Commit transaction
 			trans.commit();
@@ -85,14 +85,15 @@ public class MinerModuleManager extends Manager {
 		}
 	}
 
-	public void update(MinerModule object) throws MinerException {
+	public void update(MinerModule minerModule) throws MinerException {
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getMinerModuleDAO(this.getSession()).update(object);			
+			this.getFactory().getMinerModuleDAO(this.getSession()).update(
+					minerModule);			
 
 			// Commit transaction
 			trans.commit();
