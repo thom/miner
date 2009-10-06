@@ -12,13 +12,17 @@ import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
 
-public class MysqlRepositoryFileDAO extends JdbcDAO implements RepositoryFileDAO {
+public class MysqlRepositoryFileDAO extends JdbcDAO
+		implements
+			RepositoryFileDAO {
 
 	protected static String SELECT_FILE_SQL = ""
-			+ "SELECT id, file_name, repository_id "
-			+ "FROM files WHERE id = ?";
+			+ "SELECT f.id, f.file_name, f.repository_id, ft.type "
+			+ "FROM files f, file_types ft "
+			+ "WHERE f.id = ? AND f.id = ft.file_id";
 	protected static String SELECT_FILES_SQL = ""
-			+ "SELECT id, file_name, repository_id FROM files";
+			+ "SELECT f.id, f.file_name, f.repository_id, ft.type "
+			+ "FROM files f, file_types ft WHERE f.id = ft.file_id";
 	protected static String SELECT_PATH_SQL = ""
 			+ "SELECT f.id, f.file_name, fl.parent_id "
 			+ "FROM files f, file_links fl "
@@ -49,9 +53,12 @@ public class MysqlRepositoryFileDAO extends JdbcDAO implements RepositoryFileDAO
 				// Get the newest file name
 				result.setFileName(getNewestFileName(id, rs
 						.getString("file_name")));
-				
+
 				// Get path
 				result.setPath(getPath(id));
+
+				// Set type
+				result.setType(rs.getString("type"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -81,9 +88,12 @@ public class MysqlRepositoryFileDAO extends JdbcDAO implements RepositoryFileDAO
 				// Get the newest file name
 				repositoryFile.setFileName(getNewestFileName(id, rs
 						.getString("file_name")));
-				
+
 				// Get path
-				repositoryFile.setPath(getPath(id));				
+				repositoryFile.setPath(getPath(id));
+				
+				// Set type
+				repositoryFile.setType(rs.getString("type"));				
 
 				result.add(repositoryFile);
 			}

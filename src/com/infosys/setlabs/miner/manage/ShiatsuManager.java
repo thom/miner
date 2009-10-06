@@ -34,22 +34,26 @@ public class ShiatsuManager extends Manager {
 
 	private void fillTables() throws MinerException {
 		try {
-			RepositoryFileDAO repositoryFileDAO = this.getFactory().getFileDAO(this.getSession());
+			RepositoryFileDAO repositoryFileDAO = this.getFactory().getFileDAO(
+					this.getSession());
 			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
 					this.getSession());
-			MinerModuleDAO minerModuleDAO = this.getFactory().getMinerModuleDAO(
-					this.getSession());
+			MinerModuleDAO minerModuleDAO = this.getFactory()
+					.getMinerModuleDAO(this.getSession());
 			MinerFile minerFile = null;
 
 			for (RepositoryFile repositoryFile : repositoryFileDAO.findAll()) {
-				// TODO: Only add file if it is of type "code"
-				minerFile = new MinerFile();
-				minerFile.setFileName(repositoryFile.getFileName());
-				minerFile.setPath(repositoryFile.getPath());
-				minerFile.setFile(repositoryFile);
-				minerFile.setModule(minerModuleDAO.find(minerModuleDAO
-						.create(new MinerModule(repositoryFile.getDirectory()))));
-				minerFileDAO.create(minerFile);
+				// Only add file if it is of type "code"
+				if (repositoryFile.getType() == RepositoryFile.Type.CODE) {
+					minerFile = new MinerFile();
+					minerFile.setFileName(repositoryFile.getFileName());
+					minerFile.setPath(repositoryFile.getPath());
+					minerFile.setFile(repositoryFile);
+					minerFile.setModule(minerModuleDAO.find(minerModuleDAO
+							.create(new MinerModule(repositoryFile
+									.getDirectory()))));
+					minerFileDAO.create(minerFile);
+				}
 			}
 		} catch (DataAccessException e) {
 			throw new MinerException(e);
