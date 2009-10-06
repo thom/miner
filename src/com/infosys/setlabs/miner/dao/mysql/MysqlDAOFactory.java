@@ -13,7 +13,7 @@ import com.infosys.setlabs.dao.jdbc.JdbcDAOSession;
 import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.dao.BasketFormatDAO;
 import com.infosys.setlabs.miner.dao.DAOFactory;
-import com.infosys.setlabs.miner.dao.FileDAO;
+import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.dao.MinerModuleDAO;
 import com.infosys.setlabs.miner.dao.ShiatsuDAO;
@@ -127,8 +127,8 @@ public class MysqlDAOFactory extends DAOFactory {
 	}
 
 	@Override
-	public FileDAO getFileDAO(DAOSession session) throws DataAccessException {
-		return new MysqlFileDAO(((JdbcDAOSession) session).getConnection());
+	public RepositoryFileDAO getFileDAO(DAOSession session) throws DataAccessException {
+		return new MysqlRepositoryFileDAO(((JdbcDAOSession) session).getConnection());
 	}
 	
 	@Override

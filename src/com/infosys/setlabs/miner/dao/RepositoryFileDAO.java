@@ -2,9 +2,9 @@ package com.infosys.setlabs.miner.dao;
 
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.ReadObjectDAO;
-import com.infosys.setlabs.miner.domain.File;
+import com.infosys.setlabs.miner.domain.RepositoryFile;
 
-public interface FileDAO extends ReadObjectDAO<File> {
+public interface RepositoryFileDAO extends ReadObjectDAO<RepositoryFile> {
 	/**
 	 * Find the path of a file.
 	 * 

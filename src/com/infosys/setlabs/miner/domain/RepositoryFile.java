@@ -1,13 +1,15 @@
 package com.infosys.setlabs.miner.domain;
 
-public class File {
+public class RepositoryFile {
 	private int id;
 
 	// Newest file name
 	private String fileName;
 	private String path;
+	
+	// TODO: add file type!
 
-	public File(int id) {
+	public RepositoryFile(int id) {
 		this.setId(id);
 	}
 

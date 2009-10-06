@@ -47,7 +47,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				result = new MinerFile(rs.getInt("id"));
 				result.setFileName(rs.getString("file_name"));
 				result.setPath(rs.getString("path"));
-				result.setFile(new MysqlFileDAO(this.getConnection()).find(rs
+				result.setFile(new MysqlRepositoryFileDAO(this.getConnection()).find(rs
 						.getInt("file_id")));
 				result.setModule(new MysqlMinerModuleDAO(this.getConnection())
 						.find(rs.getInt("module_id")));
@@ -73,7 +73,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				MinerFile minerFile = new MinerFile(rs.getInt("id"));
 				minerFile.setFileName(rs.getString("file_name"));
 				minerFile.setPath(rs.getString("path"));
-				minerFile.setFile(new MysqlFileDAO(this.getConnection())
+				minerFile.setFile(new MysqlRepositoryFileDAO(this.getConnection())
 						.find(rs.getInt("file_id")));
 				minerFile.setModule(new MysqlMinerModuleDAO(this
 						.getConnection()).find(rs.getInt("module_id")));

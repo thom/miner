@@ -63,10 +63,10 @@ public abstract class DAOFactory {
 	 * Abstract method for file data access object.
 	 * 
 	 * @param session
-	 * @return FileDAO
+	 * @return RepositoryFileDAO
 	 * @throws DataAccessException
 	 */
-	public abstract FileDAO getFileDAO(DAOSession session)
+	public abstract RepositoryFileDAO getFileDAO(DAOSession session)
 			throws DataAccessException;
 
 	/**

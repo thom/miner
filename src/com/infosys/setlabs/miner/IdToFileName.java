@@ -8,8 +8,8 @@ import org.kohsuke.args4j.Option;
 
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
-import com.infosys.setlabs.miner.domain.File;
-import com.infosys.setlabs.miner.manage.FileManager;
+import com.infosys.setlabs.miner.domain.RepositoryFile;
+import com.infosys.setlabs.miner.manage.RepositoryFileManager;
 import com.infosys.setlabs.miner.manage.Manager;
 
 /**
@@ -50,24 +50,24 @@ public class IdToFileName {
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
 
-		FileManager fileManager = null;
+		RepositoryFileManager repositoryFileManager = null;
 
 		try {
 			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
 
 			// Connect to MySQL database
-			fileManager = new FileManager(connectionArgs);
+			repositoryFileManager = new RepositoryFileManager(connectionArgs);
 
 			// Get file path
-			File file = fileManager.find(values.getId());
+			RepositoryFile repositoryFile = repositoryFileManager.find(values.getId());
 			if (values.getNameOnly()) {
-				System.out.println(file.getFileName());
+				System.out.println(repositoryFile.getFileName());
 			} else {
-				System.out.println(file.getPath());
+				System.out.println(repositoryFile.getPath());
 			}
 		} finally {
-			if (fileManager != null) {
-				fileManager.close();
+			if (repositoryFileManager != null) {
+				repositoryFileManager.close();
 			}
 		}
 	}

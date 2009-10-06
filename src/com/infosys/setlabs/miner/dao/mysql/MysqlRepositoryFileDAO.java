@@ -9,10 +9,10 @@ import java.util.Collection;
 
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
-import com.infosys.setlabs.miner.dao.FileDAO;
-import com.infosys.setlabs.miner.domain.File;
+import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
+import com.infosys.setlabs.miner.domain.RepositoryFile;
 
-public class MysqlFileDAO extends JdbcDAO implements FileDAO {
+public class MysqlRepositoryFileDAO extends JdbcDAO implements RepositoryFileDAO {
 
 	protected static String SELECT_FILE_SQL = ""
 			+ "SELECT id, file_name, repository_id "
@@ -28,13 +28,13 @@ public class MysqlFileDAO extends JdbcDAO implements FileDAO {
 			+ "WHERE new_file_name <> '' AND from_id = to_id AND from_id = ? "
 			+ "ORDER BY to_id, from_commit_id";
 
-	public MysqlFileDAO(Connection conn) {
+	public MysqlRepositoryFileDAO(Connection conn) {
 		super(conn);
 	}
 
 	@Override
-	public File find(int id) throws DataAccessException {
-		File result = null;
+	public RepositoryFile find(int id) throws DataAccessException {
+		RepositoryFile result = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
@@ -44,7 +44,7 @@ public class MysqlFileDAO extends JdbcDAO implements FileDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				// Create a new file
-				result = new File(rs.getInt("id"));
+				result = new RepositoryFile(rs.getInt("id"));
 
 				// Get the newest file name
 				result.setFileName(getNewestFileName(id, rs
@@ -63,9 +63,9 @@ public class MysqlFileDAO extends JdbcDAO implements FileDAO {
 	}
 
 	@Override
-	public Collection<File> findAll() throws DataAccessException {
-		ArrayList<File> result = new ArrayList<File>();
-		File file = null;
+	public Collection<RepositoryFile> findAll() throws DataAccessException {
+		ArrayList<RepositoryFile> result = new ArrayList<RepositoryFile>();
+		RepositoryFile repositoryFile = null;
 		int id;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -76,16 +76,16 @@ public class MysqlFileDAO extends JdbcDAO implements FileDAO {
 				id = rs.getInt("id");
 
 				// Create a new file
-				file = new File(id);
+				repositoryFile = new RepositoryFile(id);
 
 				// Get the newest file name
-				file.setFileName(getNewestFileName(id, rs
+				repositoryFile.setFileName(getNewestFileName(id, rs
 						.getString("file_name")));
 				
 				// Get path
-				file.setPath(getPath(id));				
+				repositoryFile.setPath(getPath(id));				
 
-				result.add(file);
+				result.add(repositoryFile);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
