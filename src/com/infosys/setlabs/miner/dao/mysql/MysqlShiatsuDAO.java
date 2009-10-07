@@ -12,7 +12,7 @@ public class MysqlShiatsuDAO extends JdbcDAO implements ShiatsuDAO {
 
 	protected static String CREATE_MINER_FILES_TABLE = ""
 			+ "CREATE TABLE miner_files ("
-			+ "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
 			+ "file_name VARCHAR(255), " + "path MEDIUMTEXT, "
 			+ "file_id INT NOT NULL, " + "miner_module_id INT NOT NULL, "
 			+ "INDEX(file_name), " + "INDEX(file_id), "
@@ -23,7 +23,7 @@ public class MysqlShiatsuDAO extends JdbcDAO implements ShiatsuDAO {
 			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
 	protected static String CREATE_MINER_MODULES_TABLE = ""
 			+ "CREATE TABLE miner_modules ("
-			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
 			+ "module_name MEDIUMTEXT NOT NULL," + "UNIQUE(module_name(255))"
 			// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses MyISAM
 			// too, we can't use InnoDB here
