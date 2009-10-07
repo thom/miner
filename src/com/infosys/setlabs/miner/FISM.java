@@ -1,5 +1,9 @@
 package com.infosys.setlabs.miner;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -7,6 +11,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import com.infosys.setlabs.miner.common.ExecWrapper;
 import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
@@ -21,6 +26,8 @@ import com.infosys.setlabs.miner.manage.Manager;
 public class FISM {
 	private CommandLineValues values;
 	private HashMap<String, String> connectionArgs;
+	private File transactions;
+	private File frequentItemSets;
 
 	public FISM(String[] args) throws MinerException {
 		// Parse the command line arguments and options
@@ -46,11 +53,39 @@ public class FISM {
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
+
+		// Initialize files
+		transactions = new File(values.getDb() + ".tra");
+		frequentItemSets = new File(values.getDb() + ".fis");
 	}
 
 	public void fism() throws MinerException {
-		// Get basket format of the transactions
+		try {
+			System.out.println("EXEC  > fism\n");
+			
+			// Format into basket format and save in file 'transactions'
+			System.out.println("EXEC  > format");
+			format();
+			System.out.println("DONE  > format\n");
+
+			// Call apriori with the specified parameters
+			apriori();
+
+			// TODO: parse output of apriori and save frequent item sets to the
+			// database
+			
+			System.out.println("DONE  > fism");
+		} finally {
+			if (!values.getKeepFiles()) {
+				transactions.delete();
+				frequentItemSets.delete();
+			}
+		}
+	}
+
+	public void format() throws MinerException {
 		BasketFormatManager basketFormatManager = null;
+
 		try {
 			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
 
@@ -58,25 +93,30 @@ public class FISM {
 			basketFormatManager = new BasketFormatManager(connectionArgs);
 
 			// Format
-			String formatterOutput = basketFormatManager.format(values
-					.getAllFiles(), false);
+			String baskets = basketFormatManager.format(values.getAllFiles(),
+					false);
 
-			// TODO: write transactions into a temporary file
-
-			// TODO: call apriori with the specified parameters
-
-			// TODO: parse output of apriori and save frequent item sets to the
-			// database
+			// Write transactions to a file
+			BufferedWriter out = new BufferedWriter(
+					new FileWriter(transactions));
+			out.write(baskets);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			if (basketFormatManager != null) {
 				basketFormatManager.close();
 			}
-
-			if (!values.getKeepFiles()) {
-				// TODO: cleanup (close database managers, remove temporary
-				// files)
-			}
 		}
+	}
+
+	public void apriori() throws MinerException {
+		String[] cmd = {values.getExec(), "-s" + values.getMinSupport(),
+				"-m" + values.getMinItems(), "-v (%a, %4S)",
+				this.transactions.getAbsolutePath(),
+				this.frequentItemSets.getAbsolutePath()};
+		ExecWrapper apriori = new ExecWrapper(cmd);
+		apriori.run();
 	}
 
 	public static void main(String[] args) throws MinerException {
@@ -148,40 +188,20 @@ public class FISM {
 			return exec;
 		}
 
-		public void setExec(String exec) {
-			this.exec = exec;
-		}
-
 		public boolean getAllFiles() {
 			return allFiles;
-		}
-
-		public void setAllFiles(boolean allFiles) {
-			this.allFiles = allFiles;
 		}
 
 		public int getMinItems() {
 			return minItems;
 		}
 
-		public void setMinItems(int minItems) {
-			this.minItems = minItems;
-		}
-
 		public float getMinSupport() {
 			return minSupport;
 		}
 
-		public void setMinSupport(float minSupport) {
-			this.minSupport = minSupport;
-		}
-
 		public boolean getKeepFiles() {
 			return keepFiles;
-		}
-
-		public void setKeppFiles(boolean keepFiles) {
-			this.keepFiles = keepFiles;
 		}
 	}
 }
