@@ -1,7 +1,6 @@
 package com.infosys.setlabs.miner.dao;
 
-import com.infosys.setlabs.dao.DataAccessException;
+import com.infosys.setlabs.dao.CreateTablesDAO;
 
-public interface ShiatsuDAO {
-	public void createTables() throws DataAccessException;
+public interface ShiatsuDAO extends CreateTablesDAO {
 }
