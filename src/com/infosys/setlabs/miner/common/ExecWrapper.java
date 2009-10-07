@@ -33,7 +33,7 @@ public class ExecWrapper extends Thread {
 
 			// Any error?
 			int exitVal = p.waitFor();
-			System.out.println("EXIT  > " + exitVal + "\n");
+			System.out.println("DONE  > " + cmd[0] + " (" + exitVal + ")\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
