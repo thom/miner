@@ -11,17 +11,18 @@ import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.ShiatsuManager;
 
+/**
+ * Massage the CVSAnaly2 data
+ * 
+ * @author "Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class Shiatsu {
+	private CommandLineValues values;
+	private HashMap<String, String> connectionArgs;
 
-	/**
-	 * Massage data
-	 * 
-	 * @param args
-	 * @throws MinerException 
-	 */
-	public static void main(String[] args) throws MinerException {
+	public Shiatsu(String[] args) {
 		// Parse the command line arguments and options
-		CommandLineValues values = new CommandLineValues();
+		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
 
 		// Set width of the error display area
@@ -37,30 +38,37 @@ public class Shiatsu {
 			parser.printUsage(System.err);
 			System.exit(1);
 		}
-		
+
 		// Set connection arguments
-		HashMap<String, String> connectionArgs = new HashMap<String, String>();
+		connectionArgs = new HashMap<String, String>();
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
-		
+	}
+
+	public void massage() throws MinerException {
 		ShiatsuManager shiatsuManager = null;
 
 		try {
 			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
-			
+
 			// Connect to MySQL database
 			shiatsuManager = new ShiatsuManager(connectionArgs);
-			
+
 			// Massage data
 			shiatsuManager.massage();
-			
+
 			System.out.println("Done.");
 		} finally {
 			if (shiatsuManager != null) {
 				shiatsuManager.close();
 			}
 		}
+	}
+
+	public static void main(String[] args) throws MinerException {
+		Shiatsu shiatsu = new Shiatsu(args);
+		shiatsu.massage();
 	}
 
 	private static class CommandLineValues {
@@ -84,5 +92,5 @@ public class Shiatsu {
 		public String getPw() {
 			return pw;
 		}
-	}	
+	}
 }

@@ -11,17 +11,18 @@ import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.manage.BasketFormatManager;
 import com.infosys.setlabs.miner.manage.Manager;
 
+/**
+ * FISM
+ * 
+ * @author "Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class FISM {
+	private CommandLineValues values;
+	private HashMap<String, String> connectionArgs;
 
-	/**
-	 * FISM application
-	 * 
-	 * @param args
-	 * @throws MinerException
-	 */
-	public static void main(String[] args) throws MinerException {
+	public FISM(String[] args) {
 		// Parse the command line arguments and options
-		CommandLineValues values = new CommandLineValues();
+		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
 
 		// Set width of the error display area
@@ -39,11 +40,13 @@ public class FISM {
 		}
 
 		// Set connection arguments
-		HashMap<String, String> connectionArgs = new HashMap<String, String>();
+		connectionArgs = new HashMap<String, String>();
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
+	}
 
+	public void fism() throws MinerException {
 		// Get basket format of the transactions
 		BasketFormatManager basketFormatManager = null;
 		try {
@@ -71,6 +74,11 @@ public class FISM {
 		}
 	}
 
+	public static void main(String[] args) throws MinerException {
+		FISM fism = new FISM(args);
+		fism.fism();
+	}
+
 	private static class CommandLineValues {
 		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
@@ -80,6 +88,9 @@ public class FISM {
 
 		@Option(name = "-p", aliases = {"password", "pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
+
+		@Option(name = "-e", aliases = {"exec", "executable"}, usage = "path to the executable of apriori frequent item set miner")
+		private String exec;
 
 		@Option(name = "-a", aliases = {"all", "all-files"}, usage = "print all files affect by a transaction, including non-code files")
 		private boolean allFiles = false;
@@ -103,6 +114,14 @@ public class FISM {
 
 		public String getPw() {
 			return pw;
+		}
+
+		public String getExec() {
+			return exec;
+		}
+
+		public void setExec(String exec) {
+			this.exec = exec;
 		}
 
 		public boolean getAllFiles() {

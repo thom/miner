@@ -11,17 +11,18 @@ import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.manage.BasketFormatManager;
 import com.infosys.setlabs.miner.manage.Manager;
 
+/**
+ * Format revision history into a transactions file in basket format
+ * 
+ * @author "Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class Formatter {
+	private CommandLineValues values;
+	private HashMap<String, String> connectionArgs;
 
-	/**
-	 * Formatter application
-	 * 
-	 * @param args
-	 * @throws MinerException
-	 */
-	public static void main(String[] args) throws MinerException {
+	public Formatter(String[] args) {
 		// Parse the command line arguments and options
-		CommandLineValues values = new CommandLineValues();
+		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
 
 		// Set width of the error display area
@@ -39,11 +40,13 @@ public class Formatter {
 		}
 
 		// Set connection arguments
-		HashMap<String, String> connectionArgs = new HashMap<String, String>();
+		connectionArgs = new HashMap<String, String>();
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
+	}
 
+	public void format() throws MinerException {
 		BasketFormatManager basketFormatManager = null;
 
 		try {
@@ -61,6 +64,12 @@ public class Formatter {
 			}
 		}
 	}
+
+	public static void main(String[] args) throws MinerException {
+		Formatter formatter = new Formatter(args);
+		formatter.format();
+	}
+
 	private static class CommandLineValues {
 		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;

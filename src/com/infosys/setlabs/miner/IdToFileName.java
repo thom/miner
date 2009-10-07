@@ -9,8 +9,8 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
-import com.infosys.setlabs.miner.manage.RepositoryFileManager;
 import com.infosys.setlabs.miner.manage.Manager;
+import com.infosys.setlabs.miner.manage.RepositoryFileManager;
 
 /**
  * Maps file IDs in a database created by CVSAnaly2 to filenames/paths.
@@ -18,16 +18,12 @@ import com.infosys.setlabs.miner.manage.Manager;
  * @author "Thomas Weibel <thomas_401709@infosys.com>"
  */
 public class IdToFileName {
+	private CommandLineValues values;
+	private HashMap<String, String> connectionArgs;
 
-	/**
-	 * ID to filename mapper
-	 * 
-	 * @param args
-	 * @throws MinerException
-	 */
-	public static void main(String[] args) throws MinerException {
+	public IdToFileName(String[] args) {
 		// Parse the command line arguments and options
-		CommandLineValues values = new CommandLineValues();
+		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
 
 		// Set width of the error display area
@@ -45,11 +41,13 @@ public class IdToFileName {
 		}
 
 		// Set connection arguments
-		HashMap<String, String> connectionArgs = new HashMap<String, String>();
+		connectionArgs = new HashMap<String, String>();
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
+	}
 
+	public String getFileName() throws MinerException {
 		RepositoryFileManager repositoryFileManager = null;
 
 		try {
@@ -59,11 +57,12 @@ public class IdToFileName {
 			repositoryFileManager = new RepositoryFileManager(connectionArgs);
 
 			// Get file path
-			RepositoryFile repositoryFile = repositoryFileManager.find(values.getId());
+			RepositoryFile repositoryFile = repositoryFileManager.find(values
+					.getId());
 			if (values.getNameOnly()) {
-				System.out.println(repositoryFile.getFileName());
+				return repositoryFile.getFileName();
 			} else {
-				System.out.println(repositoryFile.getPath());
+				return repositoryFile.getPath();
 			}
 		} finally {
 			if (repositoryFileManager != null) {
@@ -71,6 +70,12 @@ public class IdToFileName {
 			}
 		}
 	}
+
+	public static void main(String[] args) throws MinerException {
+		IdToFileName idToFileName = new IdToFileName(args);
+		System.out.println(idToFileName.getFileName());
+	}
+
 	private static class CommandLineValues {
 		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
