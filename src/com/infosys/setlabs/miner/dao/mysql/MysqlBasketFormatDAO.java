@@ -46,18 +46,18 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 
 				if (counter < commitId) {
 					if (counter > -1)
-						System.out.print("\n");
+						result += "\n";
 
 					counter = commitId;
 
 					if (revs) {
-						System.out.println("# " + rs.getString("rev"));
+						result += "# " + rs.getString("rev") + "\n";
 					}
 				} else {
-					System.out.print(" ");
+					result += " ";
 				}
 
-				System.out.print(rs.getString("modified_files"));
+				result += rs.getString("modified_files");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
