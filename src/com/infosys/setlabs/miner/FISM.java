@@ -17,6 +17,7 @@ import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.manage.BasketFormatManager;
 import com.infosys.setlabs.miner.manage.Manager;
+import com.infosys.setlabs.miner.manage.MinerFrequentItemSetManager;
 
 /**
  * FISM
@@ -62,7 +63,7 @@ public class FISM {
 	public void fism() throws MinerException {
 		try {
 			System.out.println("EXEC  > fism\n");
-			
+
 			// Format into basket format and save in file 'transactions'
 			System.out.println("EXEC  > format");
 			format();
@@ -71,9 +72,12 @@ public class FISM {
 			// Call apriori with the specified parameters
 			apriori();
 
-			// TODO: parse output of apriori and save frequent item sets to the
+			// Parse output of apriori and save frequent item sets to the
 			// database
-			
+			System.out.println("EXEC  > frequent item sets");			
+			frequentItemSets();
+			System.out.println("DONE  > frequent item sets\n");			
+
 			System.out.println("DONE  > fism");
 		} finally {
 			if (!values.getKeepFiles()) {
@@ -117,6 +121,28 @@ public class FISM {
 				this.frequentItemSets.getAbsolutePath()};
 		ExecWrapper apriori = new ExecWrapper(cmd);
 		apriori.run();
+	}
+	
+	public void frequentItemSets() throws MinerException {
+		MinerFrequentItemSetManager frequentItemSetManager = null;
+
+		try {
+			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
+
+			// Connect to MySQL database
+			frequentItemSetManager = new MinerFrequentItemSetManager(connectionArgs);
+
+			// Create tables
+			frequentItemSetManager.createTables();
+
+			// TODO: Parse output of apriori
+			
+			// TODO: Add frequent item sets to the database
+		} finally {
+			if (frequentItemSetManager != null) {
+				frequentItemSetManager.close();
+			}
+		}		
 	}
 
 	public static void main(String[] args) throws MinerException {

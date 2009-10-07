@@ -88,7 +88,7 @@ public abstract class DAOFactory {
 	 */
 	public abstract ShiatsuDAO getShiatsuDAO(DAOSession session)
 			throws DataAccessException;
-	
+
 	/**
 	 * Abstract method for miner module data access object
 	 * 
@@ -97,8 +97,8 @@ public abstract class DAOFactory {
 	 * @throws DataAccessException
 	 */
 	public abstract MinerModuleDAO getMinerModuleDAO(DAOSession session)
-			throws DataAccessException;	
-	
+			throws DataAccessException;
+
 	/**
 	 * Abstract method for miner file data access object
 	 * 
@@ -107,5 +107,15 @@ public abstract class DAOFactory {
 	 * @throws DataAccessException
 	 */
 	public abstract MinerFileDAO getMinerFileDAO(DAOSession session)
-			throws DataAccessException;		
+			throws DataAccessException;
+
+	/**
+	 * Abstract method for miner frequent item set data access object
+	 * 
+	 * @param session
+	 * @return MinerFrequentItemSetDAO
+	 * @throws DataAccessException
+	 */
+	public abstract MinerFrequentItemSetDAO getMinerFrequentItemSetDAO(DAOSession session)
+			throws DataAccessException;
 }
