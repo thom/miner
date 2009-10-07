@@ -32,7 +32,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
 	protected static String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS ";
 
-	// TODO: SQL strings for select!
+	// TODO: SQL strings for select and create!
 
 	public MysqlFrequentItemSetDAO(Connection conn) {
 		super(conn);
@@ -50,6 +50,12 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		// TODO: Find all frequent item sets
 		return null;
 	}
+	
+	@Override
+	public int create(FrequentItemSet object) throws DataAccessException {
+		// TODO Auto-generated method stub
+		return 0;
+	}	
 
 	@Override
 	public void createTables() throws DataAccessException {

@@ -15,9 +15,12 @@ import com.infosys.setlabs.miner.common.ExecWrapper;
 import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
+import com.infosys.setlabs.miner.domain.FrequentItemSet;
+import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.manage.BasketFormatManager;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.FrequentItemSetManager;
+import com.infosys.setlabs.miner.manage.MinerFileManager;
 
 /**
  * FISM
@@ -138,6 +141,16 @@ public class FISM {
 			// TODO: Parse output of apriori
 			
 			// TODO: Add frequent item sets to the database
+			FrequentItemSet fis = new FrequentItemSet(1);
+			fis.setAbsoluteItemSetSupport(10);
+			fis.setRelativeItemSetSupport(23.42);
+			MinerFileManager minerFileManager = new MinerFileManager(connectionArgs);
+			fis.addItem(minerFileManager.find(1));
+			fis.addItem(minerFileManager.find(23));
+			fis.addItem(minerFileManager.find(42));
+			fis.addItem(minerFileManager.find(99));
+			
+			frequentItemSetManager.create(fis);
 		} finally {
 			if (frequentItemSetManager != null) {
 				frequentItemSetManager.close();

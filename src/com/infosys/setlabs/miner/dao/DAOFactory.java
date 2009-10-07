@@ -116,6 +116,6 @@ public abstract class DAOFactory {
 	 * @return FrequentItemSetDAO
 	 * @throws DataAccessException
 	 */
-	public abstract FrequentItemSetDAO getMinerFrequentItemSetDAO(DAOSession session)
+	public abstract FrequentItemSetDAO getFrequentItemSetDAO(DAOSession session)
 			throws DataAccessException;
 }

@@ -6,7 +6,7 @@ import java.util.List;
 public class FrequentItemSet {
 	private int id;
 	private int absoluteItemSetSupport;
-	private float relativeItemSetSupport;
+	private double relativeItemSetSupport;
 	private List<MinerFile> items = new ArrayList<MinerFile>();
 	
 	public FrequentItemSet(int id) {
@@ -29,11 +29,11 @@ public class FrequentItemSet {
 		this.absoluteItemSetSupport = absoluteItemSetSupport;
 	}
 	
-	public float getRelativeItemSetSupport() {
+	public double getRelativeItemSetSupport() {
 		return relativeItemSetSupport;
 	}
 	
-	public void setRelativeItemSetSupport(float relativeItemSetSupport) {
+	public void setRelativeItemSetSupport(double relativeItemSetSupport) {
 		this.relativeItemSetSupport = relativeItemSetSupport;
 	}
 	

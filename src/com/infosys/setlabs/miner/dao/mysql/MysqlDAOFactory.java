@@ -156,7 +156,7 @@ public class MysqlDAOFactory extends DAOFactory {
 	}
 	
 	@Override
-	public FrequentItemSetDAO getMinerFrequentItemSetDAO(DAOSession session)
+	public FrequentItemSetDAO getFrequentItemSetDAO(DAOSession session)
 			throws DataAccessException {
 		return new MysqlFrequentItemSetDAO(((JdbcDAOSession) session).getConnection());				
 	}	
