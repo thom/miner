@@ -17,7 +17,7 @@ import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.manage.BasketFormatManager;
 import com.infosys.setlabs.miner.manage.Manager;
-import com.infosys.setlabs.miner.manage.MinerFrequentItemSetManager;
+import com.infosys.setlabs.miner.manage.FrequentItemSetManager;
 
 /**
  * FISM
@@ -124,13 +124,13 @@ public class FISM {
 	}
 	
 	public void frequentItemSets() throws MinerException {
-		MinerFrequentItemSetManager frequentItemSetManager = null;
+		FrequentItemSetManager frequentItemSetManager = null;
 
 		try {
 			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
 
 			// Connect to MySQL database
-			frequentItemSetManager = new MinerFrequentItemSetManager(connectionArgs);
+			frequentItemSetManager = new FrequentItemSetManager(connectionArgs);
 
 			// Create tables
 			frequentItemSetManager.createTables();

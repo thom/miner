@@ -3,13 +3,13 @@ package com.infosys.setlabs.miner.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MinerFrequentItemSet {
+public class FrequentItemSet {
 	private int id;
 	private int absoluteItemSetSupport;
 	private float relativeItemSetSupport;
 	private List<MinerFile> items = new ArrayList<MinerFile>();
 	
-	public MinerFrequentItemSet(int id) {
+	public FrequentItemSet(int id) {
 		setId(id);
 	}
 	

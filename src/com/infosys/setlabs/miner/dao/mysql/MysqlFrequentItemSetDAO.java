@@ -7,12 +7,12 @@ import java.util.Collection;
 
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
-import com.infosys.setlabs.miner.dao.MinerFrequentItemSetDAO;
-import com.infosys.setlabs.miner.domain.MinerFrequentItemSet;
+import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
+import com.infosys.setlabs.miner.domain.FrequentItemSet;
 
-public class MysqlMinerFrequentItemSetDAO extends JdbcDAO
+public class MysqlFrequentItemSetDAO extends JdbcDAO
 		implements
-			MinerFrequentItemSetDAO {
+			FrequentItemSetDAO {
 
 	protected static String CREATE_MINER_FISM_TABLE = ""
 			+ "CREATE TABLE miner_frequent_item_sets ("
@@ -34,18 +34,18 @@ public class MysqlMinerFrequentItemSetDAO extends JdbcDAO
 
 	// TODO: SQL strings for select!
 
-	public MysqlMinerFrequentItemSetDAO(Connection conn) {
+	public MysqlFrequentItemSetDAO(Connection conn) {
 		super(conn);
 	}
 
 	@Override
-	public MinerFrequentItemSet find(int id) throws DataAccessException {
+	public FrequentItemSet find(int id) throws DataAccessException {
 		// TODO
 		return null;
 	}
 
 	@Override
-	public Collection<MinerFrequentItemSet> findAll()
+	public Collection<FrequentItemSet> findAll()
 			throws DataAccessException {
 		// TODO
 		return null;
@@ -67,5 +67,4 @@ public class MysqlMinerFrequentItemSetDAO extends JdbcDAO
 			this.closeStatement(ps);
 		}
 	}
-
 }

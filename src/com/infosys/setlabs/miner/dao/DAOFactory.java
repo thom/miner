@@ -113,9 +113,9 @@ public abstract class DAOFactory {
 	 * Abstract method for miner frequent item set data access object
 	 * 
 	 * @param session
-	 * @return MinerFrequentItemSetDAO
+	 * @return FrequentItemSetDAO
 	 * @throws DataAccessException
 	 */
-	public abstract MinerFrequentItemSetDAO getMinerFrequentItemSetDAO(DAOSession session)
+	public abstract FrequentItemSetDAO getMinerFrequentItemSetDAO(DAOSession session)
 			throws DataAccessException;
 }
