@@ -46,7 +46,7 @@ public class Formatter {
 		connectionArgs.put("password", values.getPw());
 	}
 
-	public void format() throws MinerException {
+	public String format() throws MinerException {
 		BasketFormatManager basketFormatManager = null;
 
 		try {
@@ -56,8 +56,8 @@ public class Formatter {
 			basketFormatManager = new BasketFormatManager(connectionArgs);
 
 			// Format
-			System.out.println(basketFormatManager.format(values.getAllFiles(),
-					values.getRevs()));
+			return basketFormatManager.format(values.getAllFiles(), values
+					.getRevs());
 		} finally {
 			if (basketFormatManager != null) {
 				basketFormatManager.close();
@@ -67,7 +67,7 @@ public class Formatter {
 
 	public static void main(String[] args) throws MinerException {
 		Formatter formatter = new Formatter(args);
-		formatter.format();
+		System.out.println(formatter.format());
 	}
 
 	private static class CommandLineValues {
