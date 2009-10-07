@@ -11,6 +11,6 @@ public class MinerException extends Exception {
 	 */
 	public MinerException(Exception e) {
 		super(e.getMessage());
-		e.printStackTrace();
+		//e.printStackTrace();
 	}
 }

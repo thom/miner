@@ -1,11 +1,13 @@
 package com.infosys.setlabs.miner;
 
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.manage.BasketFormatManager;
@@ -20,7 +22,7 @@ public class FISM {
 	private CommandLineValues values;
 	private HashMap<String, String> connectionArgs;
 
-	public FISM(String[] args) {
+	public FISM(String[] args) throws MinerException {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -31,7 +33,7 @@ public class FISM {
 		try {
 			parser.parseArgument(args);
 		} catch (CmdLineException e) {
-			System.err.println("formatter [options...] arguments...\n");
+			System.err.println("fism [options...] arguments...\n");
 			System.err.println(e.getMessage() + "\n");
 
 			// Print the list of available options
@@ -56,7 +58,7 @@ public class FISM {
 			basketFormatManager = new BasketFormatManager(connectionArgs);
 
 			// Format
-			String transations = basketFormatManager.format(values
+			String formatterOutput = basketFormatManager.format(values
 					.getAllFiles(), false);
 
 			// TODO: write transactions into a temporary file
@@ -70,7 +72,10 @@ public class FISM {
 				basketFormatManager.close();
 			}
 
-			// TODO: cleanup (close database managers, remove temporary files)
+			if (!values.getKeepFiles()) {
+				// TODO: cleanup (close database managers, remove temporary
+				// files)
+			}
 		}
 	}
 
@@ -95,15 +100,38 @@ public class FISM {
 		@Option(name = "-a", aliases = {"all", "all-files"}, usage = "print all files affect by a transaction, including non-code files")
 		private boolean allFiles = false;
 
-		@Option(name = "-o", aliases = {"output", "output-file"}, usage = "output file")
-		private String outputFile;
-
 		@Option(name = "-m", aliases = {"minimal", "minimal-items"}, usage = "minimal number of items per set")
 		private int minItems;
 
 		@Option(name = "-s", aliases = {"support", "minimal-support"}, usage = "minimal support of a set (positive: percentage, negative: absolute number)")
 		private float minSupport;
 
+		@Option(name = "-k", aliases = {"keep", "keep-files"}, usage = "keep all generated temporary files")
+		private boolean keepFiles = false;
+
+		public CommandLineValues() throws MinerException {
+			Properties setup = Configuration.load("setup");
+
+			exec = setup.getProperty("apriori.exec");
+
+			try {
+				minItems = Integer.parseInt(setup
+						.getProperty("apriori.minItems"));
+			} catch (NumberFormatException e) {
+				throw new MinerException(
+						new Exception(
+								"Wrong value for 'apriori.minItems' in 'setup.properties'"));
+			}
+
+			try {
+				minSupport = Integer.parseInt(setup
+						.getProperty("apriori.minSupport"));
+			} catch (NumberFormatException e) {
+				throw new MinerException(
+						new Exception(
+								"Wrong value for 'apriori.minSupport' in 'setup.properties'"));
+			}
+		}
 		public String getDb() {
 			return db;
 		}
@@ -128,12 +156,8 @@ public class FISM {
 			return allFiles;
 		}
 
-		public String getOutputFile() {
-			return outputFile;
-		}
-
-		public void setOutputFile(String outputFile) {
-			this.outputFile = outputFile;
+		public void setAllFiles(boolean allFiles) {
+			this.allFiles = allFiles;
 		}
 
 		public int getMinItems() {
@@ -150,6 +174,14 @@ public class FISM {
 
 		public void setMinSupport(float minSupport) {
 			this.minSupport = minSupport;
+		}
+
+		public boolean getKeepFiles() {
+			return keepFiles;
+		}
+
+		public void setKeppFiles(boolean keepFiles) {
+			this.keepFiles = keepFiles;
 		}
 	}
 }
