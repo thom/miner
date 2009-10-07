@@ -40,14 +40,14 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 
 	@Override
 	public FrequentItemSet find(int id) throws DataAccessException {
-		// TODO
+		// TODO: Find specific frequent item set
 		return null;
 	}
 
 	@Override
 	public Collection<FrequentItemSet> findAll()
 			throws DataAccessException {
-		// TODO
+		// TODO: Find all frequent item sets
 		return null;
 	}
 
