@@ -69,7 +69,7 @@ public class FrequentItemSetManager extends Manager {
 		}
 		return result;
 	}
-	
+
 	public Collection<FrequentItemSet> findAll() throws MinerException {
 		DAOTransaction trans = null;
 		Collection<FrequentItemSet> result = null;
@@ -105,6 +105,30 @@ public class FrequentItemSetManager extends Manager {
 
 			this.getFactory().getFrequentItemSetDAO(this.getSession()).create(
 					frequentItemSet);
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
+		}
+	}
+
+	public void create(String frequentItemSetLine) throws MinerException {
+		DAOTransaction trans = null;
+		try {
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
+			this.getFactory().getFrequentItemSetDAO(this.getSession()).create(
+					frequentItemSetLine);
 
 			// Commit transaction
 			trans.commit();
