@@ -1,7 +1,10 @@
 package com.infosys.setlabs.miner;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
@@ -11,16 +14,13 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import com.infosys.setlabs.miner.common.ExecWrapper;
 import com.infosys.setlabs.miner.common.Configuration;
+import com.infosys.setlabs.miner.common.ExecWrapper;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
-import com.infosys.setlabs.miner.domain.FrequentItemSet;
-import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.manage.BasketFormatManager;
-import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.FrequentItemSetManager;
-import com.infosys.setlabs.miner.manage.MinerFileManager;
+import com.infosys.setlabs.miner.manage.Manager;
 
 /**
  * FISM
@@ -77,9 +77,9 @@ public class FISM {
 
 			// Parse output of apriori and save frequent item sets to the
 			// database
-			System.out.println("EXEC  > frequent item sets");			
+			System.out.println("EXEC  > frequent item sets");
 			frequentItemSets();
-			System.out.println("DONE  > frequent item sets\n");			
+			System.out.println("DONE  > frequent item sets\n");
 
 			System.out.println("DONE  > fism");
 		} finally {
@@ -119,13 +119,13 @@ public class FISM {
 
 	public void apriori() throws MinerException {
 		String[] cmd = {values.getExec(), "-s" + values.getMinSupport(),
-				"-m" + values.getMinItems(), "-v (%a, %4S)",
+				"-m" + values.getMinItems(), "-v:%a %4S",
 				this.transactions.getAbsolutePath(),
 				this.frequentItemSets.getAbsolutePath()};
 		ExecWrapper apriori = new ExecWrapper(cmd);
 		apriori.run();
 	}
-	
+
 	public void frequentItemSets() throws MinerException {
 		FrequentItemSetManager frequentItemSetManager = null;
 
@@ -138,24 +138,23 @@ public class FISM {
 			// Create tables
 			frequentItemSetManager.createTables();
 
-			// TODO: Parse output of apriori
-			
-			// TODO: Add frequent item sets to the database
-			FrequentItemSet fis = new FrequentItemSet(1);
-			fis.setAbsoluteItemSetSupport(10);
-			fis.setRelativeItemSetSupport(23.42);
-			MinerFileManager minerFileManager = new MinerFileManager(connectionArgs);
-			fis.addItem(minerFileManager.find(1));
-			fis.addItem(minerFileManager.find(23));
-			fis.addItem(minerFileManager.find(42));
-			fis.addItem(minerFileManager.find(99));
-			
-			frequentItemSetManager.create(fis);
+			// Iterate over output of apriori and add frequent item sets
+			// to the database
+			BufferedReader in = new BufferedReader(new FileReader(
+					frequentItemSets));
+			String line;
+			while ((line = in.readLine()) != null) {
+				frequentItemSetManager.create(line);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			if (frequentItemSetManager != null) {
 				frequentItemSetManager.close();
 			}
-		}		
+		}
 	}
 
 	public static void main(String[] args) throws MinerException {
