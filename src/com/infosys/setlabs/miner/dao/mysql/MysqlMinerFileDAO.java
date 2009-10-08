@@ -15,6 +15,17 @@ import com.infosys.setlabs.miner.domain.MinerFile;
 
 public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 
+	protected static String CREATE_MINER_FILES_TABLE = ""
+			+ "CREATE TABLE miner_files (" + "id INT NOT NULL PRIMARY KEY, "
+			+ "file_name VARCHAR(255), " + "path MEDIUMTEXT, "
+			+ "miner_module_id INT NOT NULL, " + "INDEX(file_name), "
+			+ "FOREIGN KEY(id) REFERENCES files(id), "
+			+ "FOREIGN KEY(miner_module_id) REFERENCES miner_modules(id)"
+			// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses MyISAM
+			// too, we can't use InnoDB here
+			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
+	protected static String DROP_MINER_FILES_TABLE = ""
+			+ "DROP TABLE IF EXISTS miner_files";
 	protected static String SELECT_MINER_FILE_SQL = ""
 			+ "SELECT id, file_name, path, miner_module_id "
 			+ "FROM miner_files WHERE id=?";
@@ -47,8 +58,8 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				result = new MinerFile(rs.getInt("id"));
 				result.setFileName(rs.getString("file_name"));
 				result.setPath(rs.getString("path"));
-				result.setRepositoryFile(new MysqlRepositoryFileDAO(this.getConnection())
-						.find(rs.getInt("id")));
+				result.setRepositoryFile(new MysqlRepositoryFileDAO(this
+						.getConnection()).find(rs.getInt("id")));
 				result.setModule(new MysqlMinerModuleDAO(this.getConnection())
 						.find(rs.getInt("miner_module_id")));
 			}
@@ -97,12 +108,12 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		try {
 			ps = this.getConnection().prepareStatement(CREATE_MINER_FILE_SQL,
 					Statement.RETURN_GENERATED_KEYS);
-			
+
 			if (minerFile.getId() != 0)
 				id = minerFile.getId();
 			else
 				id = minerFile.getRepositoryFile().getId();
-			
+
 			ps.setInt(1, id);
 			ps.setString(2, minerFile.getFileName());
 			ps.setString(3, minerFile.getPath());
@@ -143,6 +154,20 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			ps.setString(2, minerFile.getPath());
 			ps.setInt(3, minerFile.getModule().getId());
 			ps.setInt(4, minerFile.getId());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeStatement(ps);
+		}
+	}
+
+	@Override
+	public void createTables() throws DataAccessException {
+		PreparedStatement ps = null;
+		try {
+			ps = this.getConnection().prepareStatement(DROP_MINER_FILES_TABLE);
+			ps.executeUpdate();
+			ps.executeUpdate(CREATE_MINER_FILES_TABLE);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

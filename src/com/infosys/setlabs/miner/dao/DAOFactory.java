@@ -80,16 +80,6 @@ public abstract class DAOFactory {
 			throws DataAccessException;
 
 	/**
-	 * Abstract method for shiatsu (data massaging) data access object
-	 * 
-	 * @param session
-	 * @return ShiatsuDAO
-	 * @throws DataAccessException
-	 */
-	public abstract ShiatsuDAO getShiatsuDAO(DAOSession session)
-			throws DataAccessException;
-
-	/**
 	 * Abstract method for miner module data access object
 	 * 
 	 * @param session

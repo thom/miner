@@ -15,6 +15,15 @@ import com.infosys.setlabs.miner.domain.MinerModule;
 
 public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 
+	protected static String CREATE_MINER_MODULES_TABLE = ""
+			+ "CREATE TABLE miner_modules ("
+			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+			+ "module_name MEDIUMTEXT NOT NULL," + "UNIQUE(module_name(255))"
+			// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses MyISAM
+			// too, we can't use InnoDB here
+			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
+	protected static String DROP_MINER_MODULES_TABLE = ""
+			+ "DROP TABLE IF EXISTS miner_modules";
 	protected static String SELECT_MINER_MODULE_SQL = ""
 			+ "SELECT id, module_name FROM miner_modules WHERE id=?";
 	protected static String SELECT_MINER_MODULE_BY_NAME_SQL = ""
@@ -153,6 +162,21 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 			ps = this.getConnection().prepareStatement(UPDATE_MINER_MODULE_SQL);
 			ps.setString(1, minerModule.getModuleName());
 			ps.setInt(2, minerModule.getId());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeStatement(ps);
+		}
+	}
+
+	@Override
+	public void createTables() throws DataAccessException {
+		PreparedStatement ps = null;
+		try {
+			ps = this.getConnection()
+					.prepareStatement(DROP_MINER_MODULES_TABLE);
+			ps.executeUpdate();
+			ps.executeUpdate(CREATE_MINER_MODULES_TABLE);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
