@@ -31,7 +31,7 @@ public class ShiatsuManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getShiatsuDAO(this.getSession()).createTables();			
+			this.getFactory().getShiatsuDAO(this.getSession()).createTables();
 
 			// Commit transaction
 			trans.commit();
@@ -45,8 +45,8 @@ public class ShiatsuManager extends Manager {
 			}
 			throw new MinerException(de);
 		}
-		
-		fillTables();		
+
+		fillTables();
 	}
 
 	private void fillTables() throws MinerException {
@@ -65,7 +65,7 @@ public class ShiatsuManager extends Manager {
 					minerFile = new MinerFile();
 					minerFile.setFileName(repositoryFile.getFileName());
 					minerFile.setPath(repositoryFile.getPath());
-					minerFile.setFile(repositoryFile);
+					minerFile.setRepositoryFile(repositoryFile);
 					minerFile.setModule(minerModuleDAO.find(minerModuleDAO
 							.create(new MinerModule(repositoryFile
 									.getDirectory()))));

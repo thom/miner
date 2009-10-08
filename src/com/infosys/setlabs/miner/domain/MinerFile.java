@@ -6,10 +6,10 @@ public class MinerFile {
 	private String path;
 	private RepositoryFile repositoryFile;
 	private MinerModule module;
-	
+
 	public MinerFile() {
 	}
-	
+
 	public MinerFile(int id) {
 		setId(id);
 	}
@@ -46,11 +46,11 @@ public class MinerFile {
 		this.module = module;
 	}
 
-	public void setFile(RepositoryFile repositoryFile) {
+	public void setRepositoryFile(RepositoryFile repositoryFile) {
 		this.repositoryFile = repositoryFile;
 	}
 
-	public RepositoryFile getFile() {
+	public RepositoryFile getRepositoryFile() {
 		return repositoryFile;
 	}
 }

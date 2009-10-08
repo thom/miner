@@ -16,18 +16,18 @@ import com.infosys.setlabs.miner.domain.MinerFile;
 public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 
 	protected static String SELECT_MINER_FILE_SQL = ""
-			+ "SELECT id, file_name, path, file_id, miner_module_id "
+			+ "SELECT id, file_name, path, miner_module_id "
 			+ "FROM miner_files WHERE id=?";
 	protected static String SELECT_MINER_FILES_SQL = ""
-			+ "SELECT id, file_name, path, file_id, miner_module_id "
+			+ "SELECT id, file_name, path, miner_module_id "
 			+ "FROM miner_files";
 	protected static String CREATE_MINER_FILE_SQL = ""
-			+ "INSERT INTO miner_files (id, file_name, path, file_id, miner_module_id) "
-			+ "VALUES (?,?,?,?,?)";
+			+ "INSERT INTO miner_files (id, file_name, path, miner_module_id) "
+			+ "VALUES (?,?,?,?)";
 	protected static String DELETE_MINER_FILE_SQL = ""
 			+ "DELETE FROM miner_files WHERE id=?";
 	protected static String UPDATE_MINER_FILE_SQL = ""
-			+ "UPDATE miner_files SET file_name=?, path=?, file_id=?, miner_module_id=? "
+			+ "UPDATE miner_files SET file_name=?, path=?, miner_module_id=? "
 			+ "WHERE id=?)";
 
 	public MysqlMinerFileDAO(Connection conn) {
@@ -47,8 +47,8 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				result = new MinerFile(rs.getInt("id"));
 				result.setFileName(rs.getString("file_name"));
 				result.setPath(rs.getString("path"));
-				result.setFile(new MysqlRepositoryFileDAO(this.getConnection()).find(rs
-						.getInt("file_id")));
+				result.setRepositoryFile(new MysqlRepositoryFileDAO(this.getConnection())
+						.find(rs.getInt("id")));
 				result.setModule(new MysqlMinerModuleDAO(this.getConnection())
 						.find(rs.getInt("miner_module_id")));
 			}
@@ -73,8 +73,8 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				MinerFile minerFile = new MinerFile(rs.getInt("id"));
 				minerFile.setFileName(rs.getString("file_name"));
 				minerFile.setPath(rs.getString("path"));
-				minerFile.setFile(new MysqlRepositoryFileDAO(this.getConnection())
-						.find(rs.getInt("file_id")));
+				minerFile.setRepositoryFile(new MysqlRepositoryFileDAO(this
+						.getConnection()).find(rs.getInt("id")));
 				minerFile.setModule(new MysqlMinerModuleDAO(this
 						.getConnection()).find(rs.getInt("miner_module_id")));
 				result.add(minerFile);
@@ -93,14 +93,20 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		int result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		int id = 0;
 		try {
 			ps = this.getConnection().prepareStatement(CREATE_MINER_FILE_SQL,
 					Statement.RETURN_GENERATED_KEYS);
-			ps.setInt(1, minerFile.getId());
+			
+			if (minerFile.getId() != 0)
+				id = minerFile.getId();
+			else
+				id = minerFile.getRepositoryFile().getId();
+			
+			ps.setInt(1, id);
 			ps.setString(2, minerFile.getFileName());
 			ps.setString(3, minerFile.getPath());
-			ps.setInt(4, minerFile.getFile().getId());
-			ps.setInt(5, minerFile.getModule().getId());
+			ps.setInt(4, minerFile.getModule().getId());
 			ps.execute();
 
 			rs = ps.getGeneratedKeys();
@@ -113,7 +119,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		}
 		return result;
 	}
-	
+
 	@Override
 	public void delete(MinerFile minerFile) throws DataAccessException {
 		PreparedStatement ps = null;
@@ -135,9 +141,8 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			ps = this.getConnection().prepareStatement(UPDATE_MINER_FILE_SQL);
 			ps.setString(1, minerFile.getFileName());
 			ps.setString(2, minerFile.getPath());
-			ps.setInt(3, minerFile.getFile().getId());
-			ps.setInt(4, minerFile.getModule().getId());
-			ps.setInt(5, minerFile.getId());
+			ps.setInt(3, minerFile.getModule().getId());
+			ps.setInt(4, minerFile.getId());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

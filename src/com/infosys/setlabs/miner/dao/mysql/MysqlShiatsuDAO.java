@@ -11,12 +11,10 @@ import com.infosys.setlabs.miner.dao.ShiatsuDAO;
 public class MysqlShiatsuDAO extends JdbcDAO implements ShiatsuDAO {
 
 	protected static String CREATE_MINER_FILES_TABLE = ""
-			+ "CREATE TABLE miner_files ("
-			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+			+ "CREATE TABLE miner_files (" + "id INT NOT NULL PRIMARY KEY, "
 			+ "file_name VARCHAR(255), " + "path MEDIUMTEXT, "
-			+ "file_id INT NOT NULL, " + "miner_module_id INT NOT NULL, "
-			+ "INDEX(file_name), " + "INDEX(file_id), "
-			+ "FOREIGN KEY(file_id) REFERENCES files(id), "
+			+ "miner_module_id INT NOT NULL, " + "INDEX(file_name), "
+			+ "FOREIGN KEY(id) REFERENCES files(id), "
 			+ "FOREIGN KEY(miner_module_id) REFERENCES miner_modules(id)"
 			// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses MyISAM
 			// too, we can't use InnoDB here
