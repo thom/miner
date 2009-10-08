@@ -11,11 +11,17 @@ import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.domain.MinerModule;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
 
+/**
+ * Shiatsu manager
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class ShiatsuManager extends Manager {
 	/**
 	 * Creates a new shiatsu manager
 	 * 
 	 * @param connectionArgs
+	 *            arguments to use for connection
 	 * @throws MinerException
 	 */
 	public ShiatsuManager(HashMap<String, String> connectionArgs)
@@ -23,6 +29,11 @@ public class ShiatsuManager extends Manager {
 		super(connectionArgs);
 	}
 
+	/**
+	 * Massages the data
+	 * 
+	 * @throws MinerException
+	 */
 	public void massage() throws MinerException {
 		try {
 			this.getFactory().getMinerFileDAO(this.getSession()).createTables();

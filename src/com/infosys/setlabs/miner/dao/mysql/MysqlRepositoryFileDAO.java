@@ -12,6 +12,11 @@ import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
 
+/**
+ * MySQL Repository File DAO
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class MysqlRepositoryFileDAO extends JdbcDAO
 		implements
 			RepositoryFileDAO {
@@ -32,6 +37,12 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 			+ "WHERE new_file_name <> '' AND from_id = to_id AND from_id = ? "
 			+ "ORDER BY to_id, from_commit_id";
 
+	/**
+	 * Creates a new DAO
+	 * 
+	 * @param conn
+	 *            connection to connect to
+	 */	
 	public MysqlRepositoryFileDAO(Connection conn) {
 		super(conn);
 	}

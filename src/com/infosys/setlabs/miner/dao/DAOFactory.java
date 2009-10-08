@@ -11,12 +11,11 @@ import com.infosys.setlabs.miner.dao.mysql.MysqlDAOFactory;
  * access to data source. The factory additionally provides access to session
  * objects.
  * 
- * @author "Thomas Weibel <thomas_401709@infosys.com>
- * @see com.infosys.setlabs.dao.DAOSession
+ * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public abstract class DAOFactory {
 	/**
-	 * Database engine enumeration
+	 * Database engines
 	 */
 	public static enum DatabaseEngine {
 		MYSQL
@@ -26,8 +25,8 @@ public abstract class DAOFactory {
 	 * Creates data access object factory that corresponds to the given data
 	 * source.
 	 * 
-	 * @param factoryNo
-	 *            of data source of the factory
+	 * @param dbe
+	 *            database engine to use
 	 * @return factory for data access objects
 	 * @throws DataAccessException
 	 */
@@ -42,9 +41,10 @@ public abstract class DAOFactory {
 	}
 
 	/**
-	 * Set connection arguments
+	 * Sets connection arguments
 	 * 
 	 * @param args
+	 *            arguments
 	 */
 	public abstract void setConnectionArgs(
 			HashMap<String, String> connectionArgs);
@@ -55,7 +55,6 @@ public abstract class DAOFactory {
 	 * 
 	 * @return session
 	 * @throws DataAccessException
-	 * @see com.infosys.setlabs.dao.DAOSession
 	 */
 	public abstract DAOSession getSession() throws DataAccessException;
 
@@ -63,6 +62,7 @@ public abstract class DAOFactory {
 	 * Abstract method for file data access object.
 	 * 
 	 * @param session
+	 *            session to connect to
 	 * @return RepositoryFileDAO
 	 * @throws DataAccessException
 	 */
@@ -73,6 +73,7 @@ public abstract class DAOFactory {
 	 * Abstract method for basket format data access object
 	 * 
 	 * @param session
+	 *            session to connect to
 	 * @return BasketFormatDAO
 	 * @throws DataAccessException
 	 */
@@ -83,6 +84,7 @@ public abstract class DAOFactory {
 	 * Abstract method for miner module data access object
 	 * 
 	 * @param session
+	 *            session to connect to
 	 * @return MinerModuleDAO
 	 * @throws DataAccessException
 	 */
@@ -93,6 +95,7 @@ public abstract class DAOFactory {
 	 * Abstract method for miner file data access object
 	 * 
 	 * @param session
+	 *            session to connect to
 	 * @return MinerFileDAO
 	 * @throws DataAccessException
 	 */
@@ -103,6 +106,7 @@ public abstract class DAOFactory {
 	 * Abstract method for miner frequent item set data access object
 	 * 
 	 * @param session
+	 *            session to connect to
 	 * @return FrequentItemSetDAO
 	 * @throws DataAccessException
 	 */

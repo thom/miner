@@ -30,8 +30,10 @@ public abstract class Manager {
 		return currentDatabaseEngine;
 	}
 	/**
+	 * Sets the current database engine
+	 * 
 	 * @param currentDatabaseEngine
-	 *            The currentDatasource to set.
+	 *            currentDatasource to set
 	 */
 	public static void setCurrentDatabaseEngine(DatabaseEngine databaseEngine) {
 		currentDatabaseEngine = databaseEngine;
@@ -42,8 +44,8 @@ public abstract class Manager {
 	protected DAOSession session;
 
 	/**
-	 * Constructor initializes data source factory and session. Should be called
-	 * from inherited classes.
+	 * Initializes data source factory and session. Should be called from
+	 * inherited classes.
 	 * 
 	 * @throws MinerException
 	 */
@@ -59,7 +61,7 @@ public abstract class Manager {
 	}
 
 	/**
-	 * Closes the session associated to manager instance.
+	 * Closes the session associated to manager instance
 	 * 
 	 * @throws MinerException
 	 */
@@ -72,7 +74,7 @@ public abstract class Manager {
 	}
 
 	/**
-	 * Returns the factory.
+	 * Returns the factory
 	 * 
 	 * @return factory
 	 */
@@ -81,7 +83,7 @@ public abstract class Manager {
 	}
 
 	/**
-	 * Returns the session.
+	 * Returns the session
 	 * 
 	 * @return session
 	 */
@@ -90,7 +92,7 @@ public abstract class Manager {
 	}
 
 	/**
-	 * Sets the factory.
+	 * Sets the factory
 	 * 
 	 * @param factory
 	 *            factory to set
@@ -100,7 +102,7 @@ public abstract class Manager {
 	}
 
 	/**
-	 * Sets the session.
+	 * Sets the session
 	 * 
 	 * @param session
 	 *            session to set

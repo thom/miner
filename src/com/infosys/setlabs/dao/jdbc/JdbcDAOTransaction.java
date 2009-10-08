@@ -6,11 +6,16 @@ import com.infosys.setlabs.dao.DAOSession;
 import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 
+/**
+ * JDBC transaction
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class JdbcDAOTransaction implements DAOTransaction {
 	private JdbcDAOSession session;
 
 	/**
-	 * Disables auto-commit.
+	 * Creates a new JDBC transaction with auto-commit disabled.
 	 * 
 	 * When a connection is created, it is in auto-commit mode. This means that
 	 * each individual SQL statement is treated as a transaction and is
@@ -25,6 +30,7 @@ public class JdbcDAOTransaction implements DAOTransaction {
 	 * included in the current transaction and committed together as a unit.
 	 * 
 	 * @param session
+	 *            session to connect to
 	 */
 	public JdbcDAOTransaction(JdbcDAOSession session) {
 		this.session = session;

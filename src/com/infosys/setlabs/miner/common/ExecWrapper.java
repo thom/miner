@@ -2,13 +2,27 @@ package com.infosys.setlabs.miner.common;
 
 import java.io.IOException;
 
+/**
+ * Wraps executions of external commands
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class ExecWrapper extends Thread {
 	private String[] cmd;
 
+	/**
+	 * Creates a new execution wrapper
+	 * 
+	 * @param cmd
+	 *            command to execute
+	 */
 	public ExecWrapper(String[] cmd) {
 		this.cmd = cmd;
 	}
 
+	/**
+	 * Executes the program
+	 */
 	public void run() {
 		System.out.print("EXEC  > ");
 		for (String str : cmd) {

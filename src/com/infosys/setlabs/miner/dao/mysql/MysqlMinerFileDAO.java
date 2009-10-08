@@ -13,6 +13,11 @@ import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
 
+/**
+ * MySQL Miner File DAO
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 
 	protected static String CREATE_MINER_FILES_TABLE = ""
@@ -41,6 +46,12 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			+ "UPDATE miner_files SET file_name=?, path=?, miner_module_id=? "
 			+ "WHERE id=?)";
 
+	/**
+	 * Creates a new DAO
+	 * 
+	 * @param conn
+	 *            connection to connect to
+	 */	
 	public MysqlMinerFileDAO(Connection conn) {
 		super(conn);
 	}

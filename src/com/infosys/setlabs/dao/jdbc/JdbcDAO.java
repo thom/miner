@@ -9,24 +9,24 @@ import java.sql.Statement;
 /**
  * Abstract JDBC Data Access Object.
  * 
- * @author "Thomas Weibel <thomas_401709@infosys.com>
+ * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public abstract class JdbcDAO {
 	// JDBC connection to the database
 	private Connection connection;
 
 	/**
-	 * Create a new DAO.
+	 * Creates a new DAO.
 	 * 
 	 * @param conn
-	 *            connection
+	 *            connection to use
 	 */
 	public JdbcDAO(Connection conn) {
 		this.setConnection(conn);
 	}
 
 	/**
-	 * Close a result set.
+	 * Closes a result set.
 	 * 
 	 * @param resultSet
 	 *            result set to close
@@ -42,7 +42,7 @@ public abstract class JdbcDAO {
 	}
 
 	/**
-	 * Close a prepared statement.
+	 * Closes a prepared statement.
 	 * 
 	 * @param statement
 	 *            prepared statement to close
@@ -58,7 +58,7 @@ public abstract class JdbcDAO {
 	}
 	
 	/**
-	 * Close a statement.
+	 * Closes a statement.
 	 * 
 	 * @param statement
 	 *            statement to close
@@ -74,7 +74,7 @@ public abstract class JdbcDAO {
 	}	
 
 	/**
-	 * Get a connection.
+	 * Gets the connection.
 	 * 
 	 * @return connection
 	 */
@@ -83,7 +83,7 @@ public abstract class JdbcDAO {
 	}
 
 	/**
-	 * Set the connection.
+	 * Sets the connection.
 	 * 
 	 * @param conn
 	 *            connection to set

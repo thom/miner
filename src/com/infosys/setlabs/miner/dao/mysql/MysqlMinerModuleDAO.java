@@ -13,6 +13,11 @@ import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.MinerModuleDAO;
 import com.infosys.setlabs.miner.domain.MinerModule;
 
+/**
+ * MySQL Miner Module DAO
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 
 	protected static String CREATE_MINER_MODULES_TABLE = ""
@@ -38,6 +43,12 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	protected static String UPDATE_MINER_MODULE_SQL = ""
 			+ "UPDATE miner_modules SET module_name=? WHERE id=?)";
 
+	/**
+	 * Creates a new DAO
+	 * 
+	 * @param conn
+	 *            connection to connect to
+	 */	
 	public MysqlMinerModuleDAO(Connection conn) {
 		super(conn);
 	}
@@ -63,7 +74,8 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		}
 		return result;
 	}
-
+	
+	@Override
 	public MinerModule find(String moduleName) throws DataAccessException {
 		MinerModule result = null;
 		PreparedStatement ps = null;

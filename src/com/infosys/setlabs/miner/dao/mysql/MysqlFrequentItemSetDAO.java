@@ -15,6 +15,11 @@ import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
 import com.infosys.setlabs.miner.domain.FrequentItemSet;
 import com.infosys.setlabs.miner.domain.MinerFile;
 
+/**
+ * MySQL Frequent Item Set DAO
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class MysqlFrequentItemSetDAO extends JdbcDAO
 		implements
 			FrequentItemSetDAO {
@@ -49,6 +54,12 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			+ "INSERT INTO miner_frequent_items (miner_frequent_item_set_id, file_id) "
 			+ "VALUES (?,?)";
 
+	/**
+	 * Creates a new DAO
+	 * 
+	 * @param conn
+	 *            connection to connect to
+	 */	
 	public MysqlFrequentItemSetDAO(Connection conn) {
 		super(conn);
 	}
@@ -165,6 +176,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		// Create new database entry and return its ID
 		return create(fis);
 	}
+	
 	@Override
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;

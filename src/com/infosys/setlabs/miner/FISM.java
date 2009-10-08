@@ -25,14 +25,29 @@ import com.infosys.setlabs.miner.manage.Manager;
 /**
  * FISM
  * 
- * @author "Thomas Weibel <thomas_401709@infosys.com>
+ * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class FISM {
+	// Command line values
 	private CommandLineValues values;
+
+	// Database connection arguments
 	private HashMap<String, String> connectionArgs;
+
+	// File used to save transactions
 	private File transactions;
+
+	// File used to save frequent item sets
 	private File frequentItemSets;
 
+	/**
+	 * Parses command line arguments, sets the database connection arguments and
+	 * initializes the temporary files.
+	 * 
+	 * @param args
+	 *            arguments
+	 * @throws MinerException
+	 */
 	public FISM(String[] args) throws MinerException {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
@@ -63,6 +78,11 @@ public class FISM {
 		frequentItemSets = new File(values.getDb() + ".fis");
 	}
 
+	/**
+	 * Does the frequent item set mining
+	 * 
+	 * @throws MinerException
+	 */
 	public void fism() throws MinerException {
 		try {
 			System.out.println("EXEC  > fism\n");
@@ -90,6 +110,11 @@ public class FISM {
 		}
 	}
 
+	/**
+	 * Formats revision history into basket format
+	 * 
+	 * @throws MinerException
+	 */
 	public void format() throws MinerException {
 		BasketFormatManager basketFormatManager = null;
 
@@ -117,6 +142,11 @@ public class FISM {
 		}
 	}
 
+	/**
+	 * Calls <code>apriori</code> frequent item set miner
+	 * 
+	 * @throws MinerException
+	 */
 	public void apriori() throws MinerException {
 		String[] cmd = {values.getExec(), "-s" + values.getMinSupport(),
 				"-m" + values.getMinItems(), "-v:%a %4S",
@@ -126,6 +156,11 @@ public class FISM {
 		apriori.run();
 	}
 
+	/**
+	 * Writes frequent item sets to the database
+	 * 
+	 * @throws MinerException
+	 */
 	public void frequentItemSets() throws MinerException {
 		FrequentItemSetManager frequentItemSetManager = null;
 
@@ -157,11 +192,23 @@ public class FISM {
 		}
 	}
 
+	/**
+	 * Starts frequent item set mining
+	 * 
+	 * @param args
+	 *            arguments
+	 * @throws MinerException
+	 */
 	public static void main(String[] args) throws MinerException {
 		FISM fism = new FISM(args);
 		fism.fism();
 	}
 
+	/**
+	 * Specifies the command line values
+	 * 
+	 * @author Thomas Weibel <thomas_401709@infosys.com>
+	 */
 	private static class CommandLineValues {
 		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
@@ -187,6 +234,11 @@ public class FISM {
 		@Option(name = "-k", aliases = {"keep", "keep-files"}, usage = "keep all generated temporary files")
 		private boolean keepFiles = false;
 
+		/**
+		 * Sets default values for some of the command line arguments
+		 * 
+		 * @throws MinerException
+		 */
 		public CommandLineValues() throws MinerException {
 			Properties setup = Configuration.load("setup");
 
@@ -210,34 +262,76 @@ public class FISM {
 								"Wrong value for 'apriori.minSupport' in 'setup.properties'"));
 			}
 		}
+
+		/**
+		 * Returns database name
+		 * 
+		 * @return db
+		 */
 		public String getDb() {
 			return db;
 		}
 
+		/**
+		 * Returns user name
+		 * 
+		 * @return user
+		 */
 		public String getUser() {
 			return user;
 		}
 
+		/**
+		 * Returns password
+		 * 
+		 * @return pw
+		 */
 		public String getPw() {
 			return pw;
 		}
 
+		/**
+		 * Returns name of the executable
+		 * 
+		 * @return exec
+		 */
 		public String getExec() {
 			return exec;
 		}
 
+		/**
+		 * Should all files be mined? If false, only code files are mined.
+		 * 
+		 * @return allFiles
+		 */
 		public boolean getAllFiles() {
 			return allFiles;
 		}
 
+		/**
+		 * Returns value of minimal number of items per set
+		 * 
+		 * @return minItems
+		 */
 		public int getMinItems() {
 			return minItems;
 		}
 
+		/**
+		 * Returns value of minimal support of a set (positive: percentage,
+		 * negative: absolute number)
+		 * 
+		 * @return minSupport
+		 */
 		public float getMinSupport() {
 			return minSupport;
 		}
 
+		/**
+		 * Should all generated temporary files be kept?
+		 * 
+		 * @return keepFiles
+		 */
 		public boolean getKeepFiles() {
 			return keepFiles;
 		}

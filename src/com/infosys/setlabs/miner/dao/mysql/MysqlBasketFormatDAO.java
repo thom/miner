@@ -8,6 +8,11 @@ import java.sql.SQLException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.BasketFormatDAO;
 
+/**
+ * MySQL Basket Format DAO
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 
 	protected static String SELECT_SQL = ""
@@ -18,6 +23,12 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 			+ "ORDER BY a.commit_id asc, modified_files ASC";
 	protected static String FILTER_SQL = "AND ft.type = 'code'";
 
+	/**
+	 * Creates a new DAO
+	 * 
+	 * @param conn
+	 *            connection to connect to
+	 */
 	public MysqlBasketFormatDAO(Connection conn) {
 		super(conn);
 	}

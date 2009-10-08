@@ -32,6 +32,9 @@ public class MysqlDAOFactory extends DAOFactory {
 	// Properties
 	private Properties prop;
 
+	/**
+	 * Creates a new MySQL DAO Factory
+	 */
 	public MysqlDAOFactory() {
 		// Load the properties
 		prop = Configuration.load("db");
@@ -42,6 +45,20 @@ public class MysqlDAOFactory extends DAOFactory {
 		database = prop.getProperty("mysql.database");
 		user = prop.getProperty("mysql.user");
 		password = prop.getProperty("mysql.password");
+	}
+
+	@Override
+	public void setConnectionArgs(HashMap<String, String> connectionArgs) {
+		if (connectionArgs.get("server") != null)
+			server = connectionArgs.get("server");
+		if (connectionArgs.get("port") != null)
+			port = Integer.parseInt(connectionArgs.get("port"));
+		if (connectionArgs.get("database") != null)
+			database = connectionArgs.get("database");
+		if (connectionArgs.get("user") != null)
+			user = connectionArgs.get("user");
+		if (connectionArgs.get("password") != null)
+			password = connectionArgs.get("password");
 	}
 
 	private Connection getConnection() throws DataAccessException {
@@ -62,95 +79,42 @@ public class MysqlDAOFactory extends DAOFactory {
 		}
 	}
 
-	/**
-	 * Set the connection arguments with an array
-	 * 
-	 * @param properties
-	 */
-	@Override
-	public void setConnectionArgs(HashMap<String, String> connectionArgs) {
-		if (connectionArgs.get("server") != null)
-			setServer(connectionArgs.get("server"));
-		if (connectionArgs.get("port") != null)
-			setPort(Integer.parseInt(connectionArgs.get("port")));
-		if (connectionArgs.get("database") != null)
-			setDatabase(connectionArgs.get("database"));
-		if (connectionArgs.get("user") != null)
-			setUser(connectionArgs.get("user"));
-		if (connectionArgs.get("password") != null)
-			setPassword(connectionArgs.get("password"));
-	}
-
-	public String getServer() {
-		return server;
-	}
-
-	public void setServer(String server) {
-		this.server = server;
-	}
-
-	public int getPort() {
-		return port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}
-
-	public String getDatabase() {
-		return database;
-	}
-
-	public void setDatabase(String database) {
-		this.database = database;
-	}
-
-	public String getUser() {
-		return user;
-	}
-
-	public void setUser(String user) {
-		this.user = user;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	@Override
 	public DAOSession getSession() throws DataAccessException {
 		return new JdbcDAOSession(this.getConnection());
 	}
 
 	@Override
-	public RepositoryFileDAO getFileDAO(DAOSession session) throws DataAccessException {
-		return new MysqlRepositoryFileDAO(((JdbcDAOSession) session).getConnection());
+	public RepositoryFileDAO getFileDAO(DAOSession session)
+			throws DataAccessException {
+		return new MysqlRepositoryFileDAO(((JdbcDAOSession) session)
+				.getConnection());
 	}
-	
+
 	@Override
-	public BasketFormatDAO getBasketFormatDAO(DAOSession session) throws DataAccessException {
-		return new MysqlBasketFormatDAO(((JdbcDAOSession) session).getConnection());
+	public BasketFormatDAO getBasketFormatDAO(DAOSession session)
+			throws DataAccessException {
+		return new MysqlBasketFormatDAO(((JdbcDAOSession) session)
+				.getConnection());
 	}
 
 	@Override
 	public MinerModuleDAO getMinerModuleDAO(DAOSession session)
 			throws DataAccessException {
-		return new MysqlMinerModuleDAO(((JdbcDAOSession) session).getConnection());				
-	}	
-	
+		return new MysqlMinerModuleDAO(((JdbcDAOSession) session)
+				.getConnection());
+	}
+
 	@Override
 	public MinerFileDAO getMinerFileDAO(DAOSession session)
 			throws DataAccessException {
-		return new MysqlMinerFileDAO(((JdbcDAOSession) session).getConnection());				
+		return new MysqlMinerFileDAO(((JdbcDAOSession) session).getConnection());
 	}
-	
+
 	@Override
 	public FrequentItemSetDAO getFrequentItemSetDAO(DAOSession session)
 			throws DataAccessException {
-		return new MysqlFrequentItemSetDAO(((JdbcDAOSession) session).getConnection());				
-	}	
+		return new MysqlFrequentItemSetDAO(((JdbcDAOSession) session)
+				.getConnection());
+	}
 }

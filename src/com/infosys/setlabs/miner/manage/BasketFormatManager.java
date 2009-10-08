@@ -6,6 +6,11 @@ import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
 
+/**
+ * Basket Format Manager
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class BasketFormatManager extends Manager {
 	/**
 	 * Creates a new basket format manager
@@ -17,6 +22,16 @@ public class BasketFormatManager extends Manager {
 		super(connectionArgs);
 	}
 
+	/**
+	 * Formats transactions to basket format
+	 * 
+	 * @param allFiles
+	 *            should all files be added to transactions?
+	 * @param revs
+	 *            should revisions be written in comments?
+	 * @return transactions in basket format
+	 * @throws MinerException
+	 */
 	public String format(boolean allFiles, boolean revs) throws MinerException {
 		DAOTransaction trans = null;
 		String result = "";

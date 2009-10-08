@@ -12,14 +12,24 @@ import com.infosys.setlabs.miner.manage.BasketFormatManager;
 import com.infosys.setlabs.miner.manage.Manager;
 
 /**
- * Format revision history into a transactions file in basket format
+ * Formats revision history into a transactions file in basket format
  * 
- * @author "Thomas Weibel <thomas_401709@infosys.com>
+ * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class Formatter {
+	// Command line values
 	private CommandLineValues values;
+
+	// Database connection arguments
 	private HashMap<String, String> connectionArgs;
 
+	/**
+	 * Parses command line arguments and sets the database connection arguments.
+	 * 
+	 * @param args
+	 *            arguments
+	 * @throws MinerException
+	 */
 	public Formatter(String[] args) {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
@@ -46,6 +56,11 @@ public class Formatter {
 		connectionArgs.put("password", values.getPw());
 	}
 
+	/**
+	 * Formats revision history into basket format
+	 * 
+	 * @throws MinerException
+	 */
 	public String format() throws MinerException {
 		BasketFormatManager basketFormatManager = null;
 
@@ -65,11 +80,23 @@ public class Formatter {
 		}
 	}
 
+	/**
+	 * Starts the formatter
+	 * 
+	 * @param args
+	 *            arguments
+	 * @throws MinerException
+	 */
 	public static void main(String[] args) throws MinerException {
 		Formatter formatter = new Formatter(args);
 		System.out.println(formatter.format());
 	}
 
+	/**
+	 * Specifies the command line values
+	 * 
+	 * @author Thomas Weibel <thomas_401709@infosys.com>
+	 */
 	private static class CommandLineValues {
 		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
@@ -86,22 +113,48 @@ public class Formatter {
 		@Option(name = "-a", aliases = {"all", "all-files"}, usage = "print all files affect by a transaction, including non-code files")
 		private boolean allFiles = false;
 
+		/**
+		 * Returns database name
+		 * 
+		 * @return db
+		 */
 		public String getDb() {
 			return db;
 		}
 
+		/**
+		 * Returns user name
+		 * 
+		 * @return user
+		 */
 		public String getUser() {
 			return user;
 		}
 
+		/**
+		 * Returns password
+		 * 
+		 * @return pw
+		 */
 		public String getPw() {
 			return pw;
 		}
 
+		/**
+		 * Should the revisions be written as comments into the transactions
+		 * file?
+		 * 
+		 * @return revs
+		 */
 		public boolean getRevs() {
 			return revs;
 		}
 
+		/**
+		 * Should all files be mined? If false, only code files are mined.
+		 * 
+		 * @return allFiles
+		 */
 		public boolean getAllFiles() {
 			return allFiles;
 		}

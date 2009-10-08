@@ -5,8 +5,7 @@ package com.infosys.setlabs.dao;
  * be executed in transactions. Transaction is always related to the session,
  * which represents longer unit of work.
  * 
- * @author "Thomas Weibel <thomas_401709@infosys.com>
- * @see dao.DAOSession
+ * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public interface DAOTransaction {
 	/**
@@ -35,7 +34,6 @@ public interface DAOTransaction {
 	 * 
 	 * @return session
 	 * @throws DataAccessException
-	 * @see dao.DAOSession
 	 */
 	public DAOSession getSession() throws DataAccessException;
 }

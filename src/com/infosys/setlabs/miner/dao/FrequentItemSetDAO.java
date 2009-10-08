@@ -6,6 +6,11 @@ import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.ReadObjectDAO;
 import com.infosys.setlabs.miner.domain.FrequentItemSet;
 
+/**
+ * Frequent Item Set DAO
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public interface FrequentItemSetDAO
 		extends
 			ReadObjectDAO<FrequentItemSet>,
@@ -17,6 +22,7 @@ public interface FrequentItemSetDAO
 	 * the absolute and relative item support.
 	 * 
 	 * @param frequentItemSetLine
+	 *            frequent item set to create
 	 * @return ID of newly created frequent item set
 	 * @throws DataAccessException
 	 */

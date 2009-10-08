@@ -5,9 +5,9 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 /**
- * Loads configuration files.
+ * Loads configuration files
  * 
- * @author "Thomas Weibel <thomas_401709@infosys.com>"
+ * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class Configuration {
 	/**

@@ -15,12 +15,22 @@ import com.infosys.setlabs.miner.manage.RepositoryFileManager;
 /**
  * Maps file IDs in a database created by CVSAnaly2 to filenames/paths.
  * 
- * @author "Thomas Weibel <thomas_401709@infosys.com>"
+ * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class IdToFileName {
+	// Command line values
 	private CommandLineValues values;
+
+	// Database connection arguments
 	private HashMap<String, String> connectionArgs;
 
+	/**
+	 * Parses command line arguments and sets the database connection arguments.
+	 * 
+	 * @param args
+	 *            arguments
+	 * @throws MinerException
+	 */
 	public IdToFileName(String[] args) {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
@@ -47,6 +57,12 @@ public class IdToFileName {
 		connectionArgs.put("password", values.getPw());
 	}
 
+	/**
+	 * Gets the file name of an ID from the database
+	 * 
+	 * @return file name
+	 * @throws MinerException
+	 */
 	public String getFileName() throws MinerException {
 		RepositoryFileManager repositoryFileManager = null;
 
@@ -71,11 +87,23 @@ public class IdToFileName {
 		}
 	}
 
+	/**
+	 * Starts the ID to file name mapper
+	 * 
+	 * @param args
+	 *            arguments
+	 * @throws MinerException
+	 */
 	public static void main(String[] args) throws MinerException {
 		IdToFileName idToFileName = new IdToFileName(args);
 		System.out.println(idToFileName.getFileName());
 	}
 
+	/**
+	 * Specifies the command line values
+	 * 
+	 * @author Thomas Weibel <thomas_401709@infosys.com>
+	 */
 	private static class CommandLineValues {
 		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
@@ -92,22 +120,48 @@ public class IdToFileName {
 		@Option(name = "-n", aliases = {"name", "nameonly"}, usage = "get only the name and not the path of the file")
 		private Boolean nameOnly = false;
 
+		/**
+		 * Returns database name
+		 * 
+		 * @return db
+		 */
 		public String getDb() {
 			return db;
 		}
 
+		/**
+		 * Returns user name
+		 * 
+		 * @return user
+		 */
 		public String getUser() {
 			return user;
 		}
 
+		/**
+		 * Returns password
+		 * 
+		 * @return pw
+		 */
 		public String getPw() {
 			return pw;
 		}
 
+		/**
+		 * Returns file ID
+		 * 
+		 * @return id
+		 */
 		public int getId() {
 			return id;
 		}
 
+		/**
+		 * Should only the file name be returned? If false, the relative path of
+		 * the file will be returned.
+		 * 
+		 * @return nameOnly
+		 */
 		public boolean getNameOnly() {
 			return nameOnly;
 		}

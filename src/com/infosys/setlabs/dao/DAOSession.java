@@ -8,8 +8,7 @@ package com.infosys.setlabs.dao;
  * created in data access object factory implementations. After the usage
  * sessions should be closed in order to release resources.
  * 
- * @author "Thomas Weibel <thomas_401709@infosys.com>"
- * @see dao.DAOTransaction
+ * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public interface DAOSession {
 	/**

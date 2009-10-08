@@ -8,10 +8,17 @@ import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
 
+/**
+ * Repository File Manager
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class RepositoryFileManager extends Manager {
 	/**
 	 * Creates a new file manager
 	 * 
+	 * @param connectionArgs
+	 *            arguments to use for connection
 	 * @throws MinerException
 	 */
 	public RepositoryFileManager(HashMap<String, String> connectionArgs)
@@ -19,6 +26,14 @@ public class RepositoryFileManager extends Manager {
 		super(connectionArgs);
 	}
 
+	/**
+	 * Finds an existing persistent repository file by its ID
+	 * 
+	 * @param id
+	 *            ID to find
+	 * @return RepositoryFile
+	 * @throws MinerException
+	 */
 	public RepositoryFile find(int id) throws MinerException {
 		DAOTransaction trans = null;
 		RepositoryFile result = null;
@@ -44,8 +59,13 @@ public class RepositoryFileManager extends Manager {
 		return result;
 	}
 
-	public Collection<RepositoryFile> findAll(RepositoryFile repositoryFile)
-			throws MinerException {
+	/**
+	 * Finds all existing persistent repository files
+	 * 
+	 * @return Collection<RepositoryFile>
+	 * @throws MinerException
+	 */
+	public Collection<RepositoryFile> findAll() throws MinerException {
 		DAOTransaction trans = null;
 		Collection<RepositoryFile> result = null;
 		try {

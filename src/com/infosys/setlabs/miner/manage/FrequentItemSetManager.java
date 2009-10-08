@@ -8,11 +8,17 @@ import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.domain.FrequentItemSet;
 
+/**
+ * Frequent Item Set Manager
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class FrequentItemSetManager extends Manager {
 	/**
 	 * Creates a new miner frequent item set manager
 	 * 
 	 * @param connectionArgs
+	 *            arguments to use for connection
 	 * @throws MinerException
 	 */
 	public FrequentItemSetManager(HashMap<String, String> connectionArgs)
@@ -20,6 +26,11 @@ public class FrequentItemSetManager extends Manager {
 		super(connectionArgs);
 	}
 
+	/**
+	 * Creates tables for frequent item sets
+	 * 
+	 * @throws MinerException
+	 */
 	public void createTables() throws MinerException {
 		DAOTransaction trans = null;
 		try {
@@ -44,6 +55,14 @@ public class FrequentItemSetManager extends Manager {
 		}
 	}
 
+	/**
+	 * Finds existing persistent frequent item set by its ID
+	 * 
+	 * @param id
+	 *            ID to find
+	 * @return FrequentItemSet
+	 * @throws MinerException
+	 */
 	public FrequentItemSet find(int id) throws MinerException {
 		DAOTransaction trans = null;
 		FrequentItemSet result = null;
@@ -70,6 +89,12 @@ public class FrequentItemSetManager extends Manager {
 		return result;
 	}
 
+	/**
+	 * Finds all existing persistent frequent item sets
+	 * 
+	 * @return Collection<FrequentItemSet>
+	 * @throws MinerException
+	 */
 	public Collection<FrequentItemSet> findAll() throws MinerException {
 		DAOTransaction trans = null;
 		Collection<FrequentItemSet> result = null;
@@ -96,6 +121,13 @@ public class FrequentItemSetManager extends Manager {
 		return result;
 	}
 
+	/**
+	 * Creates a new persistent miner module
+	 * 
+	 * @param frequentItemSet
+	 *            item set to create
+	 * @throws MinerException
+	 */
 	public void create(FrequentItemSet frequentItemSet) throws MinerException {
 		DAOTransaction trans = null;
 		try {
@@ -120,6 +152,16 @@ public class FrequentItemSetManager extends Manager {
 		}
 	}
 
+	/**
+	 * Creates a new persistent frequent item set.
+	 * 
+	 * @param frequentItemSetLine
+	 *            expects an input in the form of
+	 *            <code>5 23 42:10 23.4200</code> whereas before the
+	 *            <code>:</code> are file IDs and after the <code>:</code> are
+	 *            the absolute and relative item support.
+	 * @throws MinerException
+	 */
 	public void create(String frequentItemSetLine) throws MinerException {
 		DAOTransaction trans = null;
 		try {

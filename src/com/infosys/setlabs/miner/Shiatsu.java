@@ -12,14 +12,24 @@ import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.ShiatsuManager;
 
 /**
- * Massage the CVSAnaly2 data
+ * Massages the revision history data
  * 
- * @author "Thomas Weibel <thomas_401709@infosys.com>
+ * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class Shiatsu {
+	// Command line values
 	private CommandLineValues values;
+
+	// Database connection arguments
 	private HashMap<String, String> connectionArgs;
 
+	/**
+	 * Parses command line arguments and sets the database connection arguments.
+	 * 
+	 * @param args
+	 *            arguments
+	 * @throws MinerException
+	 */
 	public Shiatsu(String[] args) {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
@@ -46,6 +56,11 @@ public class Shiatsu {
 		connectionArgs.put("password", values.getPw());
 	}
 
+	/**
+	 * Massage the data
+	 * 
+	 * @throws MinerException
+	 */
 	public void massage() throws MinerException {
 		ShiatsuManager shiatsuManager = null;
 
@@ -66,11 +81,23 @@ public class Shiatsu {
 		}
 	}
 
+	/**
+	 * Starts the massaging process
+	 * 
+	 * @param args
+	 *            arguments
+	 * @throws MinerException
+	 */
 	public static void main(String[] args) throws MinerException {
 		Shiatsu shiatsu = new Shiatsu(args);
 		shiatsu.massage();
 	}
 
+	/**
+	 * Specifies the command line values
+	 * 
+	 * @author Thomas Weibel <thomas_401709@infosys.com>
+	 */
 	private static class CommandLineValues {
 		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
@@ -81,14 +108,29 @@ public class Shiatsu {
 		@Option(name = "-p", aliases = {"password", "pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
+		/**
+		 * Returns database name
+		 * 
+		 * @return db
+		 */
 		public String getDb() {
 			return db;
 		}
 
+		/**
+		 * Returns user name
+		 * 
+		 * @return user
+		 */
 		public String getUser() {
 			return user;
 		}
 
+		/**
+		 * Returns password
+		 * 
+		 * @return pw
+		 */
 		public String getPw() {
 			return pw;
 		}
