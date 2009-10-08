@@ -21,21 +21,55 @@ public class MinerModuleManager extends Manager {
 	}
 
 	public MinerModule find(int id) throws MinerException {
+		DAOTransaction trans = null;
+		MinerModule result = null;
 		try {
-			return this.getFactory().getMinerModuleDAO(this.getSession()).find(
-					id);
-		} catch (DataAccessException e) {
-			throw new MinerException(e);
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
+			result = this.getFactory().getMinerModuleDAO(this.getSession())
+					.find(id);
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
 		}
+		return result;
 	}
 
 	public Collection<MinerModule> findAll() throws MinerException {
+		DAOTransaction trans = null;
+		Collection<MinerModule> result = null;
 		try {
-			return this.getFactory().getMinerModuleDAO(this.getSession())
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
+			result = this.getFactory().getMinerModuleDAO(this.getSession())
 					.findAll();
-		} catch (DataAccessException e) {
-			throw new MinerException(e);
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
 		}
+		return result;
 	}
 
 	public void create(MinerModule minerModule) throws MinerException {
@@ -69,7 +103,8 @@ public class MinerModuleManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getMinerModuleDAO(this.getSession()).delete(minerModule);			
+			this.getFactory().getMinerModuleDAO(this.getSession()).delete(
+					minerModule);
 
 			// Commit transaction
 			trans.commit();
@@ -93,7 +128,7 @@ public class MinerModuleManager extends Manager {
 			trans.begin();
 
 			this.getFactory().getMinerModuleDAO(this.getSession()).update(
-					minerModule);			
+					minerModule);
 
 			// Commit transaction
 			trans.commit();
@@ -106,6 +141,6 @@ public class MinerModuleManager extends Manager {
 				throw new MinerException(de2);
 			}
 			throw new MinerException(de);
-		}		
+		}
 	}
 }

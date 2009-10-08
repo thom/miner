@@ -21,23 +21,57 @@ public class MinerFileManager extends Manager {
 	}
 
 	public MinerFile find(int id) throws MinerException {
+		DAOTransaction trans = null;
+		MinerFile result = null;
 		try {
-			return this.getFactory().getMinerFileDAO(this.getSession())
-					.find(id);
-		} catch (DataAccessException e) {
-			throw new MinerException(e);
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
+			result = this.getFactory().getMinerFileDAO(this.getSession()).find(
+					id);
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
 		}
+		return result;
 	}
 
 	public Collection<MinerFile> findAll() throws MinerException {
+		DAOTransaction trans = null;
+		Collection<MinerFile> result = null;
 		try {
-			return this.getFactory().getMinerFileDAO(this.getSession())
-					.findAll();
-		} catch (DataAccessException e) {
-			throw new MinerException(e);
-		}
-	}
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
 
+			result = this.getFactory().getMinerFileDAO(this.getSession())
+					.findAll();
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
+		}
+		return result;
+	}
+	
 	public void create(MinerFile minerFile) throws MinerException {
 		DAOTransaction trans = null;
 		try {
@@ -45,7 +79,8 @@ public class MinerFileManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getMinerFileDAO(this.getSession()).create(minerFile);
+			this.getFactory().getMinerFileDAO(this.getSession()).create(
+					minerFile);
 
 			// Commit transaction
 			trans.commit();
@@ -68,7 +103,8 @@ public class MinerFileManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getMinerFileDAO(this.getSession()).delete(minerFile);
+			this.getFactory().getMinerFileDAO(this.getSession()).delete(
+					minerFile);
 
 			// Commit transaction
 			trans.commit();
@@ -91,7 +127,8 @@ public class MinerFileManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getMinerFileDAO(this.getSession()).update(minerFile);
+			this.getFactory().getMinerFileDAO(this.getSession()).update(
+					minerFile);
 
 			// Commit transaction
 			trans.commit();

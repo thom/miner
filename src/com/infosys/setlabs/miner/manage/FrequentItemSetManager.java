@@ -21,30 +21,79 @@ public class FrequentItemSetManager extends Manager {
 	}
 
 	public void createTables() throws MinerException {
+		DAOTransaction trans = null;
 		try {
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
 			this.getFactory().getFrequentItemSetDAO(this.getSession())
 					.createTables();
-		} catch (DataAccessException e) {
-			throw new MinerException(e);
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
 		}
 	}
 
 	public FrequentItemSet find(int id) throws MinerException {
+		DAOTransaction trans = null;
+		FrequentItemSet result = null;
 		try {
-			return this.getFactory().getFrequentItemSetDAO(this.getSession())
-					.find(id);
-		} catch (DataAccessException e) {
-			throw new MinerException(e);
-		}
-	}
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
 
-	public Collection<FrequentItemSet> findAll() throws MinerException {
-		try {
-			return this.getFactory().getFrequentItemSetDAO(this.getSession())
-					.findAll();
-		} catch (DataAccessException e) {
-			throw new MinerException(e);
+			result = this.getFactory().getFrequentItemSetDAO(this.getSession())
+					.find(id);
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
 		}
+		return result;
+	}
+	
+	public Collection<FrequentItemSet> findAll() throws MinerException {
+		DAOTransaction trans = null;
+		Collection<FrequentItemSet> result = null;
+		try {
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
+			result = this.getFactory().getFrequentItemSetDAO(this.getSession())
+					.findAll();
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
+		}
+		return result;
 	}
 
 	public void create(FrequentItemSet frequentItemSet) throws MinerException {
