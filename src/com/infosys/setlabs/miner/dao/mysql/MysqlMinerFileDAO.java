@@ -50,7 +50,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				result.setFile(new MysqlRepositoryFileDAO(this.getConnection()).find(rs
 						.getInt("file_id")));
 				result.setModule(new MysqlMinerModuleDAO(this.getConnection())
-						.find(rs.getInt("module_id")));
+						.find(rs.getInt("miner_module_id")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -76,7 +76,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				minerFile.setFile(new MysqlRepositoryFileDAO(this.getConnection())
 						.find(rs.getInt("file_id")));
 				minerFile.setModule(new MysqlMinerModuleDAO(this
-						.getConnection()).find(rs.getInt("module_id")));
+						.getConnection()).find(rs.getInt("miner_module_id")));
 				result.add(minerFile);
 			}
 		} catch (SQLException e) {
@@ -113,6 +113,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		}
 		return result;
 	}
+	
 	@Override
 	public void delete(MinerFile minerFile) throws DataAccessException {
 		PreparedStatement ps = null;
