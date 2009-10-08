@@ -2,6 +2,7 @@ package com.infosys.setlabs.miner.manage;
 
 import java.util.HashMap;
 
+import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
@@ -24,12 +25,28 @@ public class ShiatsuManager extends Manager {
 	}
 
 	public void massage() throws MinerException {
+		DAOTransaction trans = null;
 		try {
-			this.getFactory().getShiatsuDAO(this.getSession()).createTables();
-			fillTables();
-		} catch (DataAccessException e) {
-			throw new MinerException(e);
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
+			this.getFactory().getShiatsuDAO(this.getSession()).createTables();			
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
 		}
+		
+		fillTables();		
 	}
 
 	private void fillTables() throws MinerException {
