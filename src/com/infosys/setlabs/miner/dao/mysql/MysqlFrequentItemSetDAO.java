@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
@@ -136,13 +137,34 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		}
 		return result;
 	}
-	
+
 	@Override
 	public int create(String frequentItemSetLine) throws DataAccessException {
-		// TODO: Create item set from string
-		return 0;
-	}
+		Pattern p = Pattern.compile(":");
+		String[] parts = p.split(frequentItemSetLine);
+		p = Pattern.compile(" ");
 
+		// First part: File IDs
+		String[] fileIDs = p.split(parts[0]);
+
+		// Seconds part: absolute and relative item support
+		String[] supports = p.split(parts[1]);
+
+		// Create new frequent item set
+		FrequentItemSet fis = new FrequentItemSet();
+
+		// Set support values
+		fis.setAbsoluteItemSetSupport(Integer.parseInt(supports[0]));
+		fis.setRelativeItemSetSupport(Double.parseDouble(supports[1]));
+
+		// Add items to frequent item set
+		for (String fileID : fileIDs) {
+			fis.addItem(new MinerFile(Integer.parseInt(fileID)));
+		}
+
+		// Create new database entry and return its ID
+		return create(fis);
+	}
 	@Override
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;
@@ -167,7 +189,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		try {
 			ps = this.getConnection().prepareStatement(
 					SELECT_FREQUENT_ITEMS_SQL);
-			ps.setInt(1, frequentItemSet.getId());			
+			ps.setInt(1, frequentItemSet.getId());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				frequentItemSet.addItem(new MysqlMinerFileDAO(this

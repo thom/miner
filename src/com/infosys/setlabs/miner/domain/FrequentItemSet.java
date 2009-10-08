@@ -9,6 +9,9 @@ public class FrequentItemSet {
 	private double relativeItemSetSupport;
 	private List<MinerFile> items = new ArrayList<MinerFile>();
 	
+	public FrequentItemSet() {
+	}	
+	
 	public FrequentItemSet(int id) {
 		setId(id);
 	}

@@ -11,5 +11,14 @@ public interface FrequentItemSetDAO
 			ReadObjectDAO<FrequentItemSet>,
 			CreateObjectDAO<FrequentItemSet>,
 			CreateTablesDAO {
+	/**
+	 * Expects an input in the form of <code>5 23 42:10 23.4200</code> whereas
+	 * before the <code>:</code> are file IDs and after the <code>:</code> are
+	 * the absolute and relative item support.
+	 * 
+	 * @param frequentItemSetLine
+	 * @return ID of newly created frequent item set
+	 * @throws DataAccessException
+	 */
 	public int create(String frequentItemSetLine) throws DataAccessException;
 }
