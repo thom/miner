@@ -11,6 +11,11 @@ public class JdbcDAOTransaction implements DAOTransaction {
 
 	public JdbcDAOTransaction(JdbcDAOSession session) {
 		this.session = session;
+		try {
+			session.getConnection().setAutoCommit(false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void begin() throws DataAccessException {
