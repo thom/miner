@@ -59,7 +59,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	 * 
 	 * @param conn
 	 *            connection to connect to
-	 */	
+	 */
 	public MysqlFrequentItemSetDAO(Connection conn) {
 		super(conn);
 	}
@@ -140,7 +140,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				frequentItemSet.setId(result);
 			}
 
-			addFrequentItem(frequentItemSet);
+			addFrequentItems(frequentItemSet);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -162,21 +162,42 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		String[] supports = p.split(parts[1]);
 
 		// Create new frequent item set
-		FrequentItemSet fis = new FrequentItemSet();
+		int result = 0;
+		PreparedStatement psItemSet = null;
+		PreparedStatement psItem = null;		
+		ResultSet rs = null;
+		try {
+			psItemSet = this.getConnection().prepareStatement(
+					CREATE_FREQUENT_ITEM_SET_SQL,
+					Statement.RETURN_GENERATED_KEYS);
+			psItemSet.setInt(1, 0);
+			psItemSet.setInt(2, Integer.parseInt(supports[0]));
+			psItemSet.setDouble(3, Double.parseDouble(supports[1]));
+			psItemSet.execute();
 
-		// Set support values
-		fis.setAbsoluteItemSetSupport(Integer.parseInt(supports[0]));
-		fis.setRelativeItemSetSupport(Double.parseDouble(supports[1]));
+			rs = psItemSet.getGeneratedKeys();
+			if (rs != null && rs.next())
+				result = rs.getInt(1);
 
-		// Add items to frequent item set
-		for (String fileID : fileIDs) {
-			fis.addItem(new MinerFile(Integer.parseInt(fileID)));
+			psItem = this.getConnection().prepareStatement(
+					ADD_FREQUENT_ITEM_SQL);
+
+			// Add items to frequent item set
+			for (String fileID : fileIDs) {
+				psItem.setInt(1, result);
+				psItem.setInt(2, Integer.parseInt(fileID));
+				psItem.execute();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeStatement(psItemSet);
+			this.closeStatement(psItem);
 		}
 
-		// Create new database entry and return its ID
-		return create(fis);
+		return result;
 	}
-	
+
 	@Override
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;
@@ -215,7 +236,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		}
 	}
 
-	private void addFrequentItem(FrequentItemSet frequentItemSet)
+	private void addFrequentItems(FrequentItemSet frequentItemSet)
 			throws SQLException {
 		if (!frequentItemSet.getItems().isEmpty()) {
 			// Prepare statement for connecting items, if there are any
