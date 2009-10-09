@@ -1,5 +1,9 @@
 package com.infosys.setlabs.miner.dao.mysql;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,7 +38,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 	}
 
 	@Override
-	public String format(boolean allFiles, boolean revs) {
+	public String format(File output, boolean allFiles, boolean revs) {
 		String result = "";
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -50,27 +54,36 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 		int counter = -1;
 
 		try {
+			// Open output file
+			BufferedWriter out = new BufferedWriter(new FileWriter(output));
+
 			ps = this.getConnection().prepareStatement(sqlStatement);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				int commitId = rs.getInt("commit_id");
 
 				if (counter < commitId) {
-					if (counter > -1)
-						result += "\n";
+					if (counter > -1) {
+						out.write("\n");
+					}
 
 					counter = commitId;
 
 					if (revs) {
-						result += "# " + rs.getString("rev") + "\n";
+						out.write("# " + rs.getString("rev") + "\n");
 					}
 				} else {
-					result += " ";
+					out.write(" ");
 				}
 
-				result += rs.getString("modified_files");
+				out.write(rs.getString("modified_files"));
 			}
+
+			// Close output file
+			out.close();
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			this.closeResultSet(rs);

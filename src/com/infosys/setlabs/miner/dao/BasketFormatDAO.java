@@ -1,5 +1,7 @@
 package com.infosys.setlabs.miner.dao;
 
+import java.io.File;
+
 /**
  * Basket format DAO
  * 
@@ -9,11 +11,13 @@ public interface BasketFormatDAO {
 	/**
 	 * Formats transactions to basket format
 	 * 
+	 * @param output
+	 *            file to write the output to
 	 * @param allFiles
 	 *            should all files be added to transactions?
 	 * @param revs
 	 *            should revisions be written in comments?
 	 * @return transactions in basket format
 	 */
-	public String format(boolean allFiles, boolean revs);
+	public String format(File output, boolean allFiles, boolean revs);
 }

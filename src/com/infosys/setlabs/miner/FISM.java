@@ -1,11 +1,9 @@
 package com.infosys.setlabs.miner;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
@@ -124,17 +122,9 @@ public class FISM {
 			// Connect to MySQL database
 			basketFormatManager = new BasketFormatManager(connectionArgs);
 
-			// Format
-			String baskets = basketFormatManager.format(values.getAllFiles(),
+			// Format and write transactions to a file
+			basketFormatManager.format(transactions, values.getAllFiles(),
 					false);
-
-			// Write transactions to a file
-			BufferedWriter out = new BufferedWriter(
-					new FileWriter(transactions));
-			out.write(baskets);
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
 		} finally {
 			if (basketFormatManager != null) {
 				basketFormatManager.close();

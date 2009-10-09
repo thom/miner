@@ -1,5 +1,6 @@
 package com.infosys.setlabs.miner;
 
+import java.io.File;
 import java.util.HashMap;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -22,6 +23,9 @@ public class Formatter {
 
 	// Database connection arguments
 	private HashMap<String, String> connectionArgs;
+
+	// File used to save transactions
+	private File transactions;
 
 	/**
 	 * Parses command line arguments and sets the database connection arguments.
@@ -54,6 +58,9 @@ public class Formatter {
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
+
+		// Initialize transactions file
+		transactions = new File(values.getDb() + ".tra");
 	}
 
 	/**
@@ -61,7 +68,7 @@ public class Formatter {
 	 * 
 	 * @throws MinerException
 	 */
-	public String format() throws MinerException {
+	public void format() throws MinerException {
 		BasketFormatManager basketFormatManager = null;
 
 		try {
@@ -71,8 +78,8 @@ public class Formatter {
 			basketFormatManager = new BasketFormatManager(connectionArgs);
 
 			// Format
-			return basketFormatManager.format(values.getAllFiles(), values
-					.getRevs());
+			basketFormatManager.format(transactions, values.getAllFiles(),
+					values.getRevs());
 		} finally {
 			if (basketFormatManager != null) {
 				basketFormatManager.close();
@@ -89,7 +96,7 @@ public class Formatter {
 	 */
 	public static void main(String[] args) throws MinerException {
 		Formatter formatter = new Formatter(args);
-		System.out.println(formatter.format());
+		formatter.format();
 	}
 
 	/**
