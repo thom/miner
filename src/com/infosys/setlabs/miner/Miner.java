@@ -21,11 +21,11 @@ import com.infosys.setlabs.miner.manage.FrequentItemSetManager;
 import com.infosys.setlabs.miner.manage.Manager;
 
 /**
- * FISM
+ * Miner
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class FISM {
+public class Miner {
 	// Command line values
 	private CommandLineValues values;
 
@@ -46,7 +46,7 @@ public class FISM {
 	 *            arguments
 	 * @throws MinerException
 	 */
-	public FISM(String[] args) throws MinerException {
+	public Miner(String[] args) throws MinerException {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -190,8 +190,8 @@ public class FISM {
 	 * @throws MinerException
 	 */
 	public static void main(String[] args) throws MinerException {
-		FISM fism = new FISM(args);
-		fism.fism();
+		Miner miner = new Miner(args);
+		miner.fism();
 	}
 
 	/**
@@ -209,16 +209,16 @@ public class FISM {
 		@Option(name = "-p", aliases = {"password", "pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
-		@Option(name = "-e", aliases = {"exec", "executable"}, usage = "path to the executable of apriori frequent item set miner")
+		@Option(name = "-e", aliases = {"exec", "executable"}, usage = "path to the executable of apriori frequent item set miner, can also be configured in conf/setup.properties")
 		private String exec;
 
 		@Option(name = "-a", aliases = {"all", "all-files"}, usage = "print all files affect by a transaction, including non-code files")
 		private boolean allFiles = false;
 
-		@Option(name = "-m", aliases = {"minimal", "minimal-items"}, usage = "minimal number of items per set")
+		@Option(name = "-m", aliases = {"minimal", "minimal-items"}, usage = "minimal number of items per set, can also be configured in conf/setup.properties")
 		private int minItems;
 
-		@Option(name = "-s", aliases = {"support", "minimal-support"}, usage = "minimal support of a set (positive: percentage, negative: absolute number)")
+		@Option(name = "-s", aliases = {"support", "minimal-support"}, usage = "minimal support of a set (positive: percentage, negative: absolute number), can also be configured in conf/setup.properties")
 		private float minSupport;
 
 		@Option(name = "-k", aliases = {"keep", "keep-files"}, usage = "keep all generated temporary files")
