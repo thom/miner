@@ -32,6 +32,9 @@ public class Miner {
 	// File used to save frequent item sets
 	private File frequentItemSets;
 
+	// Miner Manager
+	private MinerManager minerManager;
+
 	/**
 	 * Parses command line arguments, sets the database connection arguments and
 	 * initializes the temporary files.
@@ -76,8 +79,6 @@ public class Miner {
 	 * @throws MinerException
 	 */
 	public void mine() throws MinerException {
-		MinerManager minerManager = null;
-
 		try {
 			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
 
@@ -86,20 +87,10 @@ public class Miner {
 
 			System.out.println("EXEC  > fism\n");
 
-			// Format into basket format and save in file 'transactions'
-			System.out.println("EXEC  > format");
-			minerManager.format(transactions, values.getAllFiles(), false);
-			System.out.println("DONE  > format\n");
-
-			// Call apriori with the specified parameters
-			minerManager.apriori(values.getExec(), values.getMinSupport(),
-					values.getMinItems(), transactions, frequentItemSets);
-
-			// Parse output of apriori and save frequent item sets to the
-			// database
-			System.out.println("EXEC  > frequent item sets");
-			minerManager.frequentItemSets(frequentItemSets);
-			System.out.println("DONE  > frequent item sets\n");
+			// TODO: switch case for mode
+			format();
+			apriori();
+			frequentItemSets();
 
 			System.out.println("DONE  > fism");
 		} finally {
@@ -111,6 +102,38 @@ public class Miner {
 				frequentItemSets.delete();
 			}
 		}
+	}
+
+	/**
+	 * Format into basket format and save in file 'transactions'
+	 * 
+	 * @throws MinerException
+	 */
+	private void format() throws MinerException {
+		System.out.println("EXEC  > format");
+		minerManager.format(transactions, values.getAllFiles(), false);
+		System.out.println("DONE  > format\n");
+	}
+
+	/**
+	 * Call apriori with the specified parameters
+	 * 
+	 * @throws MinerException
+	 */
+	private void apriori() throws MinerException {
+		minerManager.apriori(values.getExec(), values.getMinSupport(), values
+				.getMinItems(), transactions, frequentItemSets);
+	}
+
+	/**
+	 * Parse output of apriori and save frequent item sets to the database
+	 * 
+	 * @throws MinerException
+	 */
+	private void frequentItemSets() throws MinerException {
+		System.out.println("EXEC  > frequent item sets");
+		minerManager.frequentItemSets(frequentItemSets);
+		System.out.println("DONE  > frequent item sets\n");
 	}
 
 	/**
@@ -154,7 +177,7 @@ public class Miner {
 
 		@Option(name = "-k", aliases = {"keep", "keep-files"}, usage = "keep all generated temporary files")
 		private boolean keepFiles = false;
-
+		
 		/**
 		 * Sets default values for some of the command line arguments
 		 * 
