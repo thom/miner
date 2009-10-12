@@ -1,6 +1,7 @@
 package com.infosys.setlabs.miner;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -28,9 +29,11 @@ public class Miner {
 
 	// File used to save transactions
 	private File transactions;
+	private boolean transactionsExistedBefore;
 
 	// File used to save frequent item sets
 	private File frequentItemSets;
+	private boolean frequentItemSetsExistedBefore;
 
 	// Miner Manager
 	private MinerManager minerManager;
@@ -68,9 +71,15 @@ public class Miner {
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
 
-		// Initialize files
-		transactions = new File(values.getDb() + ".tra");
-		frequentItemSets = new File(values.getDb() + ".fis");
+		// Initialize transactions file
+		transactions = setFile(values.getTransactions(), values.getDb()
+				+ ".tra");
+		transactionsExistedBefore = transactions.exists();
+
+		// Initialize frequent item sets file
+		frequentItemSets = setFile(values.getFrequentItemSets(), values.getDb()
+				+ ".fis");
+		frequentItemSetsExistedBefore = frequentItemSets.exists();
 	}
 
 	/**
@@ -87,19 +96,36 @@ public class Miner {
 
 			System.out.println("EXEC  > fism\n");
 
-			// TODO: switch case for mode
-			format();
-			apriori();
-			frequentItemSets();
+			// Determine what to do in which mode
+			switch (values.getMode()) {
+				case FORMAT :
+					format();
+					break;
+				case APRIORI :
+					format();
+					apriori();
+					break;
+				default : // ALL
+					format();
+					apriori();
+					frequentItemSets();
+					break;
+			}
 
 			System.out.println("DONE  > fism");
 		} finally {
 			if (minerManager != null) {
 				minerManager.close();
 			}
+
+			// Keep files if user specifies so
 			if (!values.getKeepFiles()) {
-				transactions.delete();
-				frequentItemSets.delete();
+				if (!transactionsExistedBefore) {
+					transactions.delete();
+				}
+				if (!frequentItemSetsExistedBefore) {
+					frequentItemSets.delete();
+				}
 			}
 		}
 	}
@@ -110,9 +136,15 @@ public class Miner {
 	 * @throws MinerException
 	 */
 	private void format() throws MinerException {
-		System.out.println("EXEC  > format");
-		minerManager.format(transactions, values.getAllFiles(), false);
-		System.out.println("DONE  > format\n");
+		if (!transactionsExistedBefore || values.getOverwriteFiles()) {
+			System.out.println("EXEC  > format");
+			minerManager.format(transactions, values.getAllFiles(), false);
+			System.out.println("DONE  > format\n");
+		} else {
+			System.out
+					.println("EXEC > format: Nothing to do, reusing existing file "
+							+ transactions.getAbsolutePath() + "\n");
+		}
 	}
 
 	/**
@@ -121,10 +153,20 @@ public class Miner {
 	 * @throws MinerException
 	 */
 	private void apriori() throws MinerException {
-		minerManager.apriori(values.getExec(), values.getMinSupport(), values
-				.getMinItems(), transactions, frequentItemSets);
+		if (!frequentItemSetsExistedBefore || values.getOverwriteFiles()) {
+			try {
+				frequentItemSets.createNewFile();
+				minerManager.apriori(values.getExec(), values.getMinSupport(),
+						values.getMinItems(), transactions, frequentItemSets);
+			} catch (IOException e) {
+				throw new MinerException(e);
+			}
+		} else {
+			System.out
+					.println("EXEC > apriori: Nothing to do, reusing existing file "
+							+ frequentItemSets.getAbsolutePath() + "\n");
+		}
 	}
-
 	/**
 	 * Parse output of apriori and save frequent item sets to the database
 	 * 
@@ -134,6 +176,20 @@ public class Miner {
 		System.out.println("EXEC  > frequent item sets");
 		minerManager.frequentItemSets(frequentItemSets);
 		System.out.println("DONE  > frequent item sets\n");
+	}
+
+	/**
+	 * Creates a new file where the path is fileName, if fileName is not null or
+	 * def otherwise
+	 * 
+	 * @param fileName
+	 *            file name specified as argument
+	 * @param def
+	 *            default file name
+	 * @return File
+	 */
+	private File setFile(String fileName, String def) {
+		return fileName != null ? new File(fileName) : new File(def);
 	}
 
 	/**
@@ -182,11 +238,20 @@ public class Miner {
 		@Option(name = "-s", aliases = {"--support", "--minimal-support"}, usage = "minimal support of a set (positive: percentage, negative: absolute number), can also be configured in conf/setup.properties")
 		private float minSupport;
 
-		@Option(name = "-k", aliases = {"--keep", "--keep-files"}, usage = "keep all generated temporary files")
+		@Option(name = "-k", aliases = {"--keep", "--keep-files"}, usage = "keep all generated files")
 		private boolean keepFiles = false;
 
-		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, f[ormat]: only formatting will happen, no frequent item set mining, a[priori]: call frequent item set miner", metaVar = "all|f|a")
-		private String mode = "all";
+		@Option(name = "-o", aliases = {"--overwrite", "--overwrite-files"}, usage = "overwrite all generated files, even those given as input")
+		private boolean overwriteFiles = false;
+
+		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
+		private Mode mode = Mode.ALL;
+
+		@Option(name = "-t", aliases = {"--trans", "--transactions"}, usage = "file containing transactions in basket format (if the file doesn't already exist, the miner tool creates it and writes data to it)")
+		private String transactions;
+
+		@Option(name = "-f", aliases = {"--fis", "--frequent-item-sets"}, usage = "file containing frequent item sets (if the file doesn't already exist, the miner tool creates it and writes data to it)")
+		private String frequentItemSets;
 
 		/**
 		 * Sets default values for some of the command line arguments
@@ -282,7 +347,7 @@ public class Miner {
 		}
 
 		/**
-		 * Should all generated temporary files be kept?
+		 * Should all generated files be kept?
 		 * 
 		 * @return keepFiles
 		 */
@@ -290,20 +355,41 @@ public class Miner {
 			return keepFiles;
 		}
 
-		public Mode getMode() {
-			Mode result = null;
+		/**
+		 * Should all generated files be overwritten (including those given as
+		 * input)?
+		 * 
+		 * @return overwriteFiles
+		 */
+		public boolean getOverwriteFiles() {
+			return overwriteFiles;
+		}
 
-			if (mode.equalsIgnoreCase("all")) {
-				result = Mode.ALL;
-			} else if (mode.equalsIgnoreCase("format") || mode.startsWith("f")
-					|| mode.startsWith("F")) {
-				result = Mode.FORMAT;
-			} else if (mode.equalsIgnoreCase("apriori") || mode.startsWith("a")
-					|| mode.startsWith("A")) {
-				result = Mode.APRIORI;
-			}
-			
-			return result;
+		/**
+		 * Returns the mode
+		 * 
+		 * @return mode
+		 */
+		public Mode getMode() {
+			return mode;
+		}
+
+		/**
+		 * Returns the name of the file containing transactions
+		 * 
+		 * @return transactions
+		 */
+		public String getTransactions() {
+			return transactions;
+		}
+
+		/**
+		 * Returns the name of the file containing frequent item sets
+		 * 
+		 * @return frequentItemSets
+		 */
+		public String getFrequentItemSets() {
+			return frequentItemSets;
 		}
 	}
 }
