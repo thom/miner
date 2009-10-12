@@ -154,30 +154,40 @@ public class Miner {
 	 * @author Thomas Weibel <thomas_401709@infosys.com>
 	 */
 	private static class CommandLineValues {
-		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
+		/**
+		 * Modes
+		 */
+		public enum Mode {
+			ALL, FORMAT, APRIORI
+		}
+
+		@Option(name = "-d", aliases = {"--database", "--db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
 
-		@Option(name = "-u", aliases = {"user", "login"}, usage = "user name to log in to the database", metaVar = "USER")
+		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
 		private String user;
 
-		@Option(name = "-p", aliases = {"password", "pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
+		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
-		@Option(name = "-e", aliases = {"exec", "executable"}, usage = "path to the executable of apriori frequent item set miner, can also be configured in conf/setup.properties")
+		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of apriori frequent item set miner, can also be configured in conf/setup.properties")
 		private String exec;
 
-		@Option(name = "-a", aliases = {"all", "all-files"}, usage = "print all files affect by a transaction, including non-code files")
+		@Option(name = "-a", aliases = {"--all", "--all-files"}, usage = "print all files affect by a transaction, including non-code files")
 		private boolean allFiles = false;
 
-		@Option(name = "-m", aliases = {"minimal", "minimal-items"}, usage = "minimal number of items per set, can also be configured in conf/setup.properties")
+		@Option(name = "-i", aliases = {"--items", "--minimal-items"}, usage = "minimal number of items per set, can also be configured in conf/setup.properties")
 		private int minItems;
 
-		@Option(name = "-s", aliases = {"support", "minimal-support"}, usage = "minimal support of a set (positive: percentage, negative: absolute number), can also be configured in conf/setup.properties")
+		@Option(name = "-s", aliases = {"--support", "--minimal-support"}, usage = "minimal support of a set (positive: percentage, negative: absolute number), can also be configured in conf/setup.properties")
 		private float minSupport;
 
-		@Option(name = "-k", aliases = {"keep", "keep-files"}, usage = "keep all generated temporary files")
+		@Option(name = "-k", aliases = {"--keep", "--keep-files"}, usage = "keep all generated temporary files")
 		private boolean keepFiles = false;
-		
+
+		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, f[ormat]: only formatting will happen, no frequent item set mining, a[priori]: call frequent item set miner", metaVar = "all|f|a")
+		private String mode = "all";
+
 		/**
 		 * Sets default values for some of the command line arguments
 		 * 
@@ -278,6 +288,22 @@ public class Miner {
 		 */
 		public boolean getKeepFiles() {
 			return keepFiles;
+		}
+
+		public Mode getMode() {
+			Mode result = null;
+
+			if (mode.equalsIgnoreCase("all")) {
+				result = Mode.ALL;
+			} else if (mode.equalsIgnoreCase("format") || mode.startsWith("f")
+					|| mode.startsWith("F")) {
+				result = Mode.FORMAT;
+			} else if (mode.equalsIgnoreCase("apriori") || mode.startsWith("a")
+					|| mode.startsWith("A")) {
+				result = Mode.APRIORI;
+			}
+			
+			return result;
 		}
 	}
 }
