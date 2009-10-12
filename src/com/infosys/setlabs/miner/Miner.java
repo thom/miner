@@ -1,10 +1,6 @@
 package com.infosys.setlabs.miner;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -13,12 +9,10 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import com.infosys.setlabs.miner.common.Configuration;
-import com.infosys.setlabs.miner.common.ExecWrapper;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
-import com.infosys.setlabs.miner.manage.BasketFormatManager;
-import com.infosys.setlabs.miner.manage.FrequentItemSetManager;
 import com.infosys.setlabs.miner.manage.Manager;
+import com.infosys.setlabs.miner.manage.MinerManager;
 
 /**
  * Miner
@@ -81,103 +75,40 @@ public class Miner {
 	 * 
 	 * @throws MinerException
 	 */
-	public void fism() throws MinerException {
+	public void mine() throws MinerException {
+		MinerManager minerManager = null;
+
 		try {
+			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
+
+			// Connect to MySQL database
+			minerManager = new MinerManager(connectionArgs);
+
 			System.out.println("EXEC  > fism\n");
 
 			// Format into basket format and save in file 'transactions'
 			System.out.println("EXEC  > format");
-			format();
+			minerManager.format(transactions, values.getAllFiles(), false);
 			System.out.println("DONE  > format\n");
 
 			// Call apriori with the specified parameters
-			apriori();
+			minerManager.apriori(values.getExec(), values.getMinSupport(),
+					values.getMinItems(), transactions, frequentItemSets);
 
 			// Parse output of apriori and save frequent item sets to the
 			// database
 			System.out.println("EXEC  > frequent item sets");
-			frequentItemSets();
+			minerManager.frequentItemSets(frequentItemSets);
 			System.out.println("DONE  > frequent item sets\n");
 
 			System.out.println("DONE  > fism");
 		} finally {
+			if (minerManager != null) {
+				minerManager.close();
+			}
 			if (!values.getKeepFiles()) {
 				transactions.delete();
 				frequentItemSets.delete();
-			}
-		}
-	}
-
-	/**
-	 * Formats revision history into basket format
-	 * 
-	 * @throws MinerException
-	 */
-	public void format() throws MinerException {
-		BasketFormatManager basketFormatManager = null;
-
-		try {
-			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
-
-			// Connect to MySQL database
-			basketFormatManager = new BasketFormatManager(connectionArgs);
-
-			// Format and write transactions to a file
-			basketFormatManager.format(transactions, values.getAllFiles(),
-					false);
-		} finally {
-			if (basketFormatManager != null) {
-				basketFormatManager.close();
-			}
-		}
-	}
-
-	/**
-	 * Calls <code>apriori</code> frequent item set miner
-	 * 
-	 * @throws MinerException
-	 */
-	public void apriori() throws MinerException {
-		String[] cmd = {values.getExec(), "-s" + values.getMinSupport(),
-				"-m" + values.getMinItems(), "-v:%a %4S",
-				this.transactions.getAbsolutePath(),
-				this.frequentItemSets.getAbsolutePath()};
-		ExecWrapper apriori = new ExecWrapper(cmd);
-		apriori.run();
-	}
-
-	/**
-	 * Writes frequent item sets to the database
-	 * 
-	 * @throws MinerException
-	 */
-	public void frequentItemSets() throws MinerException {
-		FrequentItemSetManager frequentItemSetManager = null;
-
-		try {
-			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
-
-			// Connect to MySQL database
-			frequentItemSetManager = new FrequentItemSetManager(connectionArgs);
-
-			// Create tables
-			frequentItemSetManager.createTables();
-
-			// Iterate over output of apriori and add frequent item sets
-			// to the database
-			BufferedReader in = new BufferedReader(new FileReader(
-					frequentItemSets));
-			String line;
-			while ((line = in.readLine()) != null) {
-				frequentItemSetManager.create(line);
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (frequentItemSetManager != null) {
-				frequentItemSetManager.close();
 			}
 		}
 	}
@@ -191,7 +122,7 @@ public class Miner {
 	 */
 	public static void main(String[] args) throws MinerException {
 		Miner miner = new Miner(args);
-		miner.fism();
+		miner.mine();
 	}
 
 	/**
