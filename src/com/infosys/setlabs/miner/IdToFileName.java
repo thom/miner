@@ -108,16 +108,16 @@ public class IdToFileName {
 		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
 
-		@Option(name = "-u", aliases = {"user", "login"}, usage = "user name to log in to the database", metaVar = "USER")
+		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
 		private String user;
 
-		@Option(name = "-p", aliases = {"password", "pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
+		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
-		@Option(name = "-i", aliases = {"id"}, usage = "ID of the file", required = true)
+		@Option(name = "-i", aliases = {"--id"}, usage = "ID of the file", required = true)
 		private int id;
 
-		@Option(name = "-n", aliases = {"name", "nameonly"}, usage = "get only the name and not the path of the file")
+		@Option(name = "-n", aliases = {"--name", "--nameonly"}, usage = "get only the name and not the path of the file")
 		private Boolean nameOnly = false;
 
 		/**
