@@ -239,7 +239,7 @@ public class Miner {
 		private float minSupport;
 
 		@Option(name = "-k", aliases = {"--keep", "--keep-files"}, usage = "keep all generated files")
-		private boolean keepFiles = false;
+		private boolean keepFiles = true;
 
 		@Option(name = "-o", aliases = {"--overwrite", "--overwrite-files"}, usage = "overwrite all generated files, even those given as input")
 		private boolean overwriteFiles = false;
