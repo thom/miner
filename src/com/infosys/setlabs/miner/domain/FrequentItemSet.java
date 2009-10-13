@@ -11,11 +11,16 @@ import java.util.List;
 public class FrequentItemSet {
 	private int id;
 
-	// Cache items count to speed up calculations
-	private int itemsCount;
+	// Cached items count to speed up calculations
+	private int size;
 
+	// Absolute item set support
 	private int absoluteItemSetSupport;
+	
+	// Relative item set support
 	private double relativeItemSetSupport;
+	
+	// Items
 	private List<MinerFile> items = new ArrayList<MinerFile>();
 
 	/**
@@ -58,8 +63,8 @@ public class FrequentItemSet {
 	 * 
 	 * @return itemsCount
 	 */
-	public int getItemsCount() {
-		return itemsCount == 0 ? items.size() : itemsCount;
+	public int getSize() {
+		return size == 0 ? items.size() : size;
 	}
 	
 	/**
@@ -67,8 +72,8 @@ public class FrequentItemSet {
 	 * 
 	 * @param itemsCount
 	 */
-	public void setItemsCount(int itemsCount) {
-		this.itemsCount = itemsCount;
+	public void setSize(int size) {
+		this.size = size;
 	}
 
 	/**
