@@ -94,7 +94,7 @@ public class Miner {
 			// Connect to MySQL database
 			minerManager = new MinerManager(connectionArgs);
 
-			System.out.println("EXEC  > fism\n");
+			System.out.println("EXEC  > miner\n");
 
 			// Determine what to do in which mode
 			switch (values.getMode()) {
@@ -112,7 +112,7 @@ public class Miner {
 					break;
 			}
 
-			System.out.println("DONE  > fism");
+			System.out.println("DONE  > miner");
 		} finally {
 			if (minerManager != null) {
 				minerManager.close();

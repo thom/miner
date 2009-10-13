@@ -69,11 +69,13 @@ public class Shiatsu {
 
 			// Connect to MySQL database
 			shiatsuManager = new ShiatsuManager(connectionArgs);
+			
+			System.out.println("EXEC  > shiatsu\n");
 
 			// Massage data
 			shiatsuManager.massage();
 
-			System.out.println("Done.");
+			System.out.println("DONE  > shiatsu");
 		} finally {
 			if (shiatsuManager != null) {
 				shiatsuManager.close();
