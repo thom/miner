@@ -27,7 +27,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	protected static String CREATE_MINER_FISM_TABLE = ""
 			+ "CREATE TABLE miner_frequent_item_sets ("
 			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-			+ "absolute_item_set_support INT, "
+			+ "items_count INT, " + "absolute_item_set_support INT, "
 			+ "relative_item_set_support FLOAT(7,4) "
 			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
 	protected static String CREATE_MINER_FIS_TABLE = ""
@@ -42,14 +42,14 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
 	protected static String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS ";
 	protected static String SELECT_FREQUENT_ITEM_SET_SQL = ""
-			+ "SELECT id, absolute_item_set_support, relative_item_set_support "
+			+ "SELECT id, items_count, absolute_item_set_support, relative_item_set_support "
 			+ "FROM miner_frequent_item_sets WHERE id=?";
 	protected static String SELECT_FREQUENT_ITEMS_SQL = ""
-			+ "SELECT id, miner_frequent_item_set_id, file_id FROM miner_frequent_items "
+			+ "SELECT id, items_count, miner_frequent_item_set_id, file_id FROM miner_frequent_items "
 			+ "WHERE miner_frequent_item_set_id=?";
 	protected static String CREATE_FREQUENT_ITEM_SET_SQL = ""
-			+ "INSERT INTO miner_frequent_item_sets (id, absolute_item_set_support, relative_item_set_support) "
-			+ "VALUES (?,?,?)";
+			+ "INSERT INTO miner_frequent_item_sets (id, items_count, absolute_item_set_support, relative_item_set_support) "
+			+ "VALUES (?,?,?,?)";
 	protected static String ADD_FREQUENT_ITEM_SQL = ""
 			+ "INSERT INTO miner_frequent_items (miner_frequent_item_set_id, file_id) "
 			+ "VALUES (?,?)";
@@ -76,6 +76,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = new FrequentItemSet(rs.getInt("id"));
+				result.setItemsCount(rs.getInt("items_count"));
 				result.setAbsoluteItemSetSupport(rs
 						.getInt("absolute_item_set_support"));
 				result.setRelativeItemSetSupport(rs
@@ -103,6 +104,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			while (rs.next()) {
 				FrequentItemSet frequentItemSet = new FrequentItemSet(rs
 						.getInt("id"));
+				frequentItemSet.setItemsCount(rs.getInt("items_count"));
 				frequentItemSet.setAbsoluteItemSetSupport(rs
 						.getInt("absolute_item_set_support"));
 				frequentItemSet.setRelativeItemSetSupport(rs
@@ -130,8 +132,9 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 					CREATE_FREQUENT_ITEM_SET_SQL,
 					Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, frequentItemSet.getId());
-			ps.setInt(2, frequentItemSet.getAbsoluteItemSetSupport());
-			ps.setDouble(3, frequentItemSet.getRelativeItemSetSupport());
+			ps.setInt(2, frequentItemSet.getItemsCount());
+			ps.setInt(3, frequentItemSet.getAbsoluteItemSetSupport());
+			ps.setDouble(4, frequentItemSet.getRelativeItemSetSupport());
 			ps.execute();
 
 			rs = ps.getGeneratedKeys();
@@ -164,15 +167,16 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		// Create new frequent item set
 		int result = 0;
 		PreparedStatement psItemSet = null;
-		PreparedStatement psItem = null;		
+		PreparedStatement psItem = null;
 		ResultSet rs = null;
 		try {
 			psItemSet = this.getConnection().prepareStatement(
 					CREATE_FREQUENT_ITEM_SET_SQL,
 					Statement.RETURN_GENERATED_KEYS);
 			psItemSet.setInt(1, 0);
-			psItemSet.setInt(2, Integer.parseInt(supports[0]));
-			psItemSet.setDouble(3, Double.parseDouble(supports[1]));
+			psItemSet.setInt(2, fileIDs.length);
+			psItemSet.setInt(3, Integer.parseInt(supports[0]));
+			psItemSet.setDouble(4, Double.parseDouble(supports[1]));
 			psItemSet.execute();
 
 			rs = psItemSet.getGeneratedKeys();
