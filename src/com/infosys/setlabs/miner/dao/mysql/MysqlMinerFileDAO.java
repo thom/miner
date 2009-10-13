@@ -51,7 +51,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	 * 
 	 * @param conn
 	 *            connection to connect to
-	 */	
+	 */
 	public MysqlMinerFileDAO(Connection conn) {
 		super(conn);
 	}
@@ -120,10 +120,11 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			ps = this.getConnection().prepareStatement(CREATE_MINER_FILE_SQL,
 					Statement.RETURN_GENERATED_KEYS);
 
-			if (minerFile.getId() != 0)
+			if (minerFile.getId() != 0) {
 				id = minerFile.getId();
-			else
+			} else {
 				id = minerFile.getRepositoryFile().getId();
+			}
 
 			ps.setInt(1, id);
 			ps.setString(2, minerFile.getFileName());
