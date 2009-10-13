@@ -7,13 +7,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
 import com.infosys.setlabs.miner.domain.FrequentItemSet;
-import com.infosys.setlabs.miner.domain.MinerFile;
 
 /**
  * MySQL Frequent Item Set DAO
@@ -130,56 +130,17 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	}
 
 	@Override
-	public int create(FrequentItemSet frequentItemSet)
-			throws DataAccessException {
-		int result = 0;
-		PreparedStatement psSet = null;
-		PreparedStatement psItem = null;
-		ResultSet rs = null;
-		try {
-			psSet = this.getConnection().prepareStatement(
-					CREATE_FREQUENT_ITEM_SET_SQL,
-					Statement.RETURN_GENERATED_KEYS);
-			psSet.setInt(1, frequentItemSet.getId());
-			psSet.setInt(2, frequentItemSet.getSize());
-			psSet.setInt(3, frequentItemSet.getAbsoluteItemSetSupport());
-			psSet.setDouble(4, frequentItemSet.getRelativeItemSetSupport());
-			psSet.setInt(5, frequentItemSet.getModulesTouched());
-			psSet.execute();
-
-			rs = psSet.getGeneratedKeys();
-			if (rs != null && rs.next()) {
-				result = rs.getInt(1);
-				frequentItemSet.setId(result);
-			}
-
-			psItem = this.getConnection().prepareStatement(
-					ADD_FREQUENT_ITEM_SQL);
-
-			// Add items to frequent item set
-			for (MinerFile file : frequentItemSet.getItems()) {
-				psItem.setInt(1, result);
-				psItem.setInt(2, file.getId());
-				psItem.addBatch();
-			}
-			psItem.executeBatch();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.closeStatement(psSet);
-			this.closeStatement(psItem);
-		}
-		return result;
-	}
-
-	@Override
 	public int create(String frequentItemSetLine) throws DataAccessException {
 		Pattern p = Pattern.compile(":");
 		String[] parts = p.split(frequentItemSetLine);
 		p = Pattern.compile(" ");
 
 		// First part: File IDs
-		String[] fileIDs = p.split(parts[0]);
+		String[] files = p.split(parts[0]);
+		LinkedList<Integer> fileIds = new LinkedList<Integer>();
+		for (String file : files) {
+			fileIds.add(Integer.parseInt(file));
+		}
 
 		// Seconds part: absolute and relative item support
 		String[] supports = p.split(parts[1]);
@@ -194,7 +155,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 					CREATE_FREQUENT_ITEM_SET_SQL,
 					Statement.RETURN_GENERATED_KEYS);
 			psItemSet.setInt(1, 0);
-			psItemSet.setInt(2, fileIDs.length);
+			psItemSet.setInt(2, fileIds.size());
 			psItemSet.setInt(3, Integer.parseInt(supports[0]));
 			psItemSet.setDouble(4, Double.parseDouble(supports[1]));
 			psItemSet.setInt(5, 0);
@@ -209,12 +170,18 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 					ADD_FREQUENT_ITEM_SQL);
 
 			// Add items to frequent item set
-			for (String fileID : fileIDs) {
+			for (Integer fileId : fileIds) {
 				psItem.setInt(1, result);
-				psItem.setInt(2, Integer.parseInt(fileID));
+				psItem.setInt(2, fileId);
 				psItem.addBatch();
 			}
 			psItem.executeBatch();
+
+			// Need to commit so data gets written to database
+			this.getConnection().commit();
+
+			// Set numberOfModulesTouched()!
+			setNumberOfModulesTouched(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -225,9 +192,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		return result;
 	}
 
-	// TODO: Set modules_touched!
-	@Override
-	public void setModulesTouched(int id) throws DataAccessException {
+	private void setNumberOfModulesTouched(int id) {
 		PreparedStatement psUpdate = null;
 		PreparedStatement psModulesTouched = null;
 		ResultSet rs = null;
@@ -253,7 +218,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			this.closeStatement(psModulesTouched);
 		}
 	}
-
+	
 	@Override
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;

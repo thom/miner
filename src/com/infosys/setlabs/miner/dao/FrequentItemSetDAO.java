@@ -1,6 +1,5 @@
 package com.infosys.setlabs.miner.dao;
 
-import com.infosys.setlabs.dao.CreateObjectDAO;
 import com.infosys.setlabs.dao.CreateTablesDAO;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.ReadObjectDAO;
@@ -14,7 +13,6 @@ import com.infosys.setlabs.miner.domain.FrequentItemSet;
 public interface FrequentItemSetDAO
 		extends
 			ReadObjectDAO<FrequentItemSet>,
-			CreateObjectDAO<FrequentItemSet>,
 			CreateTablesDAO {
 	/**
 	 * Expects an input in the form of <code>5 23 42:10 23.4200</code> whereas
@@ -27,14 +25,4 @@ public interface FrequentItemSetDAO
 	 * @throws DataAccessException
 	 */
 	public int create(String frequentItemSetLine) throws DataAccessException;
-
-	/**
-	 * Sets the number of modules touched in a frequent item set
-	 * 
-	 * @param id
-	 *            ID of frequent item set to set the number of modules touched
-	 *            for
-	 * @throws DataAccessException
-	 */
-	public void setModulesTouched(int id) throws DataAccessException;
 }

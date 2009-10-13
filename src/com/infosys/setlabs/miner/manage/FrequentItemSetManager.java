@@ -122,46 +122,6 @@ public class FrequentItemSetManager extends Manager {
 	}
 
 	/**
-	 * Creates a new persistent miner module
-	 * 
-	 * @param frequentItemSet
-	 *            item set to create
-	 * @throws MinerException
-	 */
-	public void create(FrequentItemSet frequentItemSet) throws MinerException {
-		DAOTransaction trans = null;
-		try {
-			// Start new transaction
-			trans = this.getSession().getTransaction();
-			trans.begin();
-
-			int id = this.getFactory().getFrequentItemSetDAO(this.getSession())
-					.create(frequentItemSet);
-
-			// Commit transaction
-			trans.commit();
-
-			// Start new transaction
-			trans.begin();
-
-			this.getFactory().getFrequentItemSetDAO(this.getSession())
-					.setModulesTouched(id);
-
-			// Commit transaction
-			trans.commit();
-		} catch (DataAccessException de) {
-			// Rollback transaction on failure
-			try {
-				if (trans != null)
-					trans.abort();
-			} catch (DataAccessException de2) {
-				throw new MinerException(de2);
-			}
-			throw new MinerException(de);
-		}
-	}
-
-	/**
 	 * Creates a new persistent frequent item set.
 	 * 
 	 * @param frequentItemSetLine
@@ -178,17 +138,8 @@ public class FrequentItemSetManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			int id = this.getFactory().getFrequentItemSetDAO(this.getSession())
-					.create(frequentItemSetLine);
-
-			// Commit transaction
-			trans.commit();
-
-			// Start new transaction
-			trans.begin();
-
-			this.getFactory().getFrequentItemSetDAO(this.getSession())
-					.setModulesTouched(id);
+			this.getFactory().getFrequentItemSetDAO(this.getSession()).create(
+					frequentItemSetLine);
 
 			// Commit transaction
 			trans.commit();
