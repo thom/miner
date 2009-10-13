@@ -1,6 +1,7 @@
 package com.infosys.setlabs.miner.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -16,10 +17,13 @@ public class FrequentItemSet {
 
 	// Absolute item set support
 	private int absoluteItemSetSupport;
-	
+
 	// Relative item set support
 	private double relativeItemSetSupport;
-	
+
+	// Number of modules touched by item set
+	private int modulesTouched;
+
 	// Items
 	private List<MinerFile> items = new ArrayList<MinerFile>();
 
@@ -61,16 +65,17 @@ public class FrequentItemSet {
 	/**
 	 * Returns the number of items of this item set
 	 * 
-	 * @return itemsCount
+	 * @return size
 	 */
 	public int getSize() {
 		return size == 0 ? items.size() : size;
 	}
-	
+
 	/**
 	 * Set the number of items of this item set
 	 * 
-	 * @param itemsCount
+	 * @param size
+	 *            number of items in the item set
 	 */
 	public void setSize(int size) {
 		this.size = size;
@@ -112,6 +117,34 @@ public class FrequentItemSet {
 	 */
 	public void setRelativeItemSetSupport(double relativeItemSetSupport) {
 		this.relativeItemSetSupport = relativeItemSetSupport;
+	}
+
+	/**
+	 * Returns the number of modules that were touched in an item set
+	 * 
+	 * @return modulesTouched
+	 */
+	public int getModulesTouched() {
+		if (modulesTouched == 0) {
+			HashSet<Integer> modules = new HashSet<Integer>();
+			for (MinerFile file : items) {
+				modules.add(file.getModule().getId());
+			}
+			return modules.size();
+		}
+		else {
+			return modulesTouched;
+		}
+	}
+
+	/**
+	 * Sets the number of modules that were touched in an item set
+	 * 
+	 * @param modulesTouched
+	 *            number of modules touched
+	 */
+	public void setModulesTouched(int modulesTouched) {
+		this.modulesTouched = modulesTouched;
 	}
 
 	/**

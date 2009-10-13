@@ -26,9 +26,9 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 
 	protected static String CREATE_MINER_FISM_TABLE = ""
 			+ "CREATE TABLE miner_frequent_item_sets ("
-			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-			+ "size INT, " + "absolute_item_set_support INT, "
-			+ "relative_item_set_support FLOAT(7,4) "
+			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, " + "size INT, "
+			+ "absolute_item_set_support INT, "
+			+ "relative_item_set_support FLOAT(7,4) ," + "modules_touched INT"
 			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
 	protected static String CREATE_MINER_FIS_TABLE = ""
 			+ "CREATE TABLE miner_frequent_items ("
@@ -42,14 +42,20 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
 	protected static String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS ";
 	protected static String SELECT_FREQUENT_ITEM_SET_SQL = ""
-			+ "SELECT id, size, absolute_item_set_support, relative_item_set_support "
+			+ "SELECT id, size, absolute_item_set_support, relative_item_set_support, modules_touched "
 			+ "FROM miner_frequent_item_sets WHERE id=?";
 	protected static String SELECT_FREQUENT_ITEMS_SQL = ""
-			+ "SELECT id, size, miner_frequent_item_set_id, file_id FROM miner_frequent_items "
+			+ "SELECT id, miner_frequent_item_set_id, file_id FROM miner_frequent_items "
 			+ "WHERE miner_frequent_item_set_id=?";
 	protected static String CREATE_FREQUENT_ITEM_SET_SQL = ""
-			+ "INSERT INTO miner_frequent_item_sets (id, size, absolute_item_set_support, relative_item_set_support) "
-			+ "VALUES (?,?,?,?)";
+			+ "INSERT INTO miner_frequent_item_sets (id, size, absolute_item_set_support, relative_item_set_support, modules_touched) "
+			+ "VALUES (?,?,?,?,?)";
+	protected static String SET_MODULES_TOUCHED_ITEM_SET_SQL = ""
+			+ "UPDATE miner_frequent_item_sets SET modules_touched=? WHERE id=?";
+	protected static String GET_MODULES_TOUCHED_ITEM_SET_SQL = ""
+			+ "SELECT COUNT(*) count "
+			+ "FROM (SELECT DISTINCT f.miner_module_id FROM miner_frequent_items fi, miner_files f "
+			+ "WHERE f.id = fi.file_id AND fi.miner_frequent_item_set_id = ?) as modules_count";
 	protected static String ADD_FREQUENT_ITEM_SQL = ""
 			+ "INSERT INTO miner_frequent_items (miner_frequent_item_set_id, file_id) "
 			+ "VALUES (?,?)";
@@ -81,6 +87,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 						.getInt("absolute_item_set_support"));
 				result.setRelativeItemSetSupport(rs
 						.getDouble("relative_item_set_support"));
+				result.setModulesTouched(rs.getInt("modules_touched"));
 				addItems(result);
 			}
 		} catch (SQLException e) {
@@ -109,6 +116,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 						.getInt("absolute_item_set_support"));
 				frequentItemSet.setRelativeItemSetSupport(rs
 						.getDouble("relative_item_set_support"));
+				frequentItemSet.setModulesTouched(rs.getInt("modules_touched"));
 				addItems(frequentItemSet);
 				result.add(frequentItemSet);
 			}
@@ -125,29 +133,41 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	public int create(FrequentItemSet frequentItemSet)
 			throws DataAccessException {
 		int result = 0;
-		PreparedStatement ps = null;
+		PreparedStatement psSet = null;
+		PreparedStatement psItem = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(
+			psSet = this.getConnection().prepareStatement(
 					CREATE_FREQUENT_ITEM_SET_SQL,
 					Statement.RETURN_GENERATED_KEYS);
-			ps.setInt(1, frequentItemSet.getId());
-			ps.setInt(2, frequentItemSet.getSize());
-			ps.setInt(3, frequentItemSet.getAbsoluteItemSetSupport());
-			ps.setDouble(4, frequentItemSet.getRelativeItemSetSupport());
-			ps.execute();
+			psSet.setInt(1, frequentItemSet.getId());
+			psSet.setInt(2, frequentItemSet.getSize());
+			psSet.setInt(3, frequentItemSet.getAbsoluteItemSetSupport());
+			psSet.setDouble(4, frequentItemSet.getRelativeItemSetSupport());
+			psSet.setInt(5, frequentItemSet.getModulesTouched());
+			psSet.execute();
 
-			rs = ps.getGeneratedKeys();
+			rs = psSet.getGeneratedKeys();
 			if (rs != null && rs.next()) {
 				result = rs.getInt(1);
 				frequentItemSet.setId(result);
 			}
 
-			addFrequentItems(frequentItemSet);
+			psItem = this.getConnection().prepareStatement(
+					ADD_FREQUENT_ITEM_SQL);
+
+			// Add items to frequent item set
+			for (MinerFile file : frequentItemSet.getItems()) {
+				psItem.setInt(1, result);
+				psItem.setInt(2, file.getId());
+				psItem.addBatch();
+			}
+			psItem.executeBatch();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			this.closeStatement(ps);
+			this.closeStatement(psSet);
+			this.closeStatement(psItem);
 		}
 		return result;
 	}
@@ -177,11 +197,13 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			psItemSet.setInt(2, fileIDs.length);
 			psItemSet.setInt(3, Integer.parseInt(supports[0]));
 			psItemSet.setDouble(4, Double.parseDouble(supports[1]));
+			psItemSet.setInt(5, 0);
 			psItemSet.execute();
 
 			rs = psItemSet.getGeneratedKeys();
-			if (rs != null && rs.next())
+			if (rs != null && rs.next()) {
 				result = rs.getInt(1);
+			}
 
 			psItem = this.getConnection().prepareStatement(
 					ADD_FREQUENT_ITEM_SQL);
@@ -190,8 +212,9 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			for (String fileID : fileIDs) {
 				psItem.setInt(1, result);
 				psItem.setInt(2, Integer.parseInt(fileID));
-				psItem.execute();
+				psItem.addBatch();
 			}
+			psItem.executeBatch();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -200,6 +223,35 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		}
 
 		return result;
+	}
+
+	// TODO: Set modules_touched!
+	@Override
+	public void setModulesTouched(int id) throws DataAccessException {
+		PreparedStatement psUpdate = null;
+		PreparedStatement psModulesTouched = null;
+		ResultSet rs = null;
+		try {
+			psModulesTouched = this.getConnection().prepareStatement(
+					GET_MODULES_TOUCHED_ITEM_SET_SQL);
+			psModulesTouched.setInt(1, id);
+			rs = psModulesTouched.executeQuery();
+			int modulesTouched = 0;
+			while (rs.next()) {
+				modulesTouched = rs.getInt("count");
+			}
+
+			psUpdate = this.getConnection().prepareStatement(
+					SET_MODULES_TOUCHED_ITEM_SET_SQL);
+			psUpdate.setInt(1, modulesTouched);
+			psUpdate.setInt(2, id);
+			psUpdate.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeStatement(psUpdate);
+			this.closeStatement(psModulesTouched);
+		}
 	}
 
 	@Override
@@ -237,25 +289,6 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		} finally {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);
-		}
-	}
-
-	private void addFrequentItems(FrequentItemSet frequentItemSet)
-			throws SQLException {
-		if (!frequentItemSet.getItems().isEmpty()) {
-			// Prepare statement for connecting items, if there are any
-			PreparedStatement ps = this.getConnection().prepareStatement(
-					ADD_FREQUENT_ITEM_SQL);
-
-			// Iterate through all items, connect them to the item set and
-			// execute batch
-			for (MinerFile file : frequentItemSet.getItems()) {
-				ps.setInt(1, frequentItemSet.getId());
-				ps.setInt(2, file.getId());
-				ps.addBatch();
-			}
-			ps.executeBatch();
-			ps.close();
 		}
 	}
 }

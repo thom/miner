@@ -135,8 +135,17 @@ public class FrequentItemSetManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getFrequentItemSetDAO(this.getSession()).create(
-					frequentItemSet);
+			int id = this.getFactory().getFrequentItemSetDAO(this.getSession())
+					.create(frequentItemSet);
+
+			// Commit transaction
+			trans.commit();
+
+			// Start new transaction
+			trans.begin();
+
+			this.getFactory().getFrequentItemSetDAO(this.getSession())
+					.setModulesTouched(id);
 
 			// Commit transaction
 			trans.commit();
@@ -169,8 +178,17 @@ public class FrequentItemSetManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getFrequentItemSetDAO(this.getSession()).create(
-					frequentItemSetLine);
+			int id = this.getFactory().getFrequentItemSetDAO(this.getSession())
+					.create(frequentItemSetLine);
+
+			// Commit transaction
+			trans.commit();
+
+			// Start new transaction
+			trans.begin();
+
+			this.getFactory().getFrequentItemSetDAO(this.getSession())
+					.setModulesTouched(id);
 
 			// Commit transaction
 			trans.commit();
