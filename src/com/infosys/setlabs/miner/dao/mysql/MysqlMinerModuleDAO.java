@@ -41,7 +41,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	protected static String DELETE_MINER_MODULE_SQL = ""
 			+ "DELETE FROM miner_modules WHERE id=?";
 	protected static String UPDATE_MINER_MODULE_SQL = ""
-			+ "UPDATE miner_modules SET module_name=? WHERE id=?)";
+			+ "UPDATE miner_modules SET module_name=? WHERE id=?";
 
 	/**
 	 * Creates a new DAO
@@ -174,6 +174,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 			ps = this.getConnection().prepareStatement(UPDATE_MINER_MODULE_SQL);
 			ps.setString(1, minerModule.getModuleName());
 			ps.setInt(2, minerModule.getId());
+			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

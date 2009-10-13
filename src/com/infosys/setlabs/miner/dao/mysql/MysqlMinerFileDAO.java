@@ -44,7 +44,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			+ "DELETE FROM miner_files WHERE id=?";
 	protected static String UPDATE_MINER_FILE_SQL = ""
 			+ "UPDATE miner_files SET file_name=?, path=?, miner_module_id=? "
-			+ "WHERE id=?)";
+			+ "WHERE id=?";
 
 	/**
 	 * Creates a new DAO
@@ -165,6 +165,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			ps.setString(2, minerFile.getPath());
 			ps.setInt(3, minerFile.getModule().getId());
 			ps.setInt(4, minerFile.getId());
+			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
