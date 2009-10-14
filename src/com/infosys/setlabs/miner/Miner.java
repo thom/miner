@@ -12,7 +12,9 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
+import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.manage.Manager;
+import com.infosys.setlabs.miner.manage.MinerInfoManager;
 import com.infosys.setlabs.miner.manage.MinerManager;
 
 /**
@@ -153,7 +155,7 @@ public class Miner {
 	 * @throws MinerException
 	 */
 	private void apriori() throws MinerException {
-		if (!frequentItemSetsExistedBefore || values.getOverwriteFiles()) {
+		if (runApriori()) {
 			try {
 				frequentItemSets.createNewFile();
 				minerManager.apriori(values.getExec(), values.getMinSupport(),
@@ -166,7 +168,44 @@ public class Miner {
 					.println("EXEC > apriori: Nothing to do, reusing existing file "
 							+ frequentItemSets.getAbsolutePath() + "\n");
 		}
+
+		writeMinerInfo();
 	}
+
+	private boolean runApriori() {
+		return !frequentItemSetsExistedBefore || values.getOverwriteFiles();
+	}
+
+	private void writeMinerInfo() throws MinerException {
+		MinerInfoManager minerInfoManager = null;
+
+		try {
+			minerInfoManager = new MinerInfoManager(connectionArgs);
+
+			// Create tables
+			boolean doIt = false;
+			try {
+				minerInfoManager.get();
+			} catch (MinerException e) {
+				doIt = true;
+			}
+			if (doIt || runApriori()) {
+				minerInfoManager.createTables();
+				doIt = true;
+			}
+
+			// Write miner info
+			if (doIt) {
+				minerInfoManager.create(new MinerInfo(values.getMinItems(),
+						values.getMinSupport()));
+			}
+		} finally {
+			if (minerInfoManager != null) {
+				minerInfoManager.close();
+			}
+		}
+	}
+
 	/**
 	 * Parse output of apriori and save frequent item sets to the database
 	 * 
