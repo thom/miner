@@ -165,4 +165,11 @@ public class FrequentItemSet {
 	public void addItem(MinerFile item) {
 		this.items.add(item);
 	}
+	
+	@Override
+	public String toString() {
+		String result = "";
+		
+		return result;
+	}
 }
