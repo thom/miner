@@ -13,6 +13,13 @@ import com.infosys.setlabs.miner.common.MinerException;
 public class MinerManager extends Manager {
 	private HashMap<String, String> connectionArgs = null;
 
+	/**
+	 * Creates a new miner mananger
+	 * 
+	 * @param connectionArgs
+	 *            arguments to use for connection
+	 * @throws MinerException
+	 */
 	public MinerManager(HashMap<String, String> connectionArgs)
 			throws MinerException {
 		super(connectionArgs);

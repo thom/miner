@@ -16,6 +16,8 @@ public class BasketFormatManager extends Manager {
 	/**
 	 * Creates a new basket format manager
 	 * 
+	 * @param connectionArgs
+	 *            arguments to use for connection
 	 * @throws MinerException
 	 */
 	public BasketFormatManager(HashMap<String, String> connectionArgs)
