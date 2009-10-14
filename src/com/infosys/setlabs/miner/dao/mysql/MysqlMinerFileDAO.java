@@ -12,6 +12,7 @@ import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
+import com.infosys.setlabs.miner.domain.RepositoryFile;
 
 /**
  * MySQL Miner File DAO
@@ -59,6 +60,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	@Override
 	public MinerFile find(int id) throws DataAccessException {
 		MinerFile result = null;
+		RepositoryFile repositoryFile = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -66,13 +68,15 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
+				repositoryFile = new MysqlRepositoryFileDAO(this
+						.getConnection()).find(rs.getInt("id"));
 				result = new MinerFile(rs.getInt("id"));
 				result.setFileName(rs.getString("file_name"));
 				result.setPath(rs.getString("path"));
-				result.setRepositoryFile(new MysqlRepositoryFileDAO(this
-						.getConnection()).find(rs.getInt("id")));
+				result.setRepositoryFile(repositoryFile);
 				result.setModule(new MysqlMinerModuleDAO(this.getConnection())
 						.find(rs.getInt("miner_module_id")));
+				result.setType(repositoryFile.getType());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -82,23 +86,25 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		}
 		return result;
 	}
-
 	@Override
 	public Collection<MinerFile> findAll() throws DataAccessException {
 		ArrayList<MinerFile> result = new ArrayList<MinerFile>();
+		RepositoryFile repositoryFile = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			ps = this.getConnection().prepareStatement(SELECT_MINER_FILES_SQL);
 			rs = ps.executeQuery();
 			while (rs.next()) {
+				repositoryFile = new MysqlRepositoryFileDAO(this
+						.getConnection()).find(rs.getInt("id"));
 				MinerFile minerFile = new MinerFile(rs.getInt("id"));
 				minerFile.setFileName(rs.getString("file_name"));
 				minerFile.setPath(rs.getString("path"));
-				minerFile.setRepositoryFile(new MysqlRepositoryFileDAO(this
-						.getConnection()).find(rs.getInt("id")));
+				minerFile.setRepositoryFile(repositoryFile);
 				minerFile.setModule(new MysqlMinerModuleDAO(this
 						.getConnection()).find(rs.getInt("miner_module_id")));
+				minerFile.setType(repositoryFile.getType());
 				result.add(minerFile);
 			}
 		} catch (SQLException e) {
