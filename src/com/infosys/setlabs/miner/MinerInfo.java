@@ -54,7 +54,6 @@ public class MinerInfo {
 	/**
 	 * Prints file information
 	 * 
-	 * @return file name
 	 * @throws MinerException
 	 */
 	public void print() throws MinerException {
