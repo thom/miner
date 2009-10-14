@@ -176,12 +176,6 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				psItem.addBatch();
 			}
 			psItem.executeBatch();
-
-			// Need to commit so data gets written to database
-			this.getConnection().commit();
-
-			// Set numberOfModulesTouched()!
-			setNumberOfModulesTouched(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -192,7 +186,8 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		return result;
 	}
 
-	private void setNumberOfModulesTouched(int id) {
+	@Override
+	public void setNumberOfModulesTouched(int id) {
 		PreparedStatement psUpdate = null;
 		PreparedStatement psModulesTouched = null;
 		ResultSet rs = null;

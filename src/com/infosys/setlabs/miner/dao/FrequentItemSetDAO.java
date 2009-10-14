@@ -25,4 +25,13 @@ public interface FrequentItemSetDAO
 	 * @throws DataAccessException
 	 */
 	public int create(String frequentItemSetLine) throws DataAccessException;
+
+	/**
+	 * Sets the number of modules touched for a given frequent item set
+	 * 
+	 * @param id
+	 *            ID of frequent item set to set the number of modules touched
+	 *            for
+	 */
+	void setNumberOfModulesTouched(int id);
 }
