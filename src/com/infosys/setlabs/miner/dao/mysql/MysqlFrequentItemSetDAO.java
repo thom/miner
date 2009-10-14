@@ -40,7 +40,8 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses MyISAM
 			// too, we can't use InnoDB here
 			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
-	protected static String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS ";
+	protected static String DROP_MINER_FISM_TABLE = "DROP TABLE IF EXISTS miner_frequent_item_sets";
+	protected static String DROP_MINER_FIS_TABLE = "DROP TABLE IF EXISTS miner_frequent_items";
 	protected static String SELECT_FREQUENT_ITEM_SET_SQL = ""
 			+ "SELECT id, size, absolute_item_set_support, relative_item_set_support, modules_touched "
 			+ "FROM miner_frequent_item_sets WHERE id=?";
@@ -221,10 +222,9 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
-			ps = this.getConnection().prepareStatement(
-					DROP_TABLE_IF_EXISTS + "miner_frequent_items");
+			ps = this.getConnection().prepareStatement(DROP_MINER_FIS_TABLE);
 			ps.executeUpdate();
-			ps.executeUpdate(DROP_TABLE_IF_EXISTS + "miner_frequent_item_sets");
+			ps.executeUpdate(DROP_MINER_FISM_TABLE);
 			ps.executeUpdate(CREATE_MINER_FISM_TABLE);
 			ps.executeUpdate(CREATE_MINER_FIS_TABLE);
 		} catch (SQLException e) {
