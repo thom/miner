@@ -171,9 +171,9 @@ public class FrequentItemSet {
 		String result = "";
 		result += "ID:\t\t\t\t" + getId() + "\n";
 		result += "Size:\t\t\t\t" + getSize() + "\n";
-		result += "Absolute Item Set Support:\t" + getAbsoluteItemSetSupport() + "\n";
-		result += "Relative Item Set Support:\t" + getRelativeItemSetSupport() + "\n";
-		result += "Modules Touched:\t\t" + getModulesTouched() + "\n\n";
+		result += "Absolute item set support:\t" + getAbsoluteItemSetSupport() + "\n";
+		result += "Relative item set support:\t" + getRelativeItemSetSupport() + "\n";
+		result += "Modules touched:\t\t" + getModulesTouched() + "\n\n";
 		
 		result += "Files:\n---------------------------------------------";
 		for (MinerFile file : getItems()) {
