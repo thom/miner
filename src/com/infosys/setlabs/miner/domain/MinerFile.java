@@ -5,10 +5,7 @@ package com.infosys.setlabs.miner.domain;
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class MinerFile {
-	private int id;
-	private String fileName;
-	private String path;
+public class MinerFile extends RepositoryFile {
 	private RepositoryFile repositoryFile;
 	private MinerModule module;
 
@@ -16,8 +13,9 @@ public class MinerFile {
 	 * Creates a new miner file
 	 */
 	public MinerFile() {
-	}
-
+		super();
+	}	
+	
 	/**
 	 * Creates a new miner file with id <code>id</code>
 	 * 
@@ -25,64 +23,7 @@ public class MinerFile {
 	 *            ID to create
 	 */
 	public MinerFile(int id) {
-		setId(id);
-	}
-
-	/**
-	 * Returns the ID
-	 * 
-	 * @return id
-	 */
-	public int getId() {
-		return id;
-	}
-
-	/**
-	 * Sets the ID
-	 * 
-	 * @param id
-	 *            ID to set
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	/**
-	 * Returns the filename
-	 * 
-	 * @return fileName
-	 */
-	public String getFileName() {
-		return fileName;
-	}
-
-	/**
-	 * Sets the filename
-	 * 
-	 * @param fileName
-	 *            filename to set
-	 */
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
-	/**
-	 * Returns the path
-	 * 
-	 * @return path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
-	 * Sets the path
-	 * 
-	 * @param path
-	 *            path to set
-	 */
-	public void setPath(String path) {
-		this.path = path;
+		super(id);
 	}
 
 	/**
@@ -121,5 +62,14 @@ public class MinerFile {
 	 */
 	public void setRepositoryFile(RepositoryFile repositoryFile) {
 		this.repositoryFile = repositoryFile;
+	}	
+	
+	@Override
+	public String toString() {
+		String result = "";
+		result += super.toString() + "\n\n";
+		result += "Module:\n";
+		result += getModule();
+		return result;
 	}
 }

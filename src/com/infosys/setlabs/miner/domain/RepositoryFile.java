@@ -19,6 +19,12 @@ public class RepositoryFile {
 	public static enum Type {
 		CODE, BUILD, UI, I18N, DOCUMENTATION, DEVEL_DOC, PACKAGE, IMAGE, MULTIMEDIA, UNKNOWN
 	}
+	
+	/**
+	 * Creates a new repository file
+	 */
+	public RepositoryFile() {
+	}	
 
 	/**
 	 * Creates a new repository file with id <code>id</code>
@@ -144,4 +150,15 @@ public class RepositoryFile {
 			type = Type.UNKNOWN;
 		}
 	}
+	
+	@Override
+	public String toString() {
+		String result = "";
+		result += "ID:\t\t" + getId() + "\n";
+		result += "File name:\t" + getFileName() + "\n";		
+		result += "Path:\t\t" + getPath() + "\n";
+		result += "Directory:\t" + getDirectory() + "\n";
+		result += "Type:\t\t" + getType().toString().toLowerCase();
+		return result;
+	}	
 }
