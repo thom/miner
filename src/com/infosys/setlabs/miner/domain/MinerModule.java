@@ -17,7 +17,7 @@ public class MinerModule {
 	 */
 	public MinerModule(int id) {
 		setId(id);
-	}
+	}	
 
 	/**
 	 * Creates a new miner module with module name <code>moduleName</code>
@@ -66,4 +66,12 @@ public class MinerModule {
 	public void setModuleName(String moduleName) {
 		this.moduleName = moduleName;
 	}
+	
+	@Override
+	public String toString() {
+		String result = "";
+		result += "ID:\t\t" + getId() + "\n";
+		result += "Module name:\t" + getModuleName();		
+		return result;
+	}	
 }
