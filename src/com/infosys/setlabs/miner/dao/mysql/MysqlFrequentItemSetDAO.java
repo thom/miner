@@ -44,6 +44,9 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	protected static String SELECT_FREQUENT_ITEM_SET_SQL = ""
 			+ "SELECT id, size, absolute_item_set_support, relative_item_set_support, modules_touched "
 			+ "FROM miner_frequent_item_sets WHERE id=?";
+	protected static String SELECT_FREQUENT_ITEM_SETS_SQL = ""
+			+ "SELECT id, size, absolute_item_set_support, relative_item_set_support, modules_touched "
+			+ "FROM miner_frequent_item_sets";
 	protected static String SELECT_FREQUENT_ITEMS_SQL = ""
 			+ "SELECT id, miner_frequent_item_set_id, file_id FROM miner_frequent_items "
 			+ "WHERE miner_frequent_item_set_id=?";
@@ -106,7 +109,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		ResultSet rs = null;
 		try {
 			ps = this.getConnection().prepareStatement(
-					SELECT_FREQUENT_ITEM_SET_SQL);
+					SELECT_FREQUENT_ITEM_SETS_SQL);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				FrequentItemSet frequentItemSet = new FrequentItemSet(rs
@@ -213,7 +216,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			this.closeStatement(psModulesTouched);
 		}
 	}
-	
+
 	@Override
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;
