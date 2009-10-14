@@ -169,6 +169,16 @@ public class FrequentItemSet {
 	@Override
 	public String toString() {
 		String result = "";
+		result += "ID:\t\t\t\t" + getId() + "\n";
+		result += "Size:\t\t\t\t" + getSize() + "\n";
+		result += "Absolute Item Set Support:\t" + getAbsoluteItemSetSupport() + "\n";
+		result += "Relative Item Set Support:\t" + getRelativeItemSetSupport() + "\n";
+		result += "Modules Touched:\t\t" + getModulesTouched() + "\n\n";
+		
+		result += "Files:\n---------------------------------------------";
+		for (MinerFile file : getItems()) {
+			result += "\n" + file + "\n---------------------------------------------";
+		}
 		
 		return result;
 	}
