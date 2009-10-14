@@ -8,16 +8,18 @@ import org.kohsuke.args4j.Option;
 
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
+import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
 import com.infosys.setlabs.miner.manage.Manager;
+import com.infosys.setlabs.miner.manage.MinerFileManager;
 import com.infosys.setlabs.miner.manage.RepositoryFileManager;
 
 /**
- * Maps file IDs in a database created by CVSAnaly2 to filenames/paths.
+ * Gives information about files
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class IdToFileName {
+public class FileInfo {
 	// Command line values
 	private CommandLineValues values;
 
@@ -31,7 +33,7 @@ public class IdToFileName {
 	 *            arguments
 	 * @throws MinerException
 	 */
-	public IdToFileName(String[] args) {
+	public FileInfo(String[] args) {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -42,7 +44,7 @@ public class IdToFileName {
 		try {
 			parser.parseArgument(args);
 		} catch (CmdLineException e) {
-			System.err.println("id2filename [options...] arguments...\n");
+			System.err.println("file-info [options...] arguments...\n");
 			System.err.println(e.getMessage() + "\n");
 
 			// Print the list of available options
@@ -58,35 +60,46 @@ public class IdToFileName {
 	}
 
 	/**
-	 * Gets the file name of an ID from the database
+	 * Prints file information
 	 * 
 	 * @return file name
 	 * @throws MinerException
 	 */
-	public String getFileName() throws MinerException {
+	public void print() throws MinerException {
+		MinerFileManager minerFileManager = null;
 		RepositoryFileManager repositoryFileManager = null;
+		RepositoryFile file = null;
 
 		try {
 			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
 
 			// Connect to MySQL database
-			repositoryFileManager = new RepositoryFileManager(connectionArgs);
+			minerFileManager = new MinerFileManager(connectionArgs);
 
 			// Get file path
-			RepositoryFile repositoryFile = repositoryFileManager.find(values
-					.getId());
-			if (values.getNameOnly()) {
-				return repositoryFile.getFileName();
+			file = minerFileManager.find(values.getId());
+
+			if (file == null) {
+				// Connect to MySQL database
+				repositoryFileManager = new RepositoryFileManager(
+						connectionArgs);
+
+				// Get file path
+				file = repositoryFileManager.find(values.getId());
+			}
+
+			if (file == null) {
+				System.out.println("Error: Couldn't find file with ID '"
+						+ values.getId() + "' in the database.");
 			} else {
-				return repositoryFile.getPath();
+				System.out.println(file);
 			}
 		} finally {
-			if (repositoryFileManager != null) {
-				repositoryFileManager.close();
+			if (minerFileManager != null) {
+				minerFileManager.close();
 			}
 		}
 	}
-
 	/**
 	 * Starts the ID to file name mapper
 	 * 
@@ -95,8 +108,8 @@ public class IdToFileName {
 	 * @throws MinerException
 	 */
 	public static void main(String[] args) throws MinerException {
-		IdToFileName idToFileName = new IdToFileName(args);
-		System.out.println(idToFileName.getFileName());
+		FileInfo fileInfo = new FileInfo(args);
+		fileInfo.print();
 	}
 
 	/**
@@ -116,9 +129,6 @@ public class IdToFileName {
 
 		@Option(name = "-i", aliases = {"--id"}, usage = "ID of the file", required = true)
 		private int id;
-
-		@Option(name = "-n", aliases = {"--name", "--nameonly"}, usage = "get only the name and not the path of the file")
-		private Boolean nameOnly = false;
 
 		/**
 		 * Returns database name
@@ -154,16 +164,6 @@ public class IdToFileName {
 		 */
 		public int getId() {
 			return id;
-		}
-
-		/**
-		 * Should only the file name be returned? If false, the relative path of
-		 * the file will be returned.
-		 * 
-		 * @return nameOnly
-		 */
-		public boolean getNameOnly() {
-			return nameOnly;
 		}
 	}
 }
