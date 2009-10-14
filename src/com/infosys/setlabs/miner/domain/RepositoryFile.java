@@ -33,7 +33,7 @@ public class RepositoryFile {
 	 *            ID to create
 	 */
 	public RepositoryFile(int id) {
-		this.setId(id);
+		setId(id);
 	}
 
 	/**
