@@ -149,7 +149,7 @@ public class Miner {
 			}
 
 			// Keep files if user specifies so
-			if (!values.getKeepFiles()) {
+			if (!values.isKeepFiles()) {
 				if (!transactionsExistedBefore) {
 					transactions.delete();
 				}
@@ -166,9 +166,9 @@ public class Miner {
 	 * @throws MinerException
 	 */
 	private void format() throws MinerException {
-		if (!transactionsExistedBefore || values.getOverwriteFiles()) {
+		if (!transactionsExistedBefore || values.isOverwriteFiles()) {
 			System.out.println("EXEC  > format");
-			minerManager.format(transactions, values.getAllFiles(), false);
+			minerManager.format(transactions, values.isAllFiles(), false);
 			System.out.println("DONE  > format\n");
 		} else {
 			System.out
@@ -201,7 +201,7 @@ public class Miner {
 	}
 
 	private boolean runApriori() {
-		return !frequentItemSetsExistedBefore || values.getOverwriteFiles();
+		return !frequentItemSetsExistedBefore || values.isOverwriteFiles();
 	}
 
 	private void writeMinerInfo() throws MinerException {
@@ -407,7 +407,7 @@ public class Miner {
 		 * 
 		 * @return allFiles
 		 */
-		public boolean getAllFiles() {
+		public boolean isAllFiles() {
 			return allFiles;
 		}
 
@@ -435,7 +435,7 @@ public class Miner {
 		 * 
 		 * @return keepFiles
 		 */
-		public boolean getKeepFiles() {
+		public boolean isKeepFiles() {
 			return keepFiles;
 		}
 
@@ -445,7 +445,7 @@ public class Miner {
 		 * 
 		 * @return overwriteFiles
 		 */
-		public boolean getOverwriteFiles() {
+		public boolean isOverwriteFiles() {
 			return overwriteFiles;
 		}
 
