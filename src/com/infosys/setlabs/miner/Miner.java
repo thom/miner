@@ -59,7 +59,7 @@ public class Miner {
 		try {
 			parser.parseArgument(args);
 		} catch (CmdLineException e) {
-			System.err.println("fism [options...] arguments...\n");
+			System.err.println("miner [options...] arguments...\n");
 			System.err.println(e.getMessage() + "\n");
 
 			// Print the list of available options
@@ -83,6 +83,34 @@ public class Miner {
 				+ ".fis");
 		frequentItemSetsExistedBefore = frequentItemSets.exists();
 	}
+	
+	/**
+	 * Prints miner information
+	 * 
+	 * @throws MinerException
+	 */
+	public void info() throws MinerException {
+		MinerInfoManager minerInfoManager = null;
+
+		try {
+			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
+
+			// Connect to MySQL database
+			minerInfoManager = new MinerInfoManager(connectionArgs);
+
+			if (minerInfoManager.get() == null) {
+				System.out
+						.println("Error: Couldn't find miner information in the database. "
+								+ "Did you run the miner already?");
+			} else {
+				System.out.println(minerInfoManager.get());
+			}
+		} finally {
+			if (minerInfoManager != null) {
+				minerInfoManager.close();
+			}
+		}
+	}	
 
 	/**
 	 * Does the frequent item set mining
@@ -240,7 +268,12 @@ public class Miner {
 	 */
 	public static void main(String[] args) throws MinerException {
 		Miner miner = new Miner(args);
-		miner.mine();
+		
+		if (miner.values.isInfo()) {
+			miner.info();
+		} else {
+			miner.mine();
+		}
 	}
 
 	/**
@@ -264,6 +297,9 @@ public class Miner {
 
 		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
+		
+		@Option(name = "-info", aliases = {"--information", "--miner-information", "--info"}, usage ="show information about last mining")
+		private boolean info;
 
 		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of apriori frequent item set miner, can also be configured in conf/setup.properties")
 		private String exec;
@@ -347,6 +383,15 @@ public class Miner {
 		public String getPw() {
 			return pw;
 		}
+		
+		/**
+		 * Did the user request information?
+		 * 
+		 * @return info
+		 */
+		public boolean isInfo() {
+			return info;
+		}		
 
 		/**
 		 * Returns name of the executable
