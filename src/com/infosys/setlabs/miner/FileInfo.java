@@ -56,6 +56,9 @@ public class FileInfo {
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
+
+		// Set database engine
+		Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
 	}
 
 	/**
@@ -69,8 +72,6 @@ public class FileInfo {
 		RepositoryFile file = null;
 
 		try {
-			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
-
 			// Connect to MySQL database
 			minerFileManager = new MinerFileManager(connectionArgs);
 

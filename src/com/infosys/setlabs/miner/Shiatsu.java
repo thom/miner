@@ -54,6 +54,9 @@ public class Shiatsu {
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
+		
+		// Set database engine
+		Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);		
 	}
 
 	/**
@@ -65,11 +68,9 @@ public class Shiatsu {
 		ShiatsuManager shiatsuManager = null;
 
 		try {
-			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
-
 			// Connect to MySQL database
 			shiatsuManager = new ShiatsuManager(connectionArgs);
-			
+
 			System.out.println("EXEC  > shiatsu\n");
 
 			// Massage data

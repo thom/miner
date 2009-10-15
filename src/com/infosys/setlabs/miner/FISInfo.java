@@ -9,8 +9,10 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.FrequentItemSet;
+import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.manage.FrequentItemSetManager;
 import com.infosys.setlabs.miner.manage.Manager;
+import com.infosys.setlabs.miner.manage.MinerInfoManager;
 
 public class FISInfo {
 	// Command line values
@@ -26,7 +28,7 @@ public class FISInfo {
 	 *            arguments
 	 * @throws MinerException
 	 */
-	public FISInfo(String[] args) {
+	public FISInfo(String[] args) throws MinerException {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -50,6 +52,21 @@ public class FISInfo {
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
+
+		// Set database engine
+		Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
+
+		// Get miner info
+		MinerInfoManager minerInfoManager = new MinerInfoManager(connectionArgs);
+		MinerInfo minerInfo = minerInfoManager.get();
+
+		// Check prerequisites
+		if (minerInfo == null
+				|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
+			minerInfoManager.close();
+			throw new MinerException(new Exception(
+					"The data must be mined before running fis-info."));
+		}
 	}
 
 	/**

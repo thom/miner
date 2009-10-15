@@ -40,6 +40,10 @@ public class Miner {
 	// Miner Manager
 	private MinerManager minerManager;
 
+	// Miner Info
+	private MinerInfoManager minerInfoManager;
+	private MinerInfo minerInfo;
+
 	/**
 	 * Parses command line arguments, sets the database connection arguments and
 	 * initializes the temporary files.
@@ -82,35 +86,30 @@ public class Miner {
 		frequentItemSets = setFile(values.getFrequentItemSets(), values.getDb()
 				+ ".fis");
 		frequentItemSetsExistedBefore = frequentItemSets.exists();
+
+		// Set database engine
+		Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
+
+		// Get miner info
+		minerInfoManager = new MinerInfoManager(connectionArgs);
+		minerInfo = minerInfoManager.get();
+
+		// Check prerequisites
+		if (minerInfo == null || !minerInfo.isShiatsu()) {
+			minerInfoManager.close();
+			throw new MinerException(
+					new Exception(
+							"The data must be massaged with shiatsu before running the miner."));
+		}
 	}
-	
 	/**
 	 * Prints miner information
 	 * 
 	 * @throws MinerException
 	 */
 	public void info() throws MinerException {
-		MinerInfoManager minerInfoManager = null;
-
-		try {
-			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
-
-			// Connect to MySQL database
-			minerInfoManager = new MinerInfoManager(connectionArgs);
-
-			if (minerInfoManager.get() == null) {
-				System.out
-						.println("Error: Couldn't find miner information in the database. "
-								+ "Did you run the miner already?");
-			} else {
-				System.out.println(minerInfoManager.get());
-			}
-		} finally {
-			if (minerInfoManager != null) {
-				minerInfoManager.close();
-			}
-		}
-	}	
+		System.out.println(minerInfo);
+	}
 
 	/**
 	 * Does the frequent item set mining
@@ -119,8 +118,6 @@ public class Miner {
 	 */
 	public void mine() throws MinerException {
 		try {
-			Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
-
 			// Connect to MySQL database
 			minerManager = new MinerManager(connectionArgs);
 
@@ -146,6 +143,10 @@ public class Miner {
 		} finally {
 			if (minerManager != null) {
 				minerManager.close();
+			}
+
+			if (minerInfoManager != null) {
+				minerInfoManager.close();
 			}
 
 			// Keep files if user specifies so
@@ -197,41 +198,17 @@ public class Miner {
 							+ frequentItemSets.getAbsolutePath() + "\n");
 		}
 
-		writeMinerInfo();
+		// Update miner info
+		if (runApriori() || !minerInfo.isMiner()) {
+			minerInfo.setMiner(true);
+			minerInfo.setMinimalItems(values.getMinItems());
+			minerInfo.setMinimalSupport(values.getMinSupport());
+			minerInfoManager.update(minerInfo);
+		}
 	}
 
 	private boolean runApriori() {
 		return !frequentItemSetsExistedBefore || values.isOverwriteFiles();
-	}
-
-	private void writeMinerInfo() throws MinerException {
-		MinerInfoManager minerInfoManager = null;
-
-		try {
-			minerInfoManager = new MinerInfoManager(connectionArgs);
-
-			// Create tables
-			boolean doIt = false;
-			try {
-				minerInfoManager.get();
-			} catch (MinerException e) {
-				doIt = true;
-			}
-			if (doIt || runApriori()) {
-				minerInfoManager.createTables();
-				doIt = true;
-			}
-
-			// Write miner info
-			if (doIt) {
-				minerInfoManager.create(new MinerInfo(values.getMinItems(),
-						values.getMinSupport()));
-			}
-		} finally {
-			if (minerInfoManager != null) {
-				minerInfoManager.close();
-			}
-		}
 	}
 
 	/**
@@ -268,7 +245,7 @@ public class Miner {
 	 */
 	public static void main(String[] args) throws MinerException {
 		Miner miner = new Miner(args);
-		
+
 		if (miner.values.isInfo()) {
 			miner.info();
 		} else {
@@ -297,8 +274,9 @@ public class Miner {
 
 		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
-		
-		@Option(name = "-info", aliases = {"--information", "--miner-information", "--info"}, usage ="show information about last mining")
+
+		@Option(name = "-info", aliases = {"--information",
+				"--miner-information", "--info"}, usage = "show information about last mining")
 		private boolean info;
 
 		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of apriori frequent item set miner, can also be configured in conf/setup.properties")
@@ -383,7 +361,7 @@ public class Miner {
 		public String getPw() {
 			return pw;
 		}
-		
+
 		/**
 		 * Did the user request information?
 		 * 
@@ -391,7 +369,7 @@ public class Miner {
 		 */
 		public boolean isInfo() {
 			return info;
-		}		
+		}
 
 		/**
 		 * Returns name of the executable
