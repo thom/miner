@@ -5,9 +5,11 @@ import java.util.HashMap;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
+import com.infosys.setlabs.miner.dao.MinerInfoDAO;
 import com.infosys.setlabs.miner.dao.MinerModuleDAO;
 import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
+import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.domain.MinerModule;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
 
@@ -40,6 +42,13 @@ public class ShiatsuManager extends Manager {
 			this.getFactory().getMinerModuleDAO(this.getSession())
 					.createTables();
 			fillTables();
+			
+			// Create miner info table
+			MinerInfoDAO minerInfoDAO = this.getFactory().getMinerInfoDAO(this.getSession());
+			minerInfoDAO.createTables();
+			MinerInfo minerInfo = new MinerInfo();
+			minerInfo.setShiatsu(true);
+			minerInfoDAO.update(minerInfo);
 		} catch (DataAccessException e) {
 			throw new MinerException(e);
 		}

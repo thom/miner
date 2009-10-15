@@ -6,6 +6,12 @@ package com.infosys.setlabs.miner.domain;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MinerInfo {
+	// Did the data already get a massage?
+	private boolean shiatsu;
+
+	// Was miner run already?
+	private boolean miner;
+
 	// Minimal number of items per frequent item set
 	private int minimalItems;
 
@@ -13,16 +19,41 @@ public class MinerInfo {
 	private double minimalSupport;
 
 	/**
-	 * Creates a new miner info object
+	 * Did the data already get a massage?
 	 * 
-	 * @param minimalItems
-	 *            minimal items to set
-	 * @param minimalSupport
-	 *            minimal support to set
+	 * @return shiatsu
 	 */
-	public MinerInfo(int minimalItems, double minimalSupport) {
-		setMinimalItems(minimalItems);
-		setMinimalSupport(minimalSupport);
+	public boolean isShiatsu() {
+		return shiatsu;
+	}
+
+	/**
+	 * Sets shiatsu
+	 * 
+	 * @param shiatsu
+	 *            did the data already get a massage?
+	 */
+	public void setShiatsu(boolean shiatsu) {
+		this.shiatsu = shiatsu;
+	}
+
+	/**
+	 * Was miner run already?
+	 * 
+	 * @return miner
+	 */
+	public boolean isMiner() {
+		return miner;
+	}
+
+	/**
+	 * Sets miner
+	 * 
+	 * @param miner
+	 *            was miner run already?
+	 */
+	public void setMiner(boolean miner) {
+		this.miner = miner;
 	}
 
 	/**
@@ -65,13 +96,18 @@ public class MinerInfo {
 	@Override
 	public String toString() {
 		String result = "";
-		result += "Minimal support per frequent item set:\t";
-		if (getMinimalSupport() < 0) {
-			result += -getMinimalSupport() + " (absolute)\n";
-		} else {
-			result += getMinimalSupport() + "% (relative)\n";
+		result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
+		result += "Miner run?\t\t\t\t" + isMiner();
+		if (isMiner()) {
+			result += "\nMinimal support per frequent item set:\t";
+			if (getMinimalSupport() < 0) {
+				result += -getMinimalSupport() + " (absolute)\n";
+			} else {
+				result += getMinimalSupport() + "% (relative)\n";
+			}
+			result += "Minimal items per frequent item set:\t"
+					+ getMinimalItems();
 		}
-		result += "Minimal items per frequent item set:\t" + getMinimalItems();
 		return result;
 	}
 }

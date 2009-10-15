@@ -86,14 +86,14 @@ public class MinerInfoManager extends Manager {
 	 *            miner info to write to the database
 	 * @throws MinerException
 	 */
-	public void create(MinerInfo minerInfo) throws MinerException {
+	public void update(MinerInfo minerInfo) throws MinerException {
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getMinerInfoDAO(this.getSession()).create(
+			this.getFactory().getMinerInfoDAO(this.getSession()).update(
 					minerInfo);
 
 			// Commit transaction
