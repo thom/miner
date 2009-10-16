@@ -22,12 +22,11 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 			RepositoryFileDAO {
 
 	protected static String SELECT_FILE_SQL = ""
-			+ "SELECT f.id, f.file_name, f.repository_id, ft.type "
-			+ "FROM files f, file_types ft "
-			+ "WHERE f.id = ? AND f.id = ft.file_id";
+			+ "SELECT id, file_name, repository_id FROM files WHERE id = ?";
 	protected static String SELECT_FILES_SQL = ""
-			+ "SELECT f.id, f.file_name, f.repository_id, ft.type "
-			+ "FROM files f, file_types ft WHERE f.id = ft.file_id";
+			+ "SELECT id, file_name, repository_id FROM files";
+	protected static String SELECT_FILE_TYPE_SQL = ""
+			+ "SELECT file_id, type FROM file_types WHERE file_id = ?";
 	protected static String SELECT_PATH_SQL = ""
 			+ "SELECT f.id, f.file_name, fl.parent_id "
 			+ "FROM files f, file_links fl "
@@ -42,7 +41,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 	 * 
 	 * @param conn
 	 *            connection to connect to
-	 */	
+	 */
 	public MysqlRepositoryFileDAO(Connection conn) {
 		super(conn);
 	}
@@ -69,7 +68,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 				result.setPath(getPath(id));
 
 				// Set type
-				result.setType(rs.getString("type"));
+				result.setType(getFileType(id));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -102,9 +101,9 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 
 				// Get path
 				repositoryFile.setPath(getPath(id));
-				
+
 				// Set type
-				repositoryFile.setType(rs.getString("type"));				
+				repositoryFile.setType(getFileType(id));
 
 				result.add(repositoryFile);
 			}
@@ -114,6 +113,32 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 			this.closeResultSet(rs);
 			this.closeStatement(ps);
 		}
+		return result;
+	}
+
+	private String getFileType(int id) throws DataAccessException {
+		String result = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = this.getConnection().prepareStatement(SELECT_FILE_TYPE_SQL);
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				result = rs.getString("type");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
+
+		if (result == null) {
+			result = "directory";
+		}
+
 		return result;
 	}
 
