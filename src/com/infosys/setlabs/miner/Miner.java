@@ -78,11 +78,13 @@ public class Miner {
 		connectionArgs.put("password", values.getPw());
 
 		// Initialize transactions file
+		// TODO: add moved file
 		transactions = setFile(values.getTransactions(), values.getDb()
 				+ ".tra");
 		transactionsExistedBefore = transactions.exists();
 
 		// Initialize frequent item sets file
+		// TODO: add moved file
 		frequentItemSets = setFile(values.getFrequentItemSets(), values.getDb()
 				+ ".fis");
 		frequentItemSetsExistedBefore = frequentItemSets.exists();
@@ -199,6 +201,9 @@ public class Miner {
 		}
 
 		// Update miner info
+		// TODO: move update of miner info to the end so it will only be updated
+		// when apriori has run and frequent item sets been written to the
+		// database
 		if (runApriori() || !minerInfo.isMiner()) {
 			minerInfo.setMiner(true);
 			minerInfo.setMinimalItems(values.getMinItems());

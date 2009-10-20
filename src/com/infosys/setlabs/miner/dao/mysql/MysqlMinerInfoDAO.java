@@ -11,6 +11,8 @@ import com.infosys.setlabs.miner.dao.MinerInfoDAO;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 
 public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
+	
+	// TODO: extend to save information about moved files
 
 	protected static String CREATE_MINER_INFO_TABLE = ""
 			+ "CREATE TABLE miner_info ("

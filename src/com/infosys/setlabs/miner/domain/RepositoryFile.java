@@ -12,6 +12,8 @@ public class RepositoryFile {
 	private String fileName;
 	private String path;
 	private Type type;
+	
+	// TODO: add boolean moved
 
 	/**
 	 * File types

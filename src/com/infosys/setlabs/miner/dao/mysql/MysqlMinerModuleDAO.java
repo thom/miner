@@ -19,6 +19,8 @@ import com.infosys.setlabs.miner.domain.MinerModule;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
+	
+	// TODO: use string to save table names
 
 	protected static String CREATE_MINER_MODULES_TABLE = ""
 			+ "CREATE TABLE miner_modules ("

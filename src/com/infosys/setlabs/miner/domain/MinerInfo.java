@@ -6,6 +6,8 @@ package com.infosys.setlabs.miner.domain;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MinerInfo {
+	// TODO: add information about moved files
+	
 	// Did the data already get a massage?
 	private boolean shiatsu;
 

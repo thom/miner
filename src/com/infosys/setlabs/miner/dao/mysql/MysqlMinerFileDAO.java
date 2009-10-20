@@ -20,6 +20,8 @@ import com.infosys.setlabs.miner.domain.RepositoryFile;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
+	
+	// TODO: use string to save table names
 
 	protected static String CREATE_MINER_FILES_TABLE = ""
 			+ "CREATE TABLE miner_files (" + "id INT NOT NULL PRIMARY KEY, "
