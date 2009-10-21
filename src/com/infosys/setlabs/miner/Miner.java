@@ -199,18 +199,6 @@ public class Miner {
 					.println("EXEC > apriori: Nothing to do, reusing existing file "
 							+ frequentItemSets.getAbsolutePath() + "\n");
 		}
-
-		// Update miner info
-		// TODO: move update of miner info to the end so it will only be updated
-		// when apriori has run and frequent item sets been written to the
-		// database
-		if (runApriori() || !minerInfo.isMiner()) {
-			minerInfo.setMiner(true);
-			minerInfo.setIncludedFiles(values.getIncludedFiles());
-			minerInfo.setMinimalItems(values.getMinItems());
-			minerInfo.setMinimalSupport(values.getMinSupport());
-			minerInfoManager.update(minerInfo);
-		}
 	}
 
 	private boolean runApriori() {
@@ -224,7 +212,18 @@ public class Miner {
 	 */
 	private void frequentItemSets() throws MinerException {
 		System.out.println("EXEC  > frequent item sets");
+		
 		minerManager.frequentItemSets(frequentItemSets);
+		
+		// Update miner info
+		if (runApriori() || !minerInfo.isMiner()) {
+			minerInfo.setMiner(true);
+			minerInfo.setIncludedFiles(values.getIncludedFiles());
+			minerInfo.setMinimalItems(values.getMinItems());
+			minerInfo.setMinimalSupport(values.getMinSupport());
+			minerInfoManager.update(minerInfo);
+		}
+		
 		System.out.println("DONE  > frequent item sets\n");
 	}
 
