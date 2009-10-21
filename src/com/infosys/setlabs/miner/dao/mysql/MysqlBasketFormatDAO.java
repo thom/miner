@@ -20,12 +20,13 @@ import com.infosys.setlabs.miner.dao.BasketFormatDAO;
 public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 
 	protected static String SELECT_SQL = ""
-			+ "SELECT a.commit_id, s.rev, f.id AS modified_files, f.file_name, ft.type "
+			+ "SELECT a.commit_id, s.rev, f.id AS modified_files "
 			+ "FROM actions a, files f, file_types ft, scmlog s "
 			+ "WHERE f.id = a.file_id AND f.id = ft.file_id AND s.id = a.commit_id ";
 	protected static String ORDER_SQL = ""
-			+ "ORDER BY a.commit_id asc, modified_files ASC";
-	protected static String FILTER_SQL = "AND ft.type = 'code'";
+			+ "ORDER BY a.commit_id ASC, modified_files ASC";
+	protected static String FILTER_CODE = "AND ft.type = 'code'";
+	protected static String FILTER_RENAMED = "";
 
 	/**
 	 * Creates a new DAO
@@ -48,7 +49,8 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 		if (allFiles) {
 			sqlStatement += ORDER_SQL;
 		} else {
-			sqlStatement += FILTER_SQL + ORDER_SQL;
+			// TODO: add option to filter files that have been renamed
+			sqlStatement += FILTER_CODE + ORDER_SQL;
 		}
 
 		int counter = -1;
@@ -62,6 +64,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 			while (rs.next()) {
 				int commitId = rs.getInt("commit_id");
 
+				// TODO: option to only write files that have been renamed
 				if (counter < commitId) {
 					if (counter > -1) {
 						out.write("\n");

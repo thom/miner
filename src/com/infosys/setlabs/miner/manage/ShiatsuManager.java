@@ -65,7 +65,9 @@ public class ShiatsuManager extends Manager {
 			MinerFile minerFile = null;
 
 			for (RepositoryFile repositoryFile : repositoryFileDAO.findAll()) {
-				// Only add file if it is of type "code"
+				// Only add file if it is of type "code" 
+				// TODO: Add option to fillTables to only add a file if it has been renamed
+				// TODO: Fix this!
 				if (repositoryFile.getType() == RepositoryFile.Type.CODE) {
 					minerFile = new MinerFile();
 					minerFile.setFileName(repositoryFile.getFileName());

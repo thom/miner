@@ -72,13 +72,12 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			while (rs.next()) {
 				repositoryFile = new MysqlRepositoryFileDAO(this
 						.getConnection()).find(rs.getInt("id"));
-				result = new MinerFile(rs.getInt("id"));
+				result = new MinerFile(repositoryFile);
+				result.setId(rs.getInt("id"));
 				result.setFileName(rs.getString("file_name"));
 				result.setPath(rs.getString("path"));
-				result.setRepositoryFile(repositoryFile);
 				result.setModule(new MysqlMinerModuleDAO(this.getConnection())
 						.find(rs.getInt("miner_module_id")));
-				result.setType(repositoryFile.getType());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -100,13 +99,14 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			while (rs.next()) {
 				repositoryFile = new MysqlRepositoryFileDAO(this
 						.getConnection()).find(rs.getInt("id"));
-				MinerFile minerFile = new MinerFile(rs.getInt("id"));
+				repositoryFile = new MysqlRepositoryFileDAO(this
+						.getConnection()).find(rs.getInt("id"));
+				MinerFile minerFile = new MinerFile(repositoryFile);
+				minerFile.setId(rs.getInt("id"));
 				minerFile.setFileName(rs.getString("file_name"));
 				minerFile.setPath(rs.getString("path"));
-				minerFile.setRepositoryFile(repositoryFile);
-				minerFile.setModule(new MysqlMinerModuleDAO(this
-						.getConnection()).find(rs.getInt("miner_module_id")));
-				minerFile.setType(repositoryFile.getType());
+				minerFile.setModule(new MysqlMinerModuleDAO(this.getConnection())
+						.find(rs.getInt("miner_module_id")));
 				result.add(minerFile);
 			}
 		} catch (SQLException e) {
