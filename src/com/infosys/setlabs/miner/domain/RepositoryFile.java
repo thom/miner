@@ -123,6 +123,16 @@ public class RepositoryFile {
 	}
 
 	/**
+	 * Set the file type
+	 * 
+	 * @param typeName
+	 *            type to set
+	 */
+	public void setType(String typeName) {
+		type = Type.valueOf(typeName.toUpperCase().replace("-", "_"));
+	}	
+	
+	/**
 	 * Was the file ever renamed?
 	 * 
 	 * @return renamed
@@ -139,38 +149,6 @@ public class RepositoryFile {
 	 */
 	public void setRenamed(boolean renamed) {
 		this.renamed = renamed;
-	}
-
-	/**
-	 * Set the file type
-	 * 
-	 * @param typeName
-	 *            type to set
-	 */
-	public void setType(String typeName) {
-		if (typeName.equalsIgnoreCase("code")) {
-			type = Type.CODE;
-		} else if (typeName.equalsIgnoreCase("build")) {
-			type = Type.BUILD;
-		} else if (typeName.equalsIgnoreCase("ui")) {
-			type = Type.UI;
-		} else if (typeName.equalsIgnoreCase("i18n")) {
-			type = Type.I18N;
-		} else if (typeName.equalsIgnoreCase("documentation")) {
-			type = Type.DOCUMENTATION;
-		} else if (typeName.equalsIgnoreCase("devel-doc")) {
-			type = Type.DEVEL_DOC;
-		} else if (typeName.equalsIgnoreCase("package")) {
-			type = Type.PACKAGE;
-		} else if (typeName.equalsIgnoreCase("image")) {
-			type = Type.IMAGE;
-		} else if (typeName.equalsIgnoreCase("multimedia")) {
-			type = Type.MULTIMEDIA;
-		} else if (typeName.equalsIgnoreCase("directory")) {
-			type = Type.DIRECTORY;
-		} else {
-			type = Type.UNKNOWN;
-		}
 	}
 
 	@Override
