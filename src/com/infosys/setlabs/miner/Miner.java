@@ -12,6 +12,7 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
+import com.infosys.setlabs.miner.dao.BasketFormatDAO.IncludedFiles;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
@@ -171,7 +172,8 @@ public class Miner {
 	private void format() throws MinerException {
 		if (!transactionsExistedBefore || values.isOverwriteFiles()) {
 			System.out.println("EXEC  > format");
-			minerManager.format(transactions, values.isAllFiles(), false);
+			// TODO: read from command line instead of hardcoding!
+			minerManager.format(transactions, IncludedFiles.CODE_RENAMED, false);
 			System.out.println("DONE  > format\n");
 		} else {
 			System.out
@@ -270,6 +272,8 @@ public class Miner {
 		public enum Mode {
 			ALL, FORMAT, APRIORI
 		}
+		
+		// TODO: Add option to only mine renamed code files!
 
 		@Option(name = "-d", aliases = {"--database", "--db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
@@ -286,9 +290,6 @@ public class Miner {
 
 		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of apriori frequent item set miner, can also be configured in conf/setup.properties")
 		private String exec;
-
-		@Option(name = "-a", aliases = {"--all", "--all-files"}, usage = "print all files affect by a transaction, including non-code files")
-		private boolean allFiles = false;
 
 		@Option(name = "-i", aliases = {"--items", "--minimal-items"}, usage = "minimal number of items per set, can also be configured in conf/setup.properties")
 		private int minItems;
@@ -383,15 +384,6 @@ public class Miner {
 		 */
 		public String getExec() {
 			return exec;
-		}
-
-		/**
-		 * Should all files be mined? If false, only code files are mined.
-		 * 
-		 * @return allFiles
-		 */
-		public boolean isAllFiles() {
-			return allFiles;
 		}
 
 		/**

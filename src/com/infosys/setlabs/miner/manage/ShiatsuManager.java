@@ -42,9 +42,10 @@ public class ShiatsuManager extends Manager {
 			this.getFactory().getMinerModuleDAO(this.getSession())
 					.createTables();
 			fillTables();
-			
+
 			// Create miner info table
-			MinerInfoDAO minerInfoDAO = this.getFactory().getMinerInfoDAO(this.getSession());
+			MinerInfoDAO minerInfoDAO = this.getFactory().getMinerInfoDAO(
+					this.getSession());
 			minerInfoDAO.createTables();
 			MinerInfo minerInfo = new MinerInfo();
 			minerInfo.setShiatsu(true);
@@ -65,10 +66,11 @@ public class ShiatsuManager extends Manager {
 			MinerFile minerFile = null;
 
 			for (RepositoryFile repositoryFile : repositoryFileDAO.findAll()) {
-				// Only add file if it is of type "code" 
-				// TODO: Add option to fillTables to only add a file if it has been renamed
-				// TODO: Fix this!
-				if (repositoryFile.getType() == RepositoryFile.Type.CODE) {
+				// TODO: add all files but add fields to MinerFile and
+				// MinerModule to only get CODE files and modules containing
+				// CODE files (optionally only with renames!)
+				if (repositoryFile.getType() == RepositoryFile.Type.CODE
+						&& repositoryFile.isRenamed()) {
 					minerFile = new MinerFile();
 					minerFile.setFileName(repositoryFile.getFileName());
 					minerFile.setPath(repositoryFile.getPath());

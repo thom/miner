@@ -25,8 +25,11 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 			+ "WHERE f.id = a.file_id AND f.id = ft.file_id AND s.id = a.commit_id ";
 	protected static String ORDER_SQL = ""
 			+ "ORDER BY a.commit_id ASC, modified_files ASC";
-	protected static String FILTER_CODE = "AND ft.type = 'code'";
-	protected static String FILTER_RENAMED = "";
+	protected static String FILTER_CODE = " AND ft.type = 'code' ";
+	protected static String FILTER_RENAMED = " "
+			+ " AND f.id IN (SELECT DISTINCT a.file_id "
+			+ "FROM actions a, file_copies fc "
+			+ "WHERE a.type = 'V' AND a.file_id = fc.to_id) ";
 
 	/**
 	 * Creates a new DAO
@@ -39,18 +42,27 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 	}
 
 	@Override
-	public String format(File output, boolean allFiles, boolean revs) {
+	public String format(File output, IncludedFiles includedFiles, boolean revs) {
 		String result = "";
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		// Build the statement
 		String sqlStatement = SELECT_SQL;
-		if (allFiles) {
-			sqlStatement += ORDER_SQL;
-		} else {
-			// TODO: add option to filter files that have been renamed
-			sqlStatement += FILTER_CODE + ORDER_SQL;
+
+		switch (includedFiles) {
+			case ALL :
+				sqlStatement += ORDER_SQL;
+				break;
+			case ALL_RENAMED :
+				sqlStatement += FILTER_RENAMED + ORDER_SQL;
+				break;
+			case CODE :
+				sqlStatement += FILTER_CODE + ORDER_SQL;
+				break;
+			case CODE_RENAMED :
+				sqlStatement += FILTER_CODE + FILTER_RENAMED + ORDER_SQL;
+				break;
 		}
 
 		int counter = -1;
