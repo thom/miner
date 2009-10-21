@@ -79,13 +79,11 @@ public class Miner {
 		connectionArgs.put("password", values.getPw());
 
 		// Initialize transactions file
-		// TODO: add moved file
 		transactions = setFile(values.getTransactions(), values.getDb()
 				+ ".tra");
 		transactionsExistedBefore = transactions.exists();
 
 		// Initialize frequent item sets file
-		// TODO: add moved file
 		frequentItemSets = setFile(values.getFrequentItemSets(), values.getDb()
 				+ ".fis");
 		frequentItemSetsExistedBefore = frequentItemSets.exists();
@@ -98,6 +96,7 @@ public class Miner {
 		minerInfo = minerInfoManager.get();
 
 		// Check prerequisites
+		// TODO: is minerInfo.included == values.getIncluded()?
 		if (minerInfo == null || !minerInfo.isShiatsu()) {
 			minerInfoManager.close();
 			throw new MinerException(
@@ -172,8 +171,7 @@ public class Miner {
 	private void format() throws MinerException {
 		if (!transactionsExistedBefore || values.isOverwriteFiles()) {
 			System.out.println("EXEC  > format");
-			// TODO: read from command line instead of hardcoding!
-			minerManager.format(transactions, IncludedFiles.CODE_RENAMED, false);
+			minerManager.format(transactions, values.getIncludedFiles(), false);
 			System.out.println("DONE  > format\n");
 		} else {
 			System.out
@@ -206,6 +204,7 @@ public class Miner {
 		// TODO: move update of miner info to the end so it will only be updated
 		// when apriori has run and frequent item sets been written to the
 		// database
+		// TODO: set included_files accordingly
 		if (runApriori() || !minerInfo.isMiner()) {
 			minerInfo.setMiner(true);
 			minerInfo.setMinimalItems(values.getMinItems());
@@ -273,8 +272,6 @@ public class Miner {
 			ALL, FORMAT, APRIORI
 		}
 		
-		// TODO: Add option to only mine renamed code files!
-
 		@Option(name = "-d", aliases = {"--database", "--db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
 		private String db;
 
@@ -305,6 +302,9 @@ public class Miner {
 
 		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
 		private Mode mode = Mode.ALL;
+		
+		@Option(name = "-n", aliases = {"--included, --included-files"}, usage = "files to include (all: all files, all_renamed: all renamed files, code: all code files, code_renamed: all renamed code file (default))", metaVar = "all|all_renamed|code|code_renamed")
+		private IncludedFiles includedFiles = IncludedFiles.CODE_RENAMED;
 
 		@Option(name = "-t", aliases = {"--trans", "--transactions"}, usage = "file containing transactions in basket format (if the file doesn't already exist, the miner tool creates it and writes data to it)")
 		private String transactions;
@@ -432,6 +432,15 @@ public class Miner {
 		public Mode getMode() {
 			return mode;
 		}
+		
+		/**
+		 * Returns the included files
+		 * 
+		 * @return includedFiles
+		 */
+		public IncludedFiles getIncludedFiles() {
+			return includedFiles;
+		}		
 
 		/**
 		 * Returns the name of the file containing transactions
