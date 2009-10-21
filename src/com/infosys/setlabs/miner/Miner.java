@@ -12,7 +12,7 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
-import com.infosys.setlabs.miner.dao.BasketFormatDAO.IncludedFiles;
+import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
@@ -300,8 +300,8 @@ public class Miner {
 		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
 		private Mode mode = Mode.ALL;
 
-		@Option(name = "-n", aliases = {"--included, --included-files"}, usage = "files to include (all: all code files, renamed: all renamed code files (default))", metaVar = "all|renamed")
-		private IncludedFiles includedFiles = IncludedFiles.RENAMED;
+		@Option(name = "-c", aliases = {"--files, --code-files"}, usage = "files to include (all: all code files, renamed: all renamed code files (default))", metaVar = "all|renamed")
+		private CodeFiles codeFiles = CodeFiles.RENAMED;
 
 		@Option(name = "-t", aliases = {"--trans", "--transactions"}, usage = "file containing transactions in basket format (if the file doesn't already exist, the miner tool creates it and writes data to it)")
 		private String transactions;
@@ -433,10 +433,10 @@ public class Miner {
 		/**
 		 * Returns the included files
 		 * 
-		 * @return includedFiles
+		 * @return codeFiles
 		 */
-		public IncludedFiles getIncludedFiles() {
-			return includedFiles;
+		public CodeFiles getIncludedFiles() {
+			return codeFiles;
 		}
 
 		/**

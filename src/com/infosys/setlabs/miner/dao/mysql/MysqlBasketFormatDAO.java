@@ -42,7 +42,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 	}
 
 	@Override
-	public String format(File output, IncludedFiles includedFiles, boolean revs) {
+	public String format(File output, CodeFiles codeFiles, boolean revs) {
 		String result = "";
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -50,7 +50,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 		// Build the statement
 		String sqlStatement = SELECT_SQL;
 
-		switch (includedFiles) {
+		switch (codeFiles) {
 			case ALL :
 				sqlStatement += FILTER_CODE + ORDER_SQL;
 				break;

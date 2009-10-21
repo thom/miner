@@ -8,7 +8,7 @@ import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.dao.MinerInfoDAO;
 import com.infosys.setlabs.miner.dao.MinerModuleDAO;
 import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
-import com.infosys.setlabs.miner.dao.BasketFormatDAO.IncludedFiles;
+import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
 import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.domain.MinerModule;
@@ -50,7 +50,7 @@ public class ShiatsuManager extends Manager {
 			minerInfoDAO.createTables();
 			MinerInfo minerInfo = new MinerInfo();
 			minerInfo.setShiatsu(true);
-			minerInfo.setIncludedFiles(IncludedFiles.ALL);
+			minerInfo.setIncludedFiles(CodeFiles.ALL);
 			minerInfoDAO.update(minerInfo);
 		} catch (DataAccessException e) {
 			throw new MinerException(e);

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
-import com.infosys.setlabs.miner.dao.BasketFormatDAO.IncludedFiles;
+import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
 
 /**
  * Basket Format Manager
@@ -36,7 +36,7 @@ public class BasketFormatManager extends Manager {
 	 * @return transactions in basket format
 	 * @throws MinerException
 	 */
-	public void format(File output, IncludedFiles includedFiles, boolean revs)
+	public void format(File output, CodeFiles codeFiles, boolean revs)
 			throws MinerException {
 		DAOTransaction trans = null;
 		try {
@@ -45,7 +45,7 @@ public class BasketFormatManager extends Manager {
 			trans.begin();
 
 			this.getFactory().getBasketFormatDAO(this.getSession()).format(
-					output, includedFiles, revs);
+					output, codeFiles, revs);
 
 			// Commit transaction
 			trans.commit();

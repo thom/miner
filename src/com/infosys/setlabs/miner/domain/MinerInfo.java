@@ -1,6 +1,6 @@
 package com.infosys.setlabs.miner.domain;
 
-import com.infosys.setlabs.miner.dao.BasketFormatDAO.IncludedFiles;
+import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
 
 /**
  * Saves information about the miner, e.g. what arguments where used
@@ -23,7 +23,7 @@ public class MinerInfo {
 	private double minimalSupport;
 
 	// Included files
-	private IncludedFiles includedFiles;
+	private CodeFiles codeFiles;
 
 	/**
 	 * Did the data already get a massage?
@@ -66,20 +66,20 @@ public class MinerInfo {
 	/**
 	 * Returns included files
 	 * 
-	 * @return includedFiles
+	 * @return codeFiles
 	 */
-	public IncludedFiles getIncludedFiles() {
-		return includedFiles;
+	public CodeFiles getIncludedFiles() {
+		return codeFiles;
 	}
 
 	/**
 	 * Sets included files
 	 * 
-	 * @param includedFiles
+	 * @param codeFiles
 	 *            included files to set
 	 */
-	public void setIncludedFiles(IncludedFiles includedFiles) {
-		this.includedFiles = includedFiles;
+	public void setIncludedFiles(CodeFiles codeFiles) {
+		this.codeFiles = codeFiles;
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class MinerInfo {
 	 *            included files to set
 	 */
 	public void setIncludedFiles(String includedFilesName) {
-		includedFiles = IncludedFiles.valueOf(includedFilesName.toUpperCase());
+		codeFiles = CodeFiles.valueOf(includedFilesName.toUpperCase());
 	}
 
 	/**

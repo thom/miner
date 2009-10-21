@@ -11,7 +11,7 @@ public interface BasketFormatDAO {
 	/**
 	 * Type of the basket format to generate
 	 */
-	public static enum IncludedFiles {
+	public static enum CodeFiles {
 		ALL, RENAMED
 	}
 
@@ -20,11 +20,11 @@ public interface BasketFormatDAO {
 	 * 
 	 * @param output
 	 *            file to write the output to
-	 * @param includedFiles
+	 * @param codeFiles
 	 *            type of files to be included in the transactions
 	 * @param revs
 	 *            should revisions be written in comments?
 	 * @return transactions in basket format
 	 */
-	public String format(File output, IncludedFiles includedFiles, boolean revs);
+	public String format(File output, CodeFiles codeFiles, boolean revs);
 }
