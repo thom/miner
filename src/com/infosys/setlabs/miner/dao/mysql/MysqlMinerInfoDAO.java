@@ -11,22 +11,22 @@ import com.infosys.setlabs.miner.dao.MinerInfoDAO;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 
 public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
-	
-	// TODO: extend to save information about moved files
 
+	// TODO: prepare to have several miner informations (with key "name")
 	protected static String CREATE_MINER_INFO_TABLE = ""
 			+ "CREATE TABLE miner_info ("
 			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-			+ "shiatsu BOOLEAN, " + "miner BOOLEAN, " + "minimal_items INT, "
+			+ "shiatsu BOOLEAN, " + "miner BOOLEAN, "
+			+ "included_files VARCHAR(255), " + "minimal_items INT, "
 			+ "minimal_support DOUBLE" + ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
 	protected static String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS miner_info";
 	protected static String SELECT_MINER_INFO_SQL = ""
-			+ "SELECT shiatsu, miner, minimal_items, minimal_support FROM miner_info WHERE id=1";
+			+ "SELECT shiatsu, miner, included_files, minimal_items, minimal_support FROM miner_info WHERE id=1";
 	protected static String CREATE_MINER_INFO_SQL = ""
-			+ "INSERT INTO miner_info (id, shiatsu, miner, minimal_items, minimal_support) "
-			+ "VALUES (1, false, false, 0, 0)";
+			+ "INSERT INTO miner_info (id, shiatsu, miner, included_files, minimal_items, minimal_support) "
+			+ "VALUES (1, false, false, '', 0, 0)";
 	protected static String UPDATE_MINER_INFO_SQL = ""
-			+ "UPDATE miner_info SET shiatsu=?, miner=?, minimal_items=?, minimal_support=? "
+			+ "UPDATE miner_info SET shiatsu=?, miner=?, included_files=?, minimal_items=?, minimal_support=? "
 			+ "WHERE id=1";
 
 	/**
@@ -51,6 +51,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 				result = new MinerInfo();
 				result.setShiatsu(rs.getBoolean("shiatsu"));
 				result.setMiner(rs.getBoolean("miner"));
+				result.setIncludedFiles(rs.getString("included_files"));
 				result.setMinimalItems(rs.getInt("minimal_items"));
 				result.setMinimalSupport(rs.getDouble("minimal_support"));
 			}
@@ -70,8 +71,9 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 			ps = this.getConnection().prepareStatement(UPDATE_MINER_INFO_SQL);
 			ps.setBoolean(1, minerInfo.isShiatsu());
 			ps.setBoolean(2, minerInfo.isMiner());
-			ps.setInt(3, minerInfo.getMinimalItems());
-			ps.setDouble(4, minerInfo.getMinimalSupport());
+			ps.setString(3, minerInfo.getIncludedFiles().toString());
+			ps.setInt(4, minerInfo.getMinimalItems());
+			ps.setDouble(5, minerInfo.getMinimalSupport());
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();

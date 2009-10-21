@@ -1,12 +1,14 @@
 package com.infosys.setlabs.miner.domain;
 
+import com.infosys.setlabs.miner.dao.BasketFormatDAO.IncludedFiles;
+
 /**
  * Saves information about the miner, e.g. what arguments where used
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MinerInfo {
-	// TODO: add information about moved files
+	// TODO: Add id and name
 	
 	// Did the data already get a massage?
 	private boolean shiatsu;
@@ -19,6 +21,9 @@ public class MinerInfo {
 
 	// Minimal support
 	private double minimalSupport;
+
+	// Included files
+	private IncludedFiles includedFiles;
 
 	/**
 	 * Did the data already get a massage?
@@ -56,6 +61,35 @@ public class MinerInfo {
 	 */
 	public void setMiner(boolean miner) {
 		this.miner = miner;
+	}
+
+	/**
+	 * Returns included files
+	 * 
+	 * @return includedFiles
+	 */
+	public IncludedFiles getIncludedFiles() {
+		return includedFiles;
+	}
+
+	/**
+	 * Sets included files
+	 * 
+	 * @param includedFiles
+	 *            included files to set
+	 */
+	public void setIncludedFiles(IncludedFiles includedFiles) {
+		this.includedFiles = includedFiles;
+	}
+
+	/**
+	 * Sets included files
+	 * 
+	 * @param includedFilesName
+	 *            included files to set
+	 */
+	public void setIncludedFiles(String includedFilesName) {
+		includedFiles = IncludedFiles.valueOf(includedFilesName.toUpperCase());
 	}
 
 	/**
@@ -101,7 +135,8 @@ public class MinerInfo {
 		result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
 		result += "Miner run?\t\t\t\t" + isMiner();
 		if (isMiner()) {
-			result += "\nMinimal support per frequent item set:\t";
+			result += "\nIncluded files:\t\t\t\t" + getIncludedFiles() + "\n";
+			result += "Minimal support per frequent item set:\t";
 			if (getMinimalSupport() < 0) {
 				result += -getMinimalSupport() + " (absolute)\n";
 			} else {
