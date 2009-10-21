@@ -76,7 +76,6 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 			while (rs.next()) {
 				int commitId = rs.getInt("commit_id");
 
-				// TODO: option to only write files that have been renamed
 				if (counter < commitId) {
 					if (counter > -1) {
 						out.write("\n");

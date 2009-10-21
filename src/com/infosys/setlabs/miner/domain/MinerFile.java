@@ -6,7 +6,9 @@ package com.infosys.setlabs.miner.domain;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MinerFile extends RepositoryFile {
-	private RepositoryFile repositoryFile;
+	// TODO: add all columns from repository file and remove repositoryFile:
+	// +: "fileName", "path", "type", "renamed"
+	// -: "repositoryFile"
 	private MinerModule module;
 
 	/**
@@ -14,15 +16,6 @@ public class MinerFile extends RepositoryFile {
 	 */
 	public MinerFile() {
 		super();
-	}
-
-	public MinerFile(RepositoryFile repositoryFile) {
-		setId(repositoryFile.getId());
-		setFileName(repositoryFile.getFileName());
-		setPath(repositoryFile.getPath());
-		setType(repositoryFile.getType());
-		setRenamed(repositoryFile.isRenamed());
-		setRepositoryFile(repositoryFile);
 	}
 
 	/**
@@ -52,25 +45,6 @@ public class MinerFile extends RepositoryFile {
 	 */
 	public void setModule(MinerModule module) {
 		this.module = module;
-	}
-
-	/**
-	 * Returns the repository file
-	 * 
-	 * @return repositoryFile
-	 */
-	public RepositoryFile getRepositoryFile() {
-		return repositoryFile;
-	}
-
-	/**
-	 * Sets the repository file
-	 * 
-	 * @param repositoryFile
-	 *            repository file to set
-	 */
-	public void setRepositoryFile(RepositoryFile repositoryFile) {
-		this.repositoryFile = repositoryFile;
 	}
 
 	@Override

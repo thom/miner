@@ -6,6 +6,7 @@ package com.infosys.setlabs.miner.domain;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MinerModule {
+	// TODO: add columns "containsCodeFiles" & "containsRenamedFiles"
 	private int id;
 	private String moduleName;
 

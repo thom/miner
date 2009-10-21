@@ -74,9 +74,11 @@ public class ShiatsuManager extends Manager {
 				if (repositoryFile.getType() == RepositoryFile.Type.CODE
 						&& repositoryFile.isRenamed()) {
 					minerFile = new MinerFile();
+					minerFile.setId(repositoryFile.getId());
 					minerFile.setFileName(repositoryFile.getFileName());
 					minerFile.setPath(repositoryFile.getPath());
-					minerFile.setRepositoryFile(repositoryFile);
+					minerFile.setType(repositoryFile.getType());
+					minerFile.setRenamed(repositoryFile.isRenamed());
 					minerFile.setModule(minerModuleDAO.find(minerModuleDAO
 							.create(new MinerModule(repositoryFile
 									.getDirectory()))));
