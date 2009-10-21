@@ -102,6 +102,15 @@ public class RepositoryFile {
 	public String getDirectory() {
 		return this.path.substring(0, path.length() - fileName.length());
 	}
+	
+	/**
+	 * Is the file of type code?
+	 * 
+	 * @return is file of type code?
+	 */
+	public boolean isCode() {
+		return type == Type.CODE;
+	}
 
 	/**
 	 * Return the file type

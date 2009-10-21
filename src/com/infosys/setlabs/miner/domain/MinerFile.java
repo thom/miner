@@ -6,9 +6,6 @@ package com.infosys.setlabs.miner.domain;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MinerFile extends RepositoryFile {
-	// TODO: add all columns from repository file and remove repositoryFile:
-	// +: "fileName", "path", "type", "renamed"
-	// -: "repositoryFile"
 	private MinerModule module;
 
 	/**

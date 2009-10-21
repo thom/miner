@@ -66,24 +66,51 @@ public class ShiatsuManager extends Manager {
 			MinerModuleDAO minerModuleDAO = this.getFactory()
 					.getMinerModuleDAO(this.getSession());
 			MinerFile minerFile = null;
+			MinerModule minerModule = null;
+			boolean updateMinerModule = false;
 
 			for (RepositoryFile repositoryFile : repositoryFileDAO.findAll()) {
-				// TODO: add all files but add fields to MinerFile and
-				// MinerModule to only get CODE files and modules containing
-				// CODE files (optionally only with renames!)
-				if (repositoryFile.getType() == RepositoryFile.Type.CODE
-						&& repositoryFile.isRenamed()) {
-					minerFile = new MinerFile();
-					minerFile.setId(repositoryFile.getId());
-					minerFile.setFileName(repositoryFile.getFileName());
-					minerFile.setPath(repositoryFile.getPath());
-					minerFile.setType(repositoryFile.getType());
-					minerFile.setRenamed(repositoryFile.isRenamed());
+				// TODO: Only put in code files!
+				updateMinerModule = false;
+				minerModule = null;
+
+				minerFile = new MinerFile();
+				minerFile.setId(repositoryFile.getId());
+				minerFile.setFileName(repositoryFile.getFileName());
+				minerFile.setPath(repositoryFile.getPath());
+				minerFile.setType(repositoryFile.getType());
+				minerFile.setRenamed(repositoryFile.isRenamed());
+
+				minerModule = minerModuleDAO.find(minerFile.getDirectory());
+				if (minerModule != null) {
+					if (minerFile.isCode() && !minerModule.hasCodeFiles()) {
+						minerModule.setCodeFiles(true);
+						updateMinerModule = true;
+					}
+					if (minerFile.isRenamed() && !minerModule.hasRenamedFiles()) {
+						minerModule.setRenamedFiles(true);
+						updateMinerModule = true;
+					}
+					if (minerFile.isCode() && minerFile.isRenamed()
+							&& !minerModule.hasRenamedCodeFiles()) {
+						minerModule.setRenamedCodeFiles(true);
+						updateMinerModule = true;
+					}
+
+					if (updateMinerModule) {
+						minerModuleDAO.update(minerModule);
+					}
+
+					minerFile.setModule(minerModule);
+				} else {
+					minerModule = new MinerModule(minerFile.getDirectory());
+					minerModule.setCodeFiles(minerFile.isCode());
+					minerModule.setRenamedFiles(minerFile.isRenamed());
 					minerFile.setModule(minerModuleDAO.find(minerModuleDAO
-							.create(new MinerModule(repositoryFile
-									.getDirectory()))));
-					minerFileDAO.create(minerFile);
+							.create(minerModule)));
 				}
+
+				minerFileDAO.create(minerFile);
 			}
 		} catch (DataAccessException e) {
 			throw new MinerException(e);
