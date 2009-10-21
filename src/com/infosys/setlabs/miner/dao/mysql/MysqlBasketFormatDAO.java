@@ -52,15 +52,9 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 
 		switch (includedFiles) {
 			case ALL :
-				sqlStatement += ORDER_SQL;
-				break;
-			case ALL_RENAMED :
-				sqlStatement += FILTER_RENAMED + ORDER_SQL;
-				break;
-			case CODE :
 				sqlStatement += FILTER_CODE + ORDER_SQL;
 				break;
-			case CODE_RENAMED :
+			case RENAMED :
 				sqlStatement += FILTER_CODE + FILTER_RENAMED + ORDER_SQL;
 				break;
 		}

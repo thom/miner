@@ -96,7 +96,6 @@ public class Miner {
 		minerInfo = minerInfoManager.get();
 
 		// Check prerequisites
-		// TODO: is minerInfo.included == values.getIncluded()?
 		if (minerInfo == null || !minerInfo.isShiatsu()) {
 			minerInfoManager.close();
 			throw new MinerException(
@@ -301,8 +300,8 @@ public class Miner {
 		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
 		private Mode mode = Mode.ALL;
 
-		@Option(name = "-n", aliases = {"--included, --included-files"}, usage = "files to include (all: all files, all_renamed: all renamed files, code: all code files, code_renamed: all renamed code files (default))", metaVar = "all|all_renamed|code|code_renamed")
-		private IncludedFiles includedFiles = IncludedFiles.CODE_RENAMED;
+		@Option(name = "-n", aliases = {"--included, --included-files"}, usage = "files to include (all: all code files, renamed: all renamed code files (default))", metaVar = "all|renamed")
+		private IncludedFiles includedFiles = IncludedFiles.RENAMED;
 
 		@Option(name = "-t", aliases = {"--trans", "--transactions"}, usage = "file containing transactions in basket format (if the file doesn't already exist, the miner tool creates it and writes data to it)")
 		private String transactions;

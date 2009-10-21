@@ -15,5 +15,5 @@ public interface CreateObjectDAO<Type> {
 	 *            object to create
 	 * @throws DataAccessException
 	 */
-	public int create(Type object) throws DataAccessException;
+	public Type create(Type object) throws DataAccessException;
 }

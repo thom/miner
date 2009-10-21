@@ -113,8 +113,8 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	}
 
 	@Override
-	public int create(MinerFile minerFile) throws DataAccessException {
-		int result = 0;
+	public MinerFile create(MinerFile minerFile) throws DataAccessException {
+		MinerFile result = minerFile;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -130,8 +130,9 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			ps.execute();
 
 			rs = ps.getGeneratedKeys();
-			if (rs != null && rs.next())
-				result = rs.getInt(1);
+			if (rs != null && rs.next()) {
+				result.setId(rs.getInt(1));
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

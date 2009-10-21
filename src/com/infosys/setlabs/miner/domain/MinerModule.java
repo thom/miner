@@ -130,11 +130,9 @@ public class MinerModule {
 	@Override
 	public String toString() {
 		String result = "";
-		result += "ID:\t\t\t" + getId() + "\n";
-		result += "Module name:\t\t" + getModuleName() + "\n";
-		result += "Code files:\t\t" + hasCodeFiles() + "\n";
-		result += "Renamed files:\t\t" + hasRenamedFiles() + "\n";
-		result += "Renamed code files:\t" + hasRenamedCodeFiles();
+		result += "ID:\t\t" + getId() + "\n";
+		result += "Module name:\t" + getModuleName() + "\n";
+		result += "Renamed files:\t" + hasRenamedFiles();
 		return result;
 	}
 }

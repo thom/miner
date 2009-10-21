@@ -12,7 +12,7 @@ public interface BasketFormatDAO {
 	 * Type of the basket format to generate
 	 */
 	public static enum IncludedFiles {
-		ALL, CODE, ALL_RENAMED, CODE_RENAMED
+		ALL, RENAMED
 	}
 
 	/**
