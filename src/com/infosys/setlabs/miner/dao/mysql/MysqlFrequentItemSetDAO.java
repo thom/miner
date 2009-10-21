@@ -24,6 +24,8 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		implements
 			FrequentItemSetDAO {
 
+	// TODO: Set table names with a method => several tables for different
+	// mining names
 	protected static String CREATE_MINER_FISM_TABLE = ""
 			+ "CREATE TABLE miner_frequent_item_sets ("
 			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, " + "size INT, "

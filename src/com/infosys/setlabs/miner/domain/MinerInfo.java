@@ -8,7 +8,11 @@ import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MinerInfo {
-	// TODO: Add id and name
+	// ID
+	private int id;
+
+	// Name
+	private String name;
 
 	// Did the data already get a massage?
 	private boolean shiatsu;
@@ -24,6 +28,44 @@ public class MinerInfo {
 
 	// Included files
 	private CodeFiles codeFiles;
+
+	/**
+	 * Returns the ID
+	 * 
+	 * @return id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the ID
+	 * 
+	 * @param id
+	 *            id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * Returns the name
+	 * 
+	 * @return name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the name
+	 * 
+	 * @param name
+	 *            name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	/**
 	 * Did the data already get a massage?
@@ -64,32 +106,32 @@ public class MinerInfo {
 	}
 
 	/**
-	 * Returns included files
+	 * Returns code files
 	 * 
 	 * @return codeFiles
 	 */
-	public CodeFiles getIncludedFiles() {
+	public CodeFiles getCodeFiles() {
 		return codeFiles;
 	}
 
 	/**
-	 * Sets included files
+	 * Sets code files
 	 * 
 	 * @param codeFiles
-	 *            included files to set
+	 *            code files to set
 	 */
-	public void setIncludedFiles(CodeFiles codeFiles) {
+	public void setCodeFiles(CodeFiles codeFiles) {
 		this.codeFiles = codeFiles;
 	}
 
 	/**
-	 * Sets included files
+	 * Sets code files
 	 * 
-	 * @param includedFilesName
-	 *            included files to set
+	 * @param codeFilesName
+	 *            code files to set
 	 */
-	public void setIncludedFiles(String includedFilesName) {
-		codeFiles = CodeFiles.valueOf(includedFilesName.toUpperCase());
+	public void setCodeFiles(String codeFilesName) {
+		codeFiles = CodeFiles.valueOf(codeFilesName.toUpperCase());
 	}
 
 	/**
@@ -132,11 +174,13 @@ public class MinerInfo {
 	@Override
 	public String toString() {
 		String result = "";
+		result += "ID\t\t\t\t\t" + getId() + "\n";
+		result += "Name\t\t\t\t\t" + getName() + "\n";
 		result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
 		result += "Miner run?\t\t\t\t" + isMiner();
 		if (isMiner()) {
-			result += "\nIncluded files:\t\t\t\t"
-					+ getIncludedFiles().toString().toLowerCase() + "\n";
+			result += "\nCode files:\t\t\t\t"
+					+ getCodeFiles().toString().toLowerCase() + "\n";
 			result += "Minimal support per frequent item set:\t";
 			if (getMinimalSupport() < 0) {
 				result += -getMinimalSupport() + " (absolute)\n";

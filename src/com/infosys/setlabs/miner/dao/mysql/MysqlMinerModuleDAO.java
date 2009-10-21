@@ -153,7 +153,6 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		} finally {
 			this.closeStatement(ps);
 		}
-		// }
 		return result;
 	}
 

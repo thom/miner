@@ -1,5 +1,6 @@
 package com.infosys.setlabs.miner.manage;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import com.infosys.setlabs.dao.DAOTransaction;
@@ -21,7 +22,7 @@ public class MinerInfoManager extends Manager {
 	}
 
 	/**
-	 * Creates table for miner information
+	 * Creates table for miner info
 	 * 
 	 * @throws MinerException
 	 */
@@ -49,12 +50,14 @@ public class MinerInfoManager extends Manager {
 	}
 
 	/**
-	 * Returns miner information
+	 * Finds existing persistent miner info by its ID
 	 * 
+	 * @param id
+	 *            ID to find
 	 * @return MinerInfo
 	 * @throws MinerException
 	 */
-	public MinerInfo get() throws MinerException {
+	public MinerInfo find(int id) throws MinerException {
 		DAOTransaction trans = null;
 		MinerInfo result = null;
 		try {
@@ -62,7 +65,8 @@ public class MinerInfoManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			result = this.getFactory().getMinerInfoDAO(this.getSession()).get();
+			result = this.getFactory().getMinerInfoDAO(this.getSession()).find(
+					id);
 
 			// Commit transaction
 			trans.commit();
@@ -80,13 +84,141 @@ public class MinerInfoManager extends Manager {
 	}
 
 	/**
-	 * Creates new persistent miner information
+	 * Finds existing persistent miner info by its name
 	 * 
-	 * @param minerInfo
-	 *            miner info to write to the database
+	 * @param id
+	 *            ID to find
+	 * @return MinerInfo
 	 * @throws MinerException
 	 */
-	public void update(MinerInfo minerInfo) throws MinerException {
+	public MinerInfo find(String minerInfoName) throws MinerException {
+		DAOTransaction trans = null;
+		MinerInfo result = null;
+		try {
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
+			result = this.getFactory().getMinerInfoDAO(this.getSession()).find(
+					minerInfoName);
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
+		}
+		return result;
+	}
+
+	/**
+	 * Finds all existing persistent miner info
+	 * 
+	 * @return Collection<MinerInfo>
+	 * @throws MinerException
+	 */
+	public Collection<MinerInfo> findAll() throws MinerException {
+		DAOTransaction trans = null;
+		Collection<MinerInfo> result = null;
+		try {
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
+			result = this.getFactory().getMinerInfoDAO(this.getSession())
+					.findAll();
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
+		}
+		return result;
+	}
+
+	/**
+	 * Creates a new persistent miner info
+	 * 
+	 * @param MinerInfo
+	 *            miner info to create
+	 * @throws MinerException
+	 */
+	public void create(MinerInfo MinerInfo) throws MinerException {
+		DAOTransaction trans = null;
+		try {
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
+			this.getFactory().getMinerInfoDAO(this.getSession()).create(
+					MinerInfo);
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
+		}
+	}
+
+	/**
+	 * Deletes an existing persistent miner info
+	 * 
+	 * @param MinerInfo
+	 *            miner info to delete
+	 * @throws MinerException
+	 */
+	public void delete(MinerInfo MinerInfo) throws MinerException {
+		DAOTransaction trans = null;
+		try {
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
+			this.getFactory().getMinerInfoDAO(this.getSession()).delete(
+					MinerInfo);
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
+		}
+	}
+
+	/**
+	 * Updates an existing persistent miner info
+	 * 
+	 * @param MinerInfo
+	 *            miner info to update
+	 * @throws MinerException
+	 */
+	public void update(MinerInfo MinerInfo) throws MinerException {
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
@@ -94,7 +226,7 @@ public class MinerInfoManager extends Manager {
 			trans.begin();
 
 			this.getFactory().getMinerInfoDAO(this.getSession()).update(
-					minerInfo);
+					MinerInfo);
 
 			// Commit transaction
 			trans.commit();

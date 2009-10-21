@@ -58,14 +58,17 @@ public class FISInfo {
 
 		// Get miner info
 		MinerInfoManager minerInfoManager = new MinerInfoManager(connectionArgs);
-		MinerInfo minerInfo = minerInfoManager.get();
+		MinerInfo minerInfo = minerInfoManager.find(values.getName());
 
 		// Check prerequisites
 		if (minerInfo == null
 				|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
 			minerInfoManager.close();
-			throw new MinerException(new Exception(
-					"The data must be mined before running fis-info."));
+			throw new MinerException(
+					new Exception(
+							"No mining called '"
+									+ values.getName()
+									+ "' found. The data must be mined before running fis-info."));
 		}
 	}
 
@@ -130,6 +133,9 @@ public class FISInfo {
 		@Option(name = "-i", aliases = {"--id"}, usage = "ID of the file", required = true)
 		private int id;
 
+		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
+		private String name = "";
+
 		/**
 		 * Returns database name
 		 * 
@@ -164,6 +170,15 @@ public class FISInfo {
 		 */
 		public int getId() {
 			return id;
+		}
+
+		/**
+		 * Returns the name
+		 * 
+		 * @return name
+		 */
+		public String getName() {
+			return name;
 		}
 	}
 }

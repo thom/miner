@@ -79,13 +79,13 @@ public class Miner {
 		connectionArgs.put("password", values.getPw());
 
 		// Initialize transactions file
-		transactions = setFile(values.getTransactions(), values.getDb()
-				+ ".tra");
+		transactions = setFile(values.getTransactions(), values.getDb(), values
+				.getName(), ".tra");
 		transactionsExistedBefore = transactions.exists();
 
 		// Initialize frequent item sets file
-		frequentItemSets = setFile(values.getFrequentItemSets(), values.getDb()
-				+ ".fis");
+		frequentItemSets = setFile(values.getFrequentItemSets(),
+				values.getDb(), values.getName(), ".fis");
 		frequentItemSetsExistedBefore = frequentItemSets.exists();
 
 		// Set database engine
@@ -93,10 +93,11 @@ public class Miner {
 
 		// Get miner info
 		minerInfoManager = new MinerInfoManager(connectionArgs);
-		minerInfo = minerInfoManager.get();
+		MinerInfo minerInfoDefault = minerInfoManager.find("");
+		minerInfo = minerInfoManager.find(values.getName());
 
 		// Check prerequisites
-		if (minerInfo == null || !minerInfo.isShiatsu()) {
+		if (minerInfoDefault == null || !minerInfoDefault.isShiatsu()) {
 			minerInfoManager.close();
 			throw new MinerException(
 					new Exception(
@@ -109,7 +110,12 @@ public class Miner {
 	 * @throws MinerException
 	 */
 	public void info() throws MinerException {
-		System.out.println(minerInfo);
+		if (minerInfo == null) {
+			System.out.println("No mining named '" + values.getName()
+					+ "' found.");
+		} else {
+			System.out.println(minerInfo);
+		}
 	}
 
 	/**
@@ -214,30 +220,55 @@ public class Miner {
 
 		minerManager.frequentItemSets(frequentItemSets);
 
+		boolean create = false;
+
 		// Update miner info
+		if (minerInfo == null) {
+			minerInfo = new MinerInfo();
+			create = true;
+		}
+
 		if (runApriori() || !minerInfo.isMiner()) {
+			minerInfo.setName(values.getName());
+			minerInfo.setShiatsu(true);
 			minerInfo.setMiner(true);
-			minerInfo.setIncludedFiles(values.getIncludedFiles());
+			minerInfo.setCodeFiles(values.getIncludedFiles());
 			minerInfo.setMinimalItems(values.getMinItems());
 			minerInfo.setMinimalSupport(values.getMinSupport());
-			minerInfoManager.update(minerInfo);
+
+			if (create) {
+				minerInfoManager.create(minerInfo);
+			} else {
+				minerInfoManager.update(minerInfo);
+			}
 		}
 
 		System.out.println("DONE  > frequent item sets\n");
 	}
 
 	/**
-	 * Creates a new file where the path is fileName, if fileName is not null or
-	 * def otherwise
+	 * Creates a new file
 	 * 
 	 * @param fileName
 	 *            file name specified as argument
 	 * @param def
 	 *            default file name
+	 * @param name
+	 *            name
+	 * @param ending
+	 *            ending
 	 * @return File
 	 */
-	private File setFile(String fileName, String def) {
-		return fileName != null ? new File(fileName) : new File(def);
+	private File setFile(String fileName, String def, String name, String ending) {
+		if (fileName != null) {
+			return new File(fileName);
+		} else {
+			if (name.equals("")) {
+				return new File(def + ending);
+			} else {
+				return new File(def + "_" + name + ending);
+			}
+		}
 	}
 
 	/**
@@ -308,6 +339,9 @@ public class Miner {
 
 		@Option(name = "-f", aliases = {"--fis", "--frequent-item-sets"}, usage = "file containing frequent item sets (if the file doesn't already exist, the miner tool creates it and writes data to it)")
 		private String frequentItemSets;
+
+		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
+		private String name = "";
 
 		/**
 		 * Sets default values for some of the command line arguments
@@ -455,6 +489,15 @@ public class Miner {
 		 */
 		public String getFrequentItemSets() {
 			return frequentItemSets;
+		}
+
+		/**
+		 * Returns the name
+		 * 
+		 * @return name
+		 */
+		public String getName() {
+			return name;
 		}
 	}
 }

@@ -49,9 +49,10 @@ public class ShiatsuManager extends Manager {
 					this.getSession());
 			minerInfoDAO.createTables();
 			MinerInfo minerInfo = new MinerInfo();
+			minerInfo.setName("");
 			minerInfo.setShiatsu(true);
-			minerInfo.setIncludedFiles(CodeFiles.ALL);
-			minerInfoDAO.update(minerInfo);
+			minerInfo.setCodeFiles(CodeFiles.NONE);
+			minerInfoDAO.create(minerInfo);
 		} catch (DataAccessException e) {
 			throw new MinerException(e);
 		}

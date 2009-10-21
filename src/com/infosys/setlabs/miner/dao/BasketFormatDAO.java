@@ -12,7 +12,7 @@ public interface BasketFormatDAO {
 	 * Type of the basket format to generate
 	 */
 	public static enum CodeFiles {
-		ALL, RENAMED
+		ALL, RENAMED, NONE
 	}
 
 	/**
