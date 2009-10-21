@@ -9,7 +9,7 @@ import com.infosys.setlabs.miner.dao.BasketFormatDAO.IncludedFiles;
  */
 public class MinerInfo {
 	// TODO: Add id and name
-	
+
 	// Did the data already get a massage?
 	private boolean shiatsu;
 
@@ -135,7 +135,8 @@ public class MinerInfo {
 		result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
 		result += "Miner run?\t\t\t\t" + isMiner();
 		if (isMiner()) {
-			result += "\nIncluded files:\t\t\t\t" + getIncludedFiles() + "\n";
+			result += "\nIncluded files:\t\t\t\t"
+					+ getIncludedFiles().toString().toLowerCase() + "\n";
 			result += "Minimal support per frequent item set:\t";
 			if (getMinimalSupport() < 0) {
 				result += -getMinimalSupport() + " (absolute)\n";
