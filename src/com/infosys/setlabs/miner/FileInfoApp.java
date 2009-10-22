@@ -18,7 +18,7 @@ import com.infosys.setlabs.miner.manage.RepositoryFileManager;
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class FileInfo {
+public class FileInfoApp {
 	// Command line values
 	private CommandLineValues values;
 
@@ -32,7 +32,7 @@ public class FileInfo {
 	 *            arguments
 	 * @throws MinerException
 	 */
-	public FileInfo(String[] args) {
+	public FileInfoApp(String[] args) {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -107,8 +107,8 @@ public class FileInfo {
 	 * @throws MinerException
 	 */
 	public static void main(String[] args) throws MinerException {
-		FileInfo fileInfo = new FileInfo(args);
-		fileInfo.print();
+		FileInfoApp fileInfoApp = new FileInfoApp(args);
+		fileInfoApp.print();
 	}
 
 	/**
