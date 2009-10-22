@@ -16,7 +16,7 @@ import com.infosys.setlabs.miner.manage.ShiatsuManager;
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class Shiatsu {
+public class ShiatsuApp {
 	// Command line values
 	private CommandLineValues values;
 
@@ -30,7 +30,7 @@ public class Shiatsu {
 	 *            arguments
 	 * @throws MinerException
 	 */
-	public Shiatsu(String[] args) {
+	public ShiatsuApp(String[] args) {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -92,8 +92,8 @@ public class Shiatsu {
 	 * @throws MinerException
 	 */
 	public static void main(String[] args) throws MinerException {
-		Shiatsu shiatsu = new Shiatsu(args);
-		shiatsu.massage();
+		ShiatsuApp shiatsuApp = new ShiatsuApp(args);
+		shiatsuApp.massage();
 	}
 
 	/**
