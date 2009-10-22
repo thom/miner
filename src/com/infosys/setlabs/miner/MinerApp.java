@@ -219,7 +219,7 @@ public class MinerApp {
 	private void frequentItemSets() throws MinerException {
 		System.out.println("EXEC  > frequent item sets");
 
-		minerManager.frequentItemSets(frequentItemSets);
+		minerManager.frequentItemSets(frequentItemSets, values.getName());
 
 		boolean create = false;
 
@@ -264,11 +264,7 @@ public class MinerApp {
 		if (fileName != null) {
 			return new File(fileName);
 		} else {
-			if (name.equals("")) {
-				return new File(def + ending);
-			} else {
-				return new File(def + "_" + name + ending);
-			}
+			return new File(def + "_" + name + ending);
 		}
 	}
 

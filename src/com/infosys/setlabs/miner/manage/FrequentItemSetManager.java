@@ -6,7 +6,9 @@ import java.util.HashMap;
 import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
+import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
 import com.infosys.setlabs.miner.domain.FrequentItemSet;
+import com.infosys.setlabs.miner.domain.MinerInfo;
 
 /**
  * Frequent Item Set Manager
@@ -14,6 +16,8 @@ import com.infosys.setlabs.miner.domain.FrequentItemSet;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class FrequentItemSetManager extends Manager {
+	private String name = MinerInfo.defaultName;
+
 	/**
 	 * Creates a new miner frequent item set manager
 	 * 
@@ -24,6 +28,25 @@ public class FrequentItemSetManager extends Manager {
 	public FrequentItemSetManager(HashMap<String, String> connectionArgs)
 			throws MinerException {
 		super(connectionArgs);
+	}
+
+	/**
+	 * Returns the name
+	 * 
+	 * @return name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the name
+	 * 
+	 * @param name
+	 *            name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -38,8 +61,10 @@ public class FrequentItemSetManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getFrequentItemSetDAO(this.getSession())
-					.createTables();
+			FrequentItemSetDAO frequentItemSetDAO = this.getFactory()
+					.getFrequentItemSetDAO(this.getSession());
+			frequentItemSetDAO.setName(getName());
+			frequentItemSetDAO.createTables();
 
 			// Commit transaction
 			trans.commit();
@@ -71,8 +96,10 @@ public class FrequentItemSetManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			result = this.getFactory().getFrequentItemSetDAO(this.getSession())
-					.find(id);
+			FrequentItemSetDAO frequentItemSetDAO = this.getFactory()
+					.getFrequentItemSetDAO(this.getSession());
+			frequentItemSetDAO.setName(getName());
+			result = frequentItemSetDAO.find(id);
 
 			// Commit transaction
 			trans.commit();
@@ -103,8 +130,10 @@ public class FrequentItemSetManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			result = this.getFactory().getFrequentItemSetDAO(this.getSession())
-					.findAll();
+			FrequentItemSetDAO frequentItemSetDAO = this.getFactory()
+					.getFrequentItemSetDAO(this.getSession());
+			frequentItemSetDAO.setName(getName());
+			result = frequentItemSetDAO.findAll();
 
 			// Commit transaction
 			trans.commit();
@@ -138,8 +167,10 @@ public class FrequentItemSetManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			int id = this.getFactory().getFrequentItemSetDAO(this.getSession())
-					.create(frequentItemSetLine);
+			FrequentItemSetDAO frequentItemSetDAO = this.getFactory()
+					.getFrequentItemSetDAO(this.getSession());
+			frequentItemSetDAO.setName(getName());
+			int id = frequentItemSetDAO.create(frequentItemSetLine);
 
 			// Commit transaction
 			trans.commit();
@@ -147,8 +178,7 @@ public class FrequentItemSetManager extends Manager {
 			// Start new transaction
 			trans.begin();
 
-			this.getFactory().getFrequentItemSetDAO(this.getSession())
-					.setNumberOfModulesTouched(id);
+			frequentItemSetDAO.setNumberOfModulesTouched(id);
 
 			// Commit transaction
 			trans.commit();

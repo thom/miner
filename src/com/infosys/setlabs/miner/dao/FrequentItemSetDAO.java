@@ -14,6 +14,22 @@ public interface FrequentItemSetDAO
 		extends
 			ReadObjectDAO<FrequentItemSet>,
 			CreateTablesDAO {
+	
+	/**
+	 * Returns the name
+	 * 
+	 * @return name
+	 */
+	public String getName();
+
+	/**
+	 * Sets the name
+	 * 
+	 * @param name
+	 *            name to set
+	 */
+	public void setName(String name);	
+
 	/**
 	 * Expects an input in the form of <code>5 23 42:10 23.4200</code> whereas
 	 * before the <code>:</code> are file IDs and after the <code>:</code> are

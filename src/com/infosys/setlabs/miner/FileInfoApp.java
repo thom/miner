@@ -72,7 +72,7 @@ public class FileInfoApp {
 		RepositoryFile file = null;
 
 		try {
-			// Connect to MySQL database
+			// Connect to the database
 			minerFileManager = new MinerFileManager(connectionArgs);
 
 			// Get file path

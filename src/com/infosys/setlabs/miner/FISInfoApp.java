@@ -87,8 +87,11 @@ public class FISInfoApp {
 		FrequentItemSet fis = null;
 
 		try {
-			// Connect to MySQL database
+			// Connect to the database
 			frequentItemSetManager = new FrequentItemSetManager(connectionArgs);
+			
+			// Set name
+			frequentItemSetManager.setName(values.getName());
 
 			// Get frequent item set
 			fis = frequentItemSetManager.find(values.getId());

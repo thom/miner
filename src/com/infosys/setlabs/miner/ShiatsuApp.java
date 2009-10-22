@@ -68,7 +68,7 @@ public class ShiatsuApp {
 		ShiatsuManager shiatsuManager = null;
 
 		try {
-			// Connect to MySQL database
+			// Connect to the database
 			shiatsuManager = new ShiatsuManager(connectionArgs);
 
 			System.out.println("EXEC  > shiatsu\n");
