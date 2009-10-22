@@ -23,7 +23,7 @@ import com.infosys.setlabs.miner.manage.MinerManager;
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class Miner {
+public class MinerApp {
 	// Command line values
 	private CommandLineValues values;
 
@@ -53,7 +53,7 @@ public class Miner {
 	 *            arguments
 	 * @throws MinerException
 	 */
-	public Miner(String[] args) throws MinerException {
+	public MinerApp(String[] args) throws MinerException {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -280,12 +280,12 @@ public class Miner {
 	 * @throws MinerException
 	 */
 	public static void main(String[] args) throws MinerException {
-		Miner miner = new Miner(args);
+		MinerApp minerApp = new MinerApp(args);
 
-		if (miner.values.isInfo()) {
-			miner.info();
+		if (minerApp.values.isInfo()) {
+			minerApp.info();
 		} else {
-			miner.mine();
+			minerApp.mine();
 		}
 	}
 
