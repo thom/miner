@@ -10,4 +10,9 @@ import com.infosys.setlabs.miner.domain.MinerFile;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public interface MinerFileDAO extends ObjectDAO<MinerFile>, CreateTablesDAO {
+	/**
+	 * Name
+	 * 
+	 */
+	public static String name = "miner_files";
 }

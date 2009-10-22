@@ -18,20 +18,6 @@ import com.infosys.setlabs.miner.dao.BasketFormatDAO;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
-
-	// TODO: clean up the mess
-	protected static String SELECT_SQL = ""
-			+ "SELECT a.commit_id, s.rev, f.id AS modified_files "
-			+ "FROM actions a, files f, file_types ft, scmlog s "
-			+ "WHERE f.id = a.file_id AND f.id = ft.file_id AND s.id = a.commit_id ";
-	protected static String ORDER_SQL = ""
-			+ "ORDER BY a.commit_id ASC, modified_files ASC";
-	protected static String FILTER_CODE = " AND ft.type = 'code' ";
-	protected static String FILTER_RENAMED = " "
-			+ " AND f.id IN (SELECT DISTINCT a.file_id "
-			+ "FROM actions a, file_copies fc "
-			+ "WHERE a.type = 'V' AND a.file_id = fc.to_id) ";
-
 	/**
 	 * Creates a new DAO
 	 * 
@@ -42,6 +28,26 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 		super(conn);
 	}
 
+	protected String selectSQL() {
+		return "SELECT a.commit_id, s.rev, f.id AS modified_files "
+				+ "FROM actions a, files f, file_types ft, scmlog s "
+				+ "WHERE f.id = a.file_id AND f.id = ft.file_id AND s.id = a.commit_id ";
+	}
+
+	protected String orderSQL() {
+		return "ORDER BY a.commit_id ASC, modified_files ASC";
+	}
+
+	protected String filterCodeSQL() {
+		return " AND ft.type = 'code' ";
+	}
+
+	protected String filterRenamedSQL() {
+		return " AND f.id IN (SELECT DISTINCT a.file_id "
+				+ "FROM actions a, file_copies fc "
+				+ "WHERE a.type = 'V' AND a.file_id = fc.to_id) ";
+	}
+
 	@Override
 	public String format(File output, CodeFiles codeFiles, boolean revs) {
 		String result = "";
@@ -49,14 +55,14 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 		ResultSet rs = null;
 
 		// Build the statement
-		String sqlStatement = SELECT_SQL;
+		String sqlStatement = selectSQL();
 
 		switch (codeFiles) {
 			case ALL :
-				sqlStatement += FILTER_CODE + ORDER_SQL;
+				sqlStatement += filterCodeSQL() + orderSQL();
 				break;
 			case RENAMED :
-				sqlStatement += FILTER_CODE + FILTER_RENAMED + ORDER_SQL;
+				sqlStatement += filterCodeSQL() + filterRenamedSQL() + orderSQL();
 				break;
 		}
 

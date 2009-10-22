@@ -14,6 +14,15 @@ public interface FrequentItemSetDAO
 		extends
 			ReadObjectDAO<FrequentItemSet>,
 			CreateTablesDAO {
+	/**
+	 * Prefix of frequent item sets table
+	 */
+	public static String frequentItemSetsPrefix = "miner_fis_";
+	
+	/**
+	 * Prefix of frequent items table
+	 */
+	public static String frequentItemsPrefix = "miner_fi_";
 	
 	/**
 	 * Returns the name

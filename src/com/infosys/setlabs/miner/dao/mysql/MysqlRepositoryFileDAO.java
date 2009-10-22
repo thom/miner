@@ -20,29 +20,6 @@ import com.infosys.setlabs.miner.domain.RepositoryFile;
 public class MysqlRepositoryFileDAO extends JdbcDAO
 		implements
 			RepositoryFileDAO {
-
-	// TODO: clean up the mess		
-	protected static String SELECT_FILE_SQL = ""
-			+ "SELECT id, file_name, repository_id, id IN "
-			+ "(SELECT DISTINCT a.file_id FROM actions a, file_copies fc "
-			+ "WHERE a.type = 'V' AND a.file_id = fc.to_id) AS renamed "
-			+ "FROM files WHERE id = ?";
-	protected static String SELECT_FILES_SQL = ""
-			+ "SELECT id, file_name, repository_id, id IN "
-			+ "(SELECT DISTINCT a.file_id FROM actions a, file_copies fc "
-			+ "WHERE a.type = 'V' AND a.file_id = fc.to_id) AS renamed "
-			+ "FROM files";
-	protected static String SELECT_FILE_TYPE_SQL = ""
-			+ "SELECT file_id, type FROM file_types WHERE file_id = ?";
-	protected static String SELECT_PATH_SQL = ""
-			+ "SELECT f.id, f.file_name, fl.parent_id "
-			+ "FROM files f, file_links fl "
-			+ "WHERE f.id = fl.file_id AND f.id = ?";
-	protected static String SELECT_NEWEST_FILE_NAME = ""
-			+ "SELECT * FROM file_copies "
-			+ "WHERE new_file_name <> '' AND from_id = to_id AND from_id = ? "
-			+ "ORDER BY to_id, from_commit_id";
-
 	/**
 	 * Creates a new DAO
 	 * 
@@ -53,6 +30,36 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		super(conn);
 	}
 
+	protected String selectSQL() {
+		return String.format("SELECT id, file_name, repository_id, id IN "
+				+ "(SELECT DISTINCT a.file_id FROM actions a, file_copies fc "
+				+ "WHERE a.type = 'V' AND a.file_id = fc.to_id) AS renamed "
+				+ "FROM %s WHERE id = ?", name);
+	}
+
+	protected String selectAllSQL() {
+		return String.format("SELECT id, file_name, repository_id, id IN "
+				+ "(SELECT DISTINCT a.file_id FROM actions a, file_copies fc "
+				+ "WHERE a.type = 'V' AND a.file_id = fc.to_id) AS renamed "
+				+ "FROM %s", name);
+	}
+
+	protected String selectFileTypeSQL() {
+		return "SELECT file_id, type FROM file_types WHERE file_id = ?";
+	}
+
+	protected String selectPathSQL() {
+		return String.format("SELECT f.id, f.file_name, fl.parent_id "
+				+ "FROM %s f, file_links fl "
+				+ "WHERE f.id = fl.file_id AND f.id = ?", name);
+	}
+
+	protected String selectNewestFileNameSQL() {
+		return "SELECT * FROM file_copies "
+				+ "WHERE new_file_name <> '' AND from_id = to_id AND from_id = ? "
+				+ "ORDER BY to_id, from_commit_id";
+	}
+
 	@Override
 	public RepositoryFile find(int id) throws DataAccessException {
 		RepositoryFile result = null;
@@ -60,7 +67,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		ResultSet rs = null;
 
 		try {
-			ps = this.getConnection().prepareStatement(SELECT_FILE_SQL);
+			ps = this.getConnection().prepareStatement(selectSQL());
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -97,7 +104,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(SELECT_FILES_SQL);
+			ps = this.getConnection().prepareStatement(selectAllSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				id = rs.getInt("id");
@@ -135,7 +142,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		ResultSet rs = null;
 
 		try {
-			ps = this.getConnection().prepareStatement(SELECT_FILE_TYPE_SQL);
+			ps = this.getConnection().prepareStatement(selectFileTypeSQL());
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -170,7 +177,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		ResultSet rs = null;
 
 		try {
-			ps = this.getConnection().prepareStatement(SELECT_PATH_SQL);
+			ps = this.getConnection().prepareStatement(selectPathSQL());
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			// Retrieve the data from the result set
@@ -206,7 +213,8 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		ResultSet rs = null;
 
 		try {
-			ps = this.getConnection().prepareStatement(SELECT_NEWEST_FILE_NAME);
+			ps = this.getConnection().prepareStatement(
+					selectNewestFileNameSQL());
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {

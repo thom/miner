@@ -24,9 +24,6 @@ import com.infosys.setlabs.miner.domain.MinerInfo;
 public class MysqlFrequentItemSetDAO extends JdbcDAO
 		implements
 			FrequentItemSetDAO {
-
-	public static String frequentItemSetsPrefix = "miner_fis_";
-	public static String frequentItemsPrefix = "miner_fi_";
 	private String name = MinerInfo.defaultName;
 
 	/**
@@ -47,81 +44,80 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		return frequentItemsPrefix + getName();
 	}
 
-	// TODO: clean up the mess	
-	private String createFrequentItemSetsTable() {
-		return "CREATE TABLE " + frequentItemSetsTableName() + " ("
-				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, " + "size INT, "
+	protected String createFrequentItemSetsTableSQL() {
+		return String.format("CREATE TABLE %s ("
+				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, size INT, "
 				+ "absolute_item_set_support INT, "
-				+ "relative_item_set_support FLOAT(7,4) ,"
-				+ "modules_touched INT"
+				+ "relative_item_set_support FLOAT(7,4) , modules_touched INT"
 				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
 				// MyISAM too, we can't use InnoDB here
-				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
+				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8",
+				frequentItemSetsTableName());
 	}
 
-	private String createFrequentItemsTable() {
-		return "CREATE TABLE "
-				+ frequentItemsTableName()
-				+ " ("
+	protected String createFrequentItemsTableSQL() {
+		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
 				+ "miner_frequent_item_set_id INT, file_id INT, "
-				+ "FOREIGN KEY(miner_frequent_item_set_id) REFERENCES miner_frequent_item_sets(id), "
+				+ "FOREIGN KEY(miner_frequent_item_set_id) REFERENCES %s(id), "
 				+ "FOREIGN KEY(file_id) REFERENCES miner_files(id), "
 				+ "UNIQUE(miner_frequent_item_set_id, file_id)"
 				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
 				// MyISAM too, we can't use InnoDB here
-				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
+				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8",
+				frequentItemsTableName(), frequentItemSetsTableName());
 	}
 
-	private String dropFrequentItemSetsTable() {
-		return "DROP TABLE IF EXISTS " + frequentItemSetsTableName();
+	protected String dropFrequentItemSetsTableSQL() {
+		return String.format("DROP TABLE IF EXISTS %s",
+				frequentItemSetsTableName());
 	}
 
-	private String dropFrequentItemsTable() {
-		return "DROP TABLE IF EXISTS " + frequentItemsTableName();
+	protected String dropFrequentItemsTableSQL() {
+		return String.format("DROP TABLE IF EXISTS %s",
+				frequentItemsTableName());
 	}
 
-	private String selectFrequentItemSet() {
-		return "SELECT id, size, absolute_item_set_support, relative_item_set_support, modules_touched "
-				+ "FROM " + frequentItemSetsTableName() + " WHERE id=?";
+	protected String selectSQL() {
+		return String.format("SELECT id, size, absolute_item_set_support, "
+				+ "relative_item_set_support, modules_touched "
+				+ "FROM %s WHERE id=?", frequentItemSetsTableName());
 	}
 
-	private String selectFrequentItemSets() {
-		return "SELECT id, size, absolute_item_set_support, relative_item_set_support, modules_touched "
-				+ "FROM " + frequentItemSetsTableName();
+	protected String selectAllSQL() {
+		return String.format("SELECT id, size, absolute_item_set_support, "
+				+ "relative_item_set_support, modules_touched FROM %s",
+				frequentItemSetsTableName());
+	}
+	protected String selectItemSQL() {
+		return String.format("SELECT id, miner_frequent_item_set_id, file_id "
+				+ "FROM %s WHERE miner_frequent_item_set_id=?",
+				frequentItemsTableName());
 	}
 
-	private String selectFrequentItems() {
-		return "SELECT id, miner_frequent_item_set_id, file_id FROM "
-				+ frequentItemsTableName()
-				+ " WHERE miner_frequent_item_set_id=?";
+	protected String createSQL() {
+		return String.format("INSERT INTO %s (id, size, "
+				+ "absolute_item_set_support, "
+				+ "relative_item_set_support, modules_touched) "
+				+ "VALUES (?,?,?,?,?)", frequentItemSetsTableName());
+	}
+	protected String updateModulesTouchedSQL() {
+		return String.format("UPDATE %s SET modules_touched=? WHERE id=?",
+				frequentItemSetsTableName());
 	}
 
-	private String createFrequentItemSet() {
-		return "INSERT INTO "
-				+ frequentItemSetsTableName()
-				+ " (id, size, absolute_item_set_support, relative_item_set_support, modules_touched) "
-				+ "VALUES (?,?,?,?,?)";
+	protected String getModulesTouchedSQL() {
+		return String.format("SELECT COUNT(*) count "
+				+ "FROM (SELECT DISTINCT f.miner_module_id FROM %s fi, "
+				+ "miner_files f WHERE f.id = fi.file_id "
+				+ "AND fi.miner_frequent_item_set_id = ?) AS modules_count",
+				frequentItemsTableName());
 	}
-
-	private String updateModulesTouchedItemSet() {
-		return "UPDATE " + frequentItemSetsTableName()
-				+ " SET modules_touched=? WHERE id=?";
+	protected String createItemSQL() {
+		return String.format("INSERT INTO %s "
+				+ "(miner_frequent_item_set_id, file_id) VALUES (?,?)",
+				frequentItemsTableName());
 	}
-
-	private String getModulesTouchedItemSet() {
-		return "SELECT COUNT(*) count "
-				+ "FROM (SELECT DISTINCT f.miner_module_id FROM "
-				+ frequentItemsTableName() + " fi, miner_files f "
-				+ "WHERE f.id = fi.file_id "
-				+ "AND fi.miner_frequent_item_set_id = ?) AS modules_count";
-	}
-
-	private String addFrequentItem() {
-		return "INSERT INTO " + frequentItemsTableName()
-				+ " (miner_frequent_item_set_id, file_id) " + "VALUES (?,?)";
-	}
-
 	@Override
 	public String getName() {
 		return name;
@@ -138,7 +134,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(selectFrequentItemSet());
+			ps = this.getConnection().prepareStatement(selectSQL());
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -167,7 +163,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		ResultSet rs = null;
 		try {
 			ps = this.getConnection()
-					.prepareStatement(selectFrequentItemSets());
+					.prepareStatement(selectAllSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				FrequentItemSet frequentItemSet = new FrequentItemSet(rs
@@ -213,7 +209,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		ResultSet rs = null;
 		try {
 			psItemSet = this.getConnection().prepareStatement(
-					createFrequentItemSet(), Statement.RETURN_GENERATED_KEYS);
+					createSQL(), Statement.RETURN_GENERATED_KEYS);
 			psItemSet.setInt(1, 0);
 			psItemSet.setInt(2, fileIds.size());
 			psItemSet.setInt(3, Integer.parseInt(supports[0]));
@@ -226,7 +222,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				result = rs.getInt(1);
 			}
 
-			psItem = this.getConnection().prepareStatement(addFrequentItem());
+			psItem = this.getConnection().prepareStatement(createItemSQL());
 
 			// Add items to frequent item set
 			for (Integer fileId : fileIds) {
@@ -252,7 +248,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		ResultSet rs = null;
 		try {
 			psModulesTouched = this.getConnection().prepareStatement(
-					getModulesTouchedItemSet());
+					getModulesTouchedSQL());
 			psModulesTouched.setInt(1, id);
 			rs = psModulesTouched.executeQuery();
 			int modulesTouched = 0;
@@ -261,7 +257,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			}
 
 			psUpdate = this.getConnection().prepareStatement(
-					updateModulesTouchedItemSet());
+					updateModulesTouchedSQL());
 			psUpdate.setInt(1, modulesTouched);
 			psUpdate.setInt(2, id);
 			psUpdate.execute();
@@ -278,11 +274,11 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		PreparedStatement ps = null;
 		try {
 			ps = this.getConnection()
-					.prepareStatement(dropFrequentItemsTable());
+					.prepareStatement(dropFrequentItemsTableSQL());
 			ps.executeUpdate();
-			ps.executeUpdate(dropFrequentItemSetsTable());
-			ps.executeUpdate(createFrequentItemSetsTable());
-			ps.executeUpdate(createFrequentItemsTable());
+			ps.executeUpdate(dropFrequentItemSetsTableSQL());
+			ps.executeUpdate(createFrequentItemSetsTableSQL());
+			ps.executeUpdate(createFrequentItemsTableSQL());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -295,7 +291,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(selectFrequentItems());
+			ps = this.getConnection().prepareStatement(selectItemSQL());
 			ps.setInt(1, frequentItemSet.getId());
 			rs = ps.executeQuery();
 			while (rs.next()) {

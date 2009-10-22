@@ -19,37 +19,6 @@ import com.infosys.setlabs.miner.domain.MinerModule;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
-
-	// TODO: clean up the mess		
-	protected static String CREATE_MINER_MODULES_TABLE = ""
-			+ "CREATE TABLE miner_modules ("
-			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-			+ "module_name MEDIUMTEXT NOT NULL, "
-			+ "has_renamed_files BOOLEAN, " + "UNIQUE(module_name(255))"
-			// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses MyISAM
-			// too, we can't use InnoDB here
-			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
-	protected static String DROP_MINER_MODULES_TABLE = ""
-			+ "DROP TABLE IF EXISTS miner_modules";
-	protected static String SELECT_MINER_MODULE_SQL = ""
-			+ "SELECT id, module_name, has_renamed_files "
-			+ "FROM miner_modules WHERE id=?";
-	protected static String SELECT_MINER_MODULE_BY_NAME_SQL = ""
-			+ "SELECT id, module_name, has_renamed_files "
-			+ "FROM miner_modules " + "WHERE module_name=?";
-	protected static String SELECT_MINER_MODULES_SQL = ""
-			+ "SELECT id, module_name, has_renamed_files "
-			+ "FROM miner_modules";
-	protected static String CREATE_MINER_MODULE_SQL = ""
-			+ "INSERT INTO miner_modules (id, module_name, has_renamed_files) "
-			+ "VALUES (?,?,?)";
-	protected static String DELETE_MINER_MODULE_SQL = ""
-			+ "DELETE FROM miner_modules WHERE id=?";
-	protected static String UPDATE_MINER_MODULE_SQL = ""
-			+ "UPDATE miner_modules "
-			+ "SET module_name=?, has_renamed_files=? "
-			+ "WHERE id=?";
-
 	/**
 	 * Creates a new DAO
 	 * 
@@ -59,6 +28,51 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	public MysqlMinerModuleDAO(Connection conn) {
 		super(conn);
 	}
+	
+	protected String createTableSQL() {
+		return String.format("CREATE TABLE %s ("
+				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+				+ "module_name MEDIUMTEXT NOT NULL, "
+				+ "has_renamed_files BOOLEAN, " + "UNIQUE(module_name(255))"
+				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
+				// MyISAM too, we can't use InnoDB here
+				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", name);
+	}
+
+	protected String dropTableSQL() {
+		return String.format("DROP TABLE IF EXISTS %s", name);
+	}
+
+	protected String selectSQL() {
+		return String.format("SELECT id, module_name, has_renamed_files "
+				+ "FROM %s WHERE id=?", name);
+	}
+
+	protected String selectByNameSQL() {
+		return String.format("SELECT id, module_name, has_renamed_files "
+				+ "FROM %s WHERE module_name=?", name);
+	}
+
+	protected String selectAllSQL() {
+		return String.format("SELECT id, module_name, has_renamed_files "
+				+ "FROM %s", name);
+	}
+
+	protected String createSQL() {
+		return String.format(
+				"INSERT INTO %s (id, module_name, has_renamed_files) "
+						+ "VALUES (?,?,?)", name);
+	}
+
+	protected String deleteSQL() {
+		return String.format("DELETE FROM %s WHERE id=?", name);
+	}
+
+	protected String updateSQL() {
+		return String.format("UPDATE miner_modules "
+				+ "SET module_name=?, has_renamed_files=? " + "WHERE id=?",
+				name);
+	}	
 
 	@Override
 	public MinerModule find(int id) throws DataAccessException {
@@ -66,7 +80,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(SELECT_MINER_MODULE_SQL);
+			ps = this.getConnection().prepareStatement(selectSQL());
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -89,8 +103,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(
-					SELECT_MINER_MODULE_BY_NAME_SQL);
+			ps = this.getConnection().prepareStatement(selectByNameSQL());
 			ps.setString(1, moduleName);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -113,8 +126,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection()
-					.prepareStatement(SELECT_MINER_MODULES_SQL);
+			ps = this.getConnection().prepareStatement(selectAllSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				MinerModule minerModule = new MinerModule(rs.getInt("id"));
@@ -132,13 +144,14 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	}
 
 	@Override
-	public MinerModule create(MinerModule minerModule) throws DataAccessException {
+	public MinerModule create(MinerModule minerModule)
+			throws DataAccessException {
 		MinerModule result = minerModule;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		try {
-			ps = this.getConnection().prepareStatement(CREATE_MINER_MODULE_SQL,
+			ps = this.getConnection().prepareStatement(createSQL(),
 					Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, minerModule.getId());
 			ps.setString(2, minerModule.getModuleName());
@@ -161,7 +174,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	public void delete(MinerModule minerModule) throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
-			ps = this.getConnection().prepareStatement(DELETE_MINER_MODULE_SQL);
+			ps = this.getConnection().prepareStatement(deleteSQL());
 			ps.setInt(1, minerModule.getId());
 			ps.execute();
 		} catch (SQLException e) {
@@ -175,7 +188,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	public void update(MinerModule minerModule) throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
-			ps = this.getConnection().prepareStatement(UPDATE_MINER_MODULE_SQL);
+			ps = this.getConnection().prepareStatement(updateSQL());
 			ps.setString(1, minerModule.getModuleName());
 			ps.setBoolean(2, minerModule.hasRenamedFiles());
 			ps.setInt(3, minerModule.getId());
@@ -191,10 +204,9 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
-			ps = this.getConnection()
-					.prepareStatement(DROP_MINER_MODULES_TABLE);
+			ps = this.getConnection().prepareStatement(dropTableSQL());
 			ps.executeUpdate();
-			ps.executeUpdate(CREATE_MINER_MODULES_TABLE);
+			ps.executeUpdate(createTableSQL());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

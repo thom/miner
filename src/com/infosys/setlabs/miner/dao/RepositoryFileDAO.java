@@ -11,6 +11,11 @@ import com.infosys.setlabs.miner.domain.RepositoryFile;
  */
 public interface RepositoryFileDAO extends ReadObjectDAO<RepositoryFile> {
 	/**
+	 * Name
+	 */
+	public static String name = "files";
+	
+	/**
 	 * Gets the path of a file.
 	 * 
 	 * @param id

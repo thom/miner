@@ -11,6 +11,7 @@ import java.util.Collection;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
+import com.infosys.setlabs.miner.dao.MinerModuleDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
 
 /**
@@ -19,35 +20,6 @@ import com.infosys.setlabs.miner.domain.MinerFile;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
-
-	// TODO: clean up the mess	
-	protected static String CREATE_MINER_FILES_TABLE = ""
-			+ "CREATE TABLE miner_files (" + "id INT NOT NULL PRIMARY KEY, "
-			+ "file_name VARCHAR(255), " + "path MEDIUMTEXT, "
-			+ "type VARCHAR(255), " + "renamed BOOLEAN, "
-			+ "miner_module_id INT NOT NULL, " + "INDEX(file_name), "
-			+ "FOREIGN KEY(id) REFERENCES files(id), "
-			+ "FOREIGN KEY(miner_module_id) REFERENCES miner_modules(id)"
-			// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses MyISAM
-			// too, we can't use InnoDB here
-			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
-	protected static String DROP_MINER_FILES_TABLE = ""
-			+ "DROP TABLE IF EXISTS miner_files";
-	protected static String SELECT_MINER_FILE_SQL = ""
-			+ "SELECT id, file_name, path, type, renamed, miner_module_id "
-			+ "FROM miner_files WHERE id=?";
-	protected static String SELECT_MINER_FILES_SQL = ""
-			+ "SELECT id, file_name, path, type, renamed, miner_module_id "
-			+ "FROM miner_files";
-	protected static String CREATE_MINER_FILE_SQL = ""
-			+ "INSERT INTO miner_files (id, file_name, path, type, renamed, miner_module_id) "
-			+ "VALUES (?,?,?,?,?,?)";
-	protected static String DELETE_MINER_FILE_SQL = ""
-			+ "DELETE FROM miner_files WHERE id=?";
-	protected static String UPDATE_MINER_FILE_SQL = ""
-			+ "UPDATE miner_files SET file_name=?, path=?, type=?, renamed=?, miner_module_id=? "
-			+ "WHERE id=?";
-
 	/**
 	 * Creates a new DAO
 	 * 
@@ -57,6 +29,46 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	public MysqlMinerFileDAO(Connection conn) {
 		super(conn);
 	}
+	
+	protected String createTableSQL() {
+		return String.format("CREATE TABLE %s ("
+				+ "id INT NOT NULL PRIMARY KEY, file_name VARCHAR(255), "
+				+ "path MEDIUMTEXT, type VARCHAR(255), "
+				+ "renamed BOOLEAN, miner_module_id INT NOT NULL, "
+				+ "INDEX(file_name), FOREIGN KEY(id) REFERENCES files(id), "
+				+ "FOREIGN KEY(miner_module_id) REFERENCES %s(id)"
+				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
+				// MyISAM too, we can't use InnoDB here
+				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", name,
+				MinerModuleDAO.name);
+	}
+
+	protected String dropTableSQL() {
+		return String.format("DROP TABLE IF EXISTS %s", name);
+	}
+
+	protected String selectSQL() {
+		return String.format("SELECT id, file_name, path, type, renamed, "
+				+ "miner_module_id " + "FROM %s WHERE id=?", name);
+	}
+
+	protected String selectAllSQL() {
+		return String.format("SELECT id, file_name, path, type, renamed, "
+				+ "miner_module_id " + "FROM %s", name);
+	}
+	protected String createSQL() {
+		return String.format("INSERT INTO %s (id, file_name, path, type, "
+				+ "renamed, miner_module_id) VALUES (?,?,?,?,?,?)", name);
+	}
+
+	protected String deleteSQL() {
+		return String.format("DELETE FROM %s WHERE id=?", name);
+	}
+
+	protected String updateSQL() {
+		return String.format("UPDATE %s SET file_name=?, path=?, type=?, "
+				+ "renamed=?, miner_module_id=? WHERE id=?", name);
+	}	
 
 	@Override
 	public MinerFile find(int id) throws DataAccessException {
@@ -64,7 +76,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(SELECT_MINER_FILE_SQL);
+			ps = this.getConnection().prepareStatement(selectSQL());
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -91,7 +103,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(SELECT_MINER_FILES_SQL);
+			ps = this.getConnection().prepareStatement(selectAllSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				MinerFile minerFile = new MinerFile();
@@ -100,8 +112,8 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				minerFile.setPath(rs.getString("path"));
 				minerFile.setType(rs.getString("type"));
 				minerFile.setRenamed(rs.getBoolean("renamed"));
-				minerFile.setModule(new MysqlMinerModuleDAO(this.getConnection())
-						.find(rs.getInt("miner_module_id")));
+				minerFile.setModule(new MysqlMinerModuleDAO(this
+						.getConnection()).find(rs.getInt("miner_module_id")));
 				result.add(minerFile);
 			}
 		} catch (SQLException e) {
@@ -119,7 +131,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(CREATE_MINER_FILE_SQL,
+			ps = this.getConnection().prepareStatement(createSQL(),
 					Statement.RETURN_GENERATED_KEYS);
 
 			ps.setInt(1, minerFile.getId());
@@ -146,7 +158,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	public void delete(MinerFile minerFile) throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
-			ps = this.getConnection().prepareStatement(DELETE_MINER_FILE_SQL);
+			ps = this.getConnection().prepareStatement(deleteSQL());
 			ps.setInt(1, minerFile.getId());
 			ps.execute();
 		} catch (SQLException e) {
@@ -160,7 +172,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	public void update(MinerFile minerFile) throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
-			ps = this.getConnection().prepareStatement(UPDATE_MINER_FILE_SQL);
+			ps = this.getConnection().prepareStatement(updateSQL());
 			ps.setString(1, minerFile.getFileName());
 			ps.setString(2, minerFile.getPath());
 			ps.setString(3, minerFile.getType().toString());
@@ -179,9 +191,9 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
-			ps = this.getConnection().prepareStatement(DROP_MINER_FILES_TABLE);
+			ps = this.getConnection().prepareStatement(dropTableSQL());
 			ps.executeUpdate();
-			ps.executeUpdate(CREATE_MINER_FILES_TABLE);
+			ps.executeUpdate(createTableSQL());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

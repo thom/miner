@@ -14,37 +14,6 @@ import com.infosys.setlabs.miner.dao.MinerInfoDAO;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 
 public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
-
-	// TODO: clean up the mess		
-	protected static String CREATE_MINER_INFO_TABLE = ""
-			+ "CREATE TABLE miner_info ("
-			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-			+ "name VARCHAR(255) NOT NULL DEFAULT '', " + "shiatsu BOOLEAN, "
-			+ "miner BOOLEAN, " + "included_files VARCHAR(255), "
-			+ "minimal_items INT, " + "minimal_support DOUBLE, "
-			+ "UNIQUE(name(255))"
-			// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses MyISAM
-			// too, we can't use InnoDB here
-			+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8";
-	protected static String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS miner_info";
-	protected static String SELECT_MINER_INFO_SQL = ""
-			+ "SELECT id, name, shiatsu, miner, included_files, minimal_items, minimal_support "
-			+ "FROM miner_info WHERE id=?";
-	protected static String SELECT_MINER_INFO_BY_NAME_SQL = ""
-			+ "SELECT id, name, shiatsu, miner, included_files, minimal_items, minimal_support "
-			+ "FROM miner_info WHERE name=?";
-	protected static String SELECT_MINER_INFOS_SQL = ""
-			+ "SELECT id, name, shiatsu, miner, included_files, minimal_items, minimal_support "
-			+ "FROM miner_info";
-	protected static String CREATE_MINER_INFO_SQL = ""
-			+ "INSERT INTO miner_info (id, name, shiatsu, miner, included_files, minimal_items, minimal_support) "
-			+ "VALUES (?,?,?,?,?,?,?)";
-	protected static String DELETE_MINER_INFO_SQL = ""
-			+ "DELETE FROM miner_info WHERE id=?";
-	protected static String UPDATE_MINER_INFO_SQL = ""
-			+ "UPDATE miner_info SET name=?, shiatsu=?, miner=?, included_files=?, minimal_items=?, minimal_support=? "
-			+ "WHERE id=?";
-
 	/**
 	 * Creates a new miner info DAO
 	 * 
@@ -54,6 +23,58 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 	public MysqlMinerInfoDAO(Connection conn) {
 		super(conn);
 	}
+	
+	protected String createTableSQL() {
+		return String.format("CREATE TABLE %s ("
+				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+				+ "name VARCHAR(255) NOT NULL DEFAULT 'default', "
+				+ "shiatsu BOOLEAN, miner BOOLEAN, "
+				+ "included_files VARCHAR(255), minimal_items INT, "
+				+ "minimal_support DOUBLE, UNIQUE(name(255))"
+				// MyISAM doesn't support foreign keys, but as
+				// CVSAnaly2 uses
+				// MyISAM
+				// too, we can't use InnoDB here
+				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", name);
+	}
+
+	protected String dropTableSQL() {
+		return String.format("DROP TABLE IF EXISTS %s", name);
+	}
+
+	protected String selectSQL() {
+		return String.format("SELECT id, name, shiatsu, miner, "
+				+ "included_files, minimal_items, minimal_support "
+				+ "FROM %s WHERE id=?", name);
+	}
+
+	protected String selectByNameSQL() {
+		return String.format("SELECT id, name, shiatsu, miner, "
+				+ "included_files, minimal_items, minimal_support "
+				+ "FROM %s WHERE name=?", name);
+	}
+
+	protected String selectAllSQL() {
+		return String.format("SELECT id, name, shiatsu, miner, "
+				+ "included_files, " + "minimal_items, "
+				+ "minimal_support FROM %s", name);
+	}
+
+	protected String createSQL() {
+		return String.format("INSERT INTO %s (id, name, shiatsu, miner, "
+				+ "included_files, minimal_items, minimal_support) "
+				+ "VALUES (?,?,?,?,?,?,?)", name);
+	}
+
+	protected String deleteSQL() {
+		return String.format("DELETE FROM %s WHERE id=?", name);
+	}
+
+	protected String updateSQL() {
+		return String.format("UPDATE %s SET name=?, shiatsu=?, miner=?, "
+				+ "included_files=?, minimal_items=?, minimal_support=? "
+				+ "WHERE id=?", name);
+	}	
 
 	@Override
 	public MinerInfo find(int id) throws DataAccessException {
@@ -61,7 +82,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(SELECT_MINER_INFO_SQL);
+			ps = this.getConnection().prepareStatement(selectSQL());
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -89,8 +110,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(
-					SELECT_MINER_INFO_BY_NAME_SQL);
+			ps = this.getConnection().prepareStatement(selectByNameSQL());
 			ps.setString(1, minerInfoName);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -118,7 +138,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(SELECT_MINER_INFOS_SQL);
+			ps = this.getConnection().prepareStatement(selectAllSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				MinerInfo minerInfo = new MinerInfo();
@@ -147,7 +167,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 		ResultSet rs = null;
 
 		try {
-			ps = this.getConnection().prepareStatement(CREATE_MINER_INFO_SQL,
+			ps = this.getConnection().prepareStatement(createSQL(),
 					Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, minerInfo.getId());
 			ps.setString(2, minerInfo.getName());
@@ -174,7 +194,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 	public void delete(MinerInfo minerInfo) throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
-			ps = this.getConnection().prepareStatement(DELETE_MINER_INFO_SQL);
+			ps = this.getConnection().prepareStatement(deleteSQL());
 			ps.setInt(1, minerInfo.getId());
 			ps.execute();
 		} catch (SQLException e) {
@@ -188,7 +208,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 	public void update(MinerInfo minerInfo) throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
-			ps = this.getConnection().prepareStatement(UPDATE_MINER_INFO_SQL);
+			ps = this.getConnection().prepareStatement(updateSQL());
 			ps.setString(1, minerInfo.getName());
 			ps.setBoolean(2, minerInfo.isShiatsu());
 			ps.setBoolean(3, minerInfo.isMiner());
@@ -208,9 +228,9 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
-			ps = this.getConnection().prepareStatement(DROP_TABLE_IF_EXISTS);
+			ps = this.getConnection().prepareStatement(dropTableSQL());
 			ps.executeUpdate();
-			ps.executeUpdate(CREATE_MINER_INFO_TABLE);
+			ps.executeUpdate(createTableSQL());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
