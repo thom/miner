@@ -1,5 +1,6 @@
 package com.infosys.setlabs.miner;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -8,18 +9,11 @@ import org.kohsuke.args4j.Option;
 
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
-import com.infosys.setlabs.miner.domain.FrequentItemSet;
 import com.infosys.setlabs.miner.domain.MinerInfo;
-import com.infosys.setlabs.miner.manage.FrequentItemSetManager;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
 
-/**
- * Gives information about frequent item sets
- * 
- * @author Thomas Weibel <thomas_401709@infosys.com>
- */
-public class FISInfo {
+public class MinerInfoApp {
 	// Command line values
 	private CommandLineValues values;
 
@@ -33,7 +27,7 @@ public class FISInfo {
 	 *            arguments
 	 * @throws MinerException
 	 */
-	public FISInfo(String[] args) throws MinerException {
+	public MinerInfoApp(String[] args) throws MinerException {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -44,7 +38,7 @@ public class FISInfo {
 		try {
 			parser.parseArgument(args);
 		} catch (CmdLineException e) {
-			System.err.println("fis-info [options...] arguments...\n");
+			System.err.println("miner-info [options...] arguments...\n");
 			System.err.println(e.getMessage() + "\n");
 
 			// Print the list of available options
@@ -60,21 +54,6 @@ public class FISInfo {
 
 		// Set database engine
 		Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
-
-		// Get miner info
-		MinerInfoManager minerInfoManager = new MinerInfoManager(connectionArgs);
-		MinerInfo minerInfo = minerInfoManager.find(values.getName());
-		minerInfoManager.close();		
-
-		// Check prerequisites
-		if (minerInfo == null
-				|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
-			throw new MinerException(
-					new Exception(
-							"No mining called '"
-									+ values.getName()
-									+ "' found. The data must be mined before running fis-info."));
-		}
 	}
 
 	/**
@@ -83,30 +62,45 @@ public class FISInfo {
 	 * @throws MinerException
 	 */
 	public void print() throws MinerException {
-		FrequentItemSetManager frequentItemSetManager = null;
-		FrequentItemSet fis = null;
+		MinerInfoManager minerInfoManager = null;
 
 		try {
-			// Connect to MySQL database
-			frequentItemSetManager = new FrequentItemSetManager(connectionArgs);
+			// Connect to the database
+			minerInfoManager = new MinerInfoManager(connectionArgs);
 
-			// Get frequent item set
-			fis = frequentItemSetManager.find(values.getId());
+			// Get miner info
+			if (values.isAll()) {
+				Collection<MinerInfo> minerInfos = minerInfoManager.findAll();
 
-			if (fis == null) {
-				System.out
-						.println("Error: Couldn't find frequent item set with ID '"
-								+ values.getId() + "' in the database.");
+				if (minerInfos == null) {
+					throw new MinerException(new Exception(
+							"No minings found. The data must be mined before "
+									+ "running miner-info."));
+				}
+
+				for (MinerInfo minerInfo : minerInfos) {
+					System.out.println(minerInfo);
+					System.out
+							.println("-------------------------------------------------------------------------------");
+				}
 			} else {
-				System.out.println(fis);
+				MinerInfo minerInfo = minerInfoManager.find(values.getName());
+
+				if (minerInfo == null) {
+					throw new MinerException(new Exception("No mining called '"
+							+ values.getName() + "' found."
+							+ " The data must be mined before "
+							+ "running miner-info."));
+				}
+
+				System.out.println(minerInfo);
 			}
 		} finally {
-			if (frequentItemSetManager != null) {
-				frequentItemSetManager.close();
+			if (minerInfoManager != null) {
+				minerInfoManager.close();
 			}
 		}
 	}
-	
 	/**
 	 * Starts frequent item set info
 	 * 
@@ -115,8 +109,8 @@ public class FISInfo {
 	 * @throws MinerException
 	 */
 	public static void main(String[] args) throws MinerException {
-		FISInfo fisInfo = new FISInfo(args);
-		fisInfo.print();
+		MinerInfoApp minerInfoApp = new MinerInfoApp(args);
+		minerInfoApp.print();
 	}
 
 	/**
@@ -134,11 +128,11 @@ public class FISInfo {
 		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
-		@Option(name = "-i", aliases = {"--id"}, usage = "ID of the file", required = true)
-		private int id;
-
 		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
 		private String name = MinerInfo.defaultName;
+
+		@Option(name = "-a", aliases = {"--all"}, usage = "show all minings")
+		private boolean all = false;
 
 		/**
 		 * Returns database name
@@ -168,21 +162,21 @@ public class FISInfo {
 		}
 
 		/**
-		 * Returns file ID
-		 * 
-		 * @return id
-		 */
-		public int getId() {
-			return id;
-		}
-
-		/**
 		 * Returns the name
 		 * 
 		 * @return name
 		 */
 		public String getName() {
 			return name;
+		}
+
+		/**
+		 * Does the user want the default mining?
+		 * 
+		 * @return defaultMining
+		 */
+		public boolean isAll() {
+			return all;
 		}
 	}
 }

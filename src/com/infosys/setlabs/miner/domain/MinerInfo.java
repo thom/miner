@@ -8,6 +8,8 @@ import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MinerInfo {
+	public static String defaultName = "default";
+	
 	// ID
 	private int id;
 

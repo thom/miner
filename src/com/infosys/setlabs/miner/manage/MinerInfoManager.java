@@ -54,7 +54,7 @@ public class MinerInfoManager extends Manager {
 	 * 
 	 * @param id
 	 *            ID to find
-	 * @return MinerInfo
+	 * @return MinerInfoApp
 	 * @throws MinerException
 	 */
 	public MinerInfo find(int id) throws MinerException {
@@ -88,7 +88,7 @@ public class MinerInfoManager extends Manager {
 	 * 
 	 * @param id
 	 *            ID to find
-	 * @return MinerInfo
+	 * @return MinerInfoApp
 	 * @throws MinerException
 	 */
 	public MinerInfo find(String minerInfoName) throws MinerException {
@@ -120,7 +120,7 @@ public class MinerInfoManager extends Manager {
 	/**
 	 * Finds all existing persistent miner info
 	 * 
-	 * @return Collection<MinerInfo>
+	 * @return Collection<MinerInfoApp>
 	 * @throws MinerException
 	 */
 	public Collection<MinerInfo> findAll() throws MinerException {
@@ -152,7 +152,7 @@ public class MinerInfoManager extends Manager {
 	/**
 	 * Creates a new persistent miner info
 	 * 
-	 * @param MinerInfo
+	 * @param MinerInfoApp
 	 *            miner info to create
 	 * @throws MinerException
 	 */
@@ -183,7 +183,7 @@ public class MinerInfoManager extends Manager {
 	/**
 	 * Deletes an existing persistent miner info
 	 * 
-	 * @param MinerInfo
+	 * @param MinerInfoApp
 	 *            miner info to delete
 	 * @throws MinerException
 	 */
@@ -214,7 +214,7 @@ public class MinerInfoManager extends Manager {
 	/**
 	 * Updates an existing persistent miner info
 	 * 
-	 * @param MinerInfo
+	 * @param MinerInfoApp
 	 *            miner info to update
 	 * @throws MinerException
 	 */

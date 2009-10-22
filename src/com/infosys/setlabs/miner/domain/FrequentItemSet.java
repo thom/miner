@@ -131,8 +131,7 @@ public class FrequentItemSet {
 				modules.add(file.getModule().getId());
 			}
 			return modules.size();
-		}
-		else {
+		} else {
 			return modulesTouched;
 		}
 	}
@@ -165,21 +164,25 @@ public class FrequentItemSet {
 	public void addItem(MinerFile item) {
 		this.items.add(item);
 	}
-	
+
 	@Override
 	public String toString() {
 		String result = "";
 		result += "ID:\t\t\t\t" + getId() + "\n";
 		result += "Size:\t\t\t\t" + getSize() + "\n";
-		result += "Absolute item set support:\t" + getAbsoluteItemSetSupport() + "\n";
-		result += "Relative item set support:\t" + getRelativeItemSetSupport() + "\n";
+		result += "Absolute item set support:\t" + getAbsoluteItemSetSupport()
+				+ "\n";
+		result += "Relative item set support:\t" + getRelativeItemSetSupport()
+				+ "\n";
 		result += "Modules touched:\t\t" + getModulesTouched() + "\n\n";
-		
-		result += "Files:\n---------------------------------------------";
+
+		result += "Files:\n-------------------------------------------------------------------------------";
 		for (MinerFile file : getItems()) {
-			result += "\n" + file + "\n---------------------------------------------";
+			result += "\n"
+					+ file
+					+ "\n-------------------------------------------------------------------------------";
 		}
-		
+
 		return result;
 	}
 }

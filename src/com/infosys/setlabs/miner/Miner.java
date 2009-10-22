@@ -93,15 +93,16 @@ public class Miner {
 
 		// Get miner info
 		minerInfoManager = new MinerInfoManager(connectionArgs);
-		MinerInfo minerInfoDefault = minerInfoManager.find("");
+		MinerInfo minerInfoDefault = minerInfoManager
+				.find(MinerInfo.defaultName);
 		minerInfo = minerInfoManager.find(values.getName());
 
 		// Check prerequisites
 		if (minerInfoDefault == null || !minerInfoDefault.isShiatsu()) {
 			minerInfoManager.close();
-			throw new MinerException(
-					new Exception(
-							"The data must be massaged with shiatsu before running the miner."));
+			throw new MinerException(new Exception(
+					"The data must be massaged with "
+							+ "shiatsu before running the miner."));
 		}
 	}
 	/**
@@ -341,7 +342,7 @@ public class Miner {
 		private String frequentItemSets;
 
 		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
-		private String name = "";
+		private String name = MinerInfo.defaultName;
 
 		/**
 		 * Sets default values for some of the command line arguments
