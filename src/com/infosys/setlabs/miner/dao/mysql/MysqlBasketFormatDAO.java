@@ -19,6 +19,7 @@ import com.infosys.setlabs.miner.dao.BasketFormatDAO;
  */
 public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 
+	// TODO: clean up the mess
 	protected static String SELECT_SQL = ""
 			+ "SELECT a.commit_id, s.rev, f.id AS modified_files "
 			+ "FROM actions a, files f, file_types ft, scmlog s "

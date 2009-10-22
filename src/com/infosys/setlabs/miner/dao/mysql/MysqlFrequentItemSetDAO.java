@@ -47,6 +47,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		return frequentItemsPrefix + getName();
 	}
 
+	// TODO: clean up the mess	
 	private String createFrequentItemSetsTable() {
 		return "CREATE TABLE " + frequentItemSetsTableName() + " ("
 				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, " + "size INT, "

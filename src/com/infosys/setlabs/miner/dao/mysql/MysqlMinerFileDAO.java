@@ -20,6 +20,7 @@ import com.infosys.setlabs.miner.domain.MinerFile;
  */
 public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 
+	// TODO: clean up the mess	
 	protected static String CREATE_MINER_FILES_TABLE = ""
 			+ "CREATE TABLE miner_files (" + "id INT NOT NULL PRIMARY KEY, "
 			+ "file_name VARCHAR(255), " + "path MEDIUMTEXT, "

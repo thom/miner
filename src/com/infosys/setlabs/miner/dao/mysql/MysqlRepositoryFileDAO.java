@@ -21,6 +21,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		implements
 			RepositoryFileDAO {
 
+	// TODO: clean up the mess		
 	protected static String SELECT_FILE_SQL = ""
 			+ "SELECT id, file_name, repository_id, id IN "
 			+ "(SELECT DISTINCT a.file_id FROM actions a, file_copies fc "

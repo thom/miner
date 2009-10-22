@@ -15,6 +15,7 @@ import com.infosys.setlabs.miner.domain.MinerInfo;
 
 public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 
+	// TODO: clean up the mess		
 	protected static String CREATE_MINER_INFO_TABLE = ""
 			+ "CREATE TABLE miner_info ("
 			+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
