@@ -234,8 +234,8 @@ public class MinerApp {
 			minerInfo.setShiatsu(true);
 			minerInfo.setMiner(true);
 			minerInfo.setCodeFiles(values.getIncludedFiles());
-			minerInfo.setMinimalItems(values.getMinItems());
-			minerInfo.setMinimalSupport(values.getMinSupport());
+			minerInfo.setMinimumItems(values.getMinItems());
+			minerInfo.setMinimumSupport(values.getMinSupport());
 
 			if (create) {
 				minerInfoManager.create(minerInfo);
@@ -313,10 +313,10 @@ public class MinerApp {
 		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of apriori frequent item set miner, can also be configured in conf/setup.properties")
 		private String exec;
 
-		@Option(name = "-i", aliases = {"--items", "--minimal-items"}, usage = "minimal number of items per set, can also be configured in conf/setup.properties")
+		@Option(name = "-i", aliases = {"--items", "--minimum-items"}, usage = "minimum number of items per set, can also be configured in conf/setup.properties")
 		private int minItems;
 
-		@Option(name = "-s", aliases = {"--support", "--minimal-support"}, usage = "minimal support of a set (positive: percentage, negative: absolute number), can also be configured in conf/setup.properties")
+		@Option(name = "-s", aliases = {"--support", "--minimum-support"}, usage = "minimum support of a set (positive: percentage, negative: absolute number), can also be configured in conf/setup.properties")
 		private float minSupport;
 
 		@Option(name = "-k", aliases = {"--keep", "--keep-files"}, usage = "keep all generated files")
@@ -415,7 +415,7 @@ public class MinerApp {
 		}
 
 		/**
-		 * Returns value of minimal number of items per set
+		 * Returns value of minimum number of items per set
 		 * 
 		 * @return minItems
 		 */
@@ -424,7 +424,7 @@ public class MinerApp {
 		}
 
 		/**
-		 * Returns value of minimal support of a set (positive: percentage,
+		 * Returns value of minimum support of a set (positive: percentage,
 		 * negative: absolute number)
 		 * 
 		 * @return minSupport

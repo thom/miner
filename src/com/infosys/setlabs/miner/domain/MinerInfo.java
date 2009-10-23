@@ -25,11 +25,11 @@ public class MinerInfo {
 	// Was miner run already?
 	private boolean miner;
 
-	// Minimal number of items per frequent item set
-	private int minimalItems;
+	// Minimum number of items per frequent item set
+	private int minimumItems;
 
-	// Minimal support
-	private double minimalSupport;
+	// Minimum support
+	private double minimumSupport;
 
 	// Included files
 	private CodeFiles codeFiles;
@@ -159,40 +159,40 @@ public class MinerInfo {
 	}
 
 	/**
-	 * Returns the minimal items per frequent item set
+	 * Returns the minimum items per frequent item set
 	 * 
-	 * @return minimalItems
+	 * @return minimumItems
 	 */
-	public int getMinimalItems() {
-		return minimalItems;
+	public int getMinimumItems() {
+		return minimumItems;
 	}
 
 	/**
-	 * Sets minimal items per frequent item set
+	 * Sets minimum items per frequent item set
 	 * 
-	 * @param minimalItems
+	 * @param minimumItems
 	 */
-	public void setMinimalItems(int minimalItems) {
-		this.minimalItems = minimalItems;
+	public void setMinimumItems(int minimumItems) {
+		this.minimumItems = minimumItems;
 	}
 
 	/**
-	 * Returns the minimal support per frequent item set
+	 * Returns the minimum support per frequent item set
 	 * 
-	 * @return minimalSupport
+	 * @return minimumSupport
 	 */
-	public double getMinimalSupport() {
-		return minimalSupport;
+	public double getMinimumSupport() {
+		return minimumSupport;
 	}
 
 	/**
-	 * Sets the minimal support per frequent item set
+	 * Sets the minimum support per frequent item set
 	 * 
-	 * @param minimalSupport
-	 *            minimal support to set
+	 * @param minimumSupport
+	 *            minimum support to set
 	 */
-	public void setMinimalSupport(double minimalSupport) {
-		this.minimalSupport = minimalSupport;
+	public void setMinimumSupport(double minimumSupport) {
+		this.minimumSupport = minimumSupport;
 	}
 
 	@Override
@@ -206,14 +206,14 @@ public class MinerInfo {
 		if (isMiner()) {
 			result += "\nCode files:\t\t\t\t"
 					+ getCodeFiles().toString().toLowerCase() + "\n";
-			result += "Minimal support per frequent item set:\t";
-			if (getMinimalSupport() < 0) {
-				result += -getMinimalSupport() + " (absolute)\n";
+			result += "Minimum support per frequent item set:\t";
+			if (getMinimumSupport() < 0) {
+				result += -getMinimumSupport() + " (absolute)\n";
 			} else {
-				result += getMinimalSupport() + "% (relative)\n";
+				result += getMinimumSupport() + "% (relative)\n";
 			}
-			result += "Minimal items per frequent item set:\t"
-					+ getMinimalItems();
+			result += "Minimum items per frequent item set:\t"
+					+ getMinimumItems();
 		}
 		return result;
 	}
