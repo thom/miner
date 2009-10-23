@@ -74,7 +74,7 @@ public class ShiatsuApp {
 			System.out.println("EXEC  > shiatsu\n");
 
 			// Massage data
-			shiatsuManager.massage();
+			shiatsuManager.massage(values.getMaxModuleDepth());
 
 			System.out.println("DONE  > shiatsu");
 		} finally {
@@ -110,6 +110,9 @@ public class ShiatsuApp {
 
 		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
+		
+		@Option(name = "-m", aliases = {"--max-depth", "--max-module-depth"}, usage = "sets the maximum depth of modules")
+		private int maxModuleDepth = 2;
 
 		/**
 		 * Returns database name
@@ -136,6 +139,15 @@ public class ShiatsuApp {
 		 */
 		public String getPw() {
 			return pw;
+		}
+		
+		/**
+		 * Returns the module depth
+		 * 
+		 * @return moduleDepth
+		 */
+		public int getMaxModuleDepth() {
+			return maxModuleDepth;
 		}
 	}
 }

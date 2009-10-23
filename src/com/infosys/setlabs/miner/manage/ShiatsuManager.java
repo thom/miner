@@ -1,6 +1,8 @@
 package com.infosys.setlabs.miner.manage;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
@@ -20,6 +22,9 @@ import com.infosys.setlabs.miner.domain.RepositoryFile;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class ShiatsuManager extends Manager {
+	private Pattern[] maxModuleDepthPattern;
+	private int maxModuleDepth;
+
 	/**
 	 * Creates a new shiatsu manager
 	 * 
@@ -30,6 +35,13 @@ public class ShiatsuManager extends Manager {
 	public ShiatsuManager(HashMap<String, String> connectionArgs)
 			throws MinerException {
 		super(connectionArgs);
+
+		maxModuleDepthPattern = new Pattern[4];
+		maxModuleDepthPattern[0] = Pattern.compile("(\\./)");
+		maxModuleDepthPattern[1] = Pattern.compile("(\\./.*?/|\\./)");
+		maxModuleDepthPattern[2] = Pattern.compile("(\\./.*?/.*?/|\\./.*?/|\\./)");
+		maxModuleDepthPattern[3] = Pattern
+				.compile("(\\./.*?/.*?/.*?/|\\./.*?/.*?/|\\./.*?/|\\./)");
 	}
 
 	/**
@@ -37,7 +49,9 @@ public class ShiatsuManager extends Manager {
 	 * 
 	 * @throws MinerException
 	 */
-	public void massage() throws MinerException {
+	public void massage(int maxModuleDepth) throws MinerException {
+		this.maxModuleDepth = maxModuleDepth;
+
 		try {
 			this.getFactory().getMinerFileDAO(this.getSession()).createTables();
 			this.getFactory().getMinerModuleDAO(this.getSession())
@@ -51,6 +65,7 @@ public class ShiatsuManager extends Manager {
 			MinerInfo minerInfo = new MinerInfo();
 			minerInfo.setName(MinerInfo.defaultName);
 			minerInfo.setShiatsu(true);
+			minerInfo.setMaximumModuleDepth(maxModuleDepth);
 			minerInfo.setCodeFiles(CodeFiles.NONE);
 			minerInfoDAO.create(minerInfo);
 		} catch (DataAccessException e) {
@@ -79,7 +94,16 @@ public class ShiatsuManager extends Manager {
 					minerFile.setType(repositoryFile.getType());
 					minerFile.setRenamed(repositoryFile.isRenamed());
 
-					minerModule = minerModuleDAO.find(minerFile.getDirectory());
+					if (maxModuleDepth > maxModuleDepthPattern.length) {
+						throw new MinerException(new Exception("Size: "
+								+ maxModuleDepthPattern.length));
+					}
+					Pattern p = maxModuleDepthPattern[maxModuleDepth];
+					Matcher m = p.matcher(minerFile.getDirectory());
+					m.find();
+					String moduleName = m.group(1);
+
+					minerModule = minerModuleDAO.find(moduleName);
 					if (minerModule != null) {
 						if (minerFile.isRenamed()
 								&& !minerModule.hasRenamedFiles()) {
@@ -89,7 +113,7 @@ public class ShiatsuManager extends Manager {
 
 						minerFile.setModule(minerModule);
 					} else {
-						minerModule = new MinerModule(minerFile.getDirectory());
+						minerModule = new MinerModule(moduleName);
 						minerModule.setRenamedFiles(minerFile.isRenamed());
 						minerFile.setModule(minerModuleDAO.create(minerModule));
 					}

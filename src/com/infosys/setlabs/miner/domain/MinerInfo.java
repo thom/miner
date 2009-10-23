@@ -9,7 +9,7 @@ import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
  */
 public class MinerInfo {
 	public static String defaultName = "default";
-	
+
 	// ID
 	private int id;
 
@@ -18,6 +18,9 @@ public class MinerInfo {
 
 	// Did the data already get a massage?
 	private boolean shiatsu;
+
+	// Maximum module depth used
+	private int maximumModuleDepth;
 
 	// Was miner run already?
 	private boolean miner;
@@ -86,6 +89,25 @@ public class MinerInfo {
 	 */
 	public void setShiatsu(boolean shiatsu) {
 		this.shiatsu = shiatsu;
+	}
+
+	/**
+	 * Sets maximum module depth
+	 * 
+	 * @return maximumModuleDepth
+	 */
+	public int getMaximumModuleDepth() {
+		return maximumModuleDepth;
+	}
+
+	/**
+	 * Gets maximum module depth
+	 * 
+	 * @param maximumModuleDepth
+	 *            maximum module depth
+	 */
+	public void setMaximumModuleDepth(int maximumModuleDepth) {
+		this.maximumModuleDepth = maximumModuleDepth;
 	}
 
 	/**
@@ -179,6 +201,7 @@ public class MinerInfo {
 		result += "ID\t\t\t\t\t" + getId() + "\n";
 		result += "Name\t\t\t\t\t" + getName() + "\n";
 		result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
+		result += "Maximum module depth:\t\t\t" + getMaximumModuleDepth() + "\n";
 		result += "Miner run?\t\t\t\t" + isMiner();
 		if (isMiner()) {
 			result += "\nCode files:\t\t\t\t"
