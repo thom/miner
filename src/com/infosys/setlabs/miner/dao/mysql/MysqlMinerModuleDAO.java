@@ -200,6 +200,8 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		}
 	}
 
+	// TODO: count(boolean hasRenamedFiles)	
+	
 	@Override
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;

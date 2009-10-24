@@ -113,11 +113,13 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				+ "AND fi.miner_frequent_item_set_id = ?) AS modules_count",
 				frequentItemsTableName());
 	}
+	
 	protected String createItemSQL() {
 		return String.format("INSERT INTO %s "
 				+ "(miner_frequent_item_set_id, file_id) VALUES (?,?)",
 				frequentItemsTableName());
 	}
+	
 	@Override
 	public String getName() {
 		return name;
@@ -268,6 +270,8 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			this.closeStatement(psModulesTouched);
 		}
 	}
+	
+	// TODO: count() (Number of files in FIS)
 
 	@Override
 	public void createTables() throws DataAccessException {

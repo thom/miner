@@ -186,6 +186,8 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			this.closeStatement(ps);
 		}
 	}
+	
+	// TODO: count(boolean isRenamed)
 
 	@Override
 	public void createTables() throws DataAccessException {

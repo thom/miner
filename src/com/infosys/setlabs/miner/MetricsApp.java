@@ -81,7 +81,7 @@ public class MetricsApp {
 	 * @throws MinerException
 	 */
 	public void print() throws MinerException {
-		// TODO
+		// TODO: Metrics App
 		System.out.println("TODO");
 	}
 	
