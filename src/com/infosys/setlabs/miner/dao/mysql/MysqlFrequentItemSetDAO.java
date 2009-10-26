@@ -107,7 +107,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				frequentItemSetsTableName());
 	}
 
-	protected String countSQL() {
+	protected String countFilesSQL() {
 		return String.format("SELECT COUNT(DISTINCT file_id) as count FROM %s",
 				frequentItemsTableName());
 	}
@@ -277,12 +277,12 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	}
 
 	@Override
-	public int count() throws DataAccessException {
+	public int countFiles() throws DataAccessException {
 		int result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(countSQL());
+			ps = this.getConnection().prepareStatement(countFilesSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = rs.getInt("count");

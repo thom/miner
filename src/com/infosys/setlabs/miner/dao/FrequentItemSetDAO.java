@@ -57,7 +57,7 @@ public interface FrequentItemSetDAO
 	 * @return number of files in frequent item set
 	 * @throws DataAccessException
 	 */
-	public int count() throws DataAccessException;
+	public int countFiles() throws DataAccessException;
 
 	/**
 	 * Sets the number of modules touched for a given frequent item set
