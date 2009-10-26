@@ -123,4 +123,14 @@ public abstract class DAOFactory {
 	 */
 	public abstract MinerInfoDAO getMinerInfoDAO(DAOSession session)
 			throws DataAccessException;
+
+	/**
+	 * Abstract method for metrics data access object
+	 * 
+	 * @param session
+	 * @return MetricsDAO
+	 * @throws DataAccessException
+	 */
+	public abstract MetricsDAO getMetricsDAO(DAOSession session)
+			throws DataAccessException;
 }

@@ -14,6 +14,7 @@ import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.dao.BasketFormatDAO;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
+import com.infosys.setlabs.miner.dao.MetricsDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.dao.MinerInfoDAO;
 import com.infosys.setlabs.miner.dao.MinerModuleDAO;
@@ -123,5 +124,11 @@ public class MysqlDAOFactory extends DAOFactory {
 	public MinerInfoDAO getMinerInfoDAO(DAOSession session)
 			throws DataAccessException {
 		return new MysqlMinerInfoDAO(((JdbcDAOSession) session).getConnection());
+	}
+
+	@Override
+	public MetricsDAO getMetricsDAO(DAOSession session)
+			throws DataAccessException {
+		return new MysqlMetricsDAO(((JdbcDAOSession) session).getConnection());
 	}
 }
