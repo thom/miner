@@ -72,13 +72,13 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 
 	protected String countSQL(boolean allFiles) {
 		if (allFiles) {
-			return String.format("SELECT COUNT(id) FROM %s", name);			
+			return String.format("SELECT COUNT(id) AS count FROM %s", name);
 		} else {
-			return String.format("SELECT COUNT(id) FROM %s WHERE is_renamed",
-					name);
+			return String.format("SELECT COUNT(id) AS count "
+					+ "FROM %s WHERE is_renamed", name);
 		}
 	}
-	
+
 	@Override
 	public MinerFile find(int id) throws DataAccessException {
 		MinerFile result = null;
