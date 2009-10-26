@@ -1,6 +1,7 @@
 package com.infosys.setlabs.miner.dao;
 
 import com.infosys.setlabs.dao.CreateTablesDAO;
+import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.ObjectDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
 
@@ -15,4 +16,13 @@ public interface MinerFileDAO extends ObjectDAO<MinerFile>, CreateTablesDAO {
 	 * 
 	 */
 	public static String name = "miner_files";
+
+	/**
+	 * Returns the number of renamed files
+	 * 
+	 * @param isRenamed
+	 * @return number of renamed files
+	 * @throws DataAccessException
+	 */
+	public int count(boolean isRenamed) throws DataAccessException;
 }
