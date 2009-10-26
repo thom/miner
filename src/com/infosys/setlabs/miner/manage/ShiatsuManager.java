@@ -39,7 +39,8 @@ public class ShiatsuManager extends Manager {
 		maxModuleDepthPattern = new Pattern[4];
 		maxModuleDepthPattern[0] = Pattern.compile("(\\./)");
 		maxModuleDepthPattern[1] = Pattern.compile("(\\./.*?/|\\./)");
-		maxModuleDepthPattern[2] = Pattern.compile("(\\./.*?/.*?/|\\./.*?/|\\./)");
+		maxModuleDepthPattern[2] = Pattern
+				.compile("(\\./.*?/.*?/|\\./.*?/|\\./)");
 		maxModuleDepthPattern[3] = Pattern
 				.compile("(\\./.*?/.*?/.*?/|\\./.*?/.*?/|\\./.*?/|\\./)");
 	}
@@ -52,6 +53,7 @@ public class ShiatsuManager extends Manager {
 	public void massage(int maxModuleDepth) throws MinerException {
 		this.maxModuleDepth = maxModuleDepth;
 
+		// TODO: use transactions and close DAO correctly (see MetricsManager)!
 		try {
 			this.getFactory().getMinerFileDAO(this.getSession()).createTables();
 			this.getFactory().getMinerModuleDAO(this.getSession())
@@ -74,6 +76,7 @@ public class ShiatsuManager extends Manager {
 	}
 
 	private void fillTables() throws MinerException {
+		// TODO: use transactions and close DAO correctly (see MetricsManager)!
 		try {
 			RepositoryFileDAO repositoryFileDAO = this.getFactory().getFileDAO(
 					this.getSession());
