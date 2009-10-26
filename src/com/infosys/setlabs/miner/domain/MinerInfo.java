@@ -198,7 +198,6 @@ public class MinerInfo {
 	@Override
 	public String toString() {
 		String result = "";
-		result += "ID\t\t\t\t\t" + getId() + "\n";
 		result += "Name\t\t\t\t\t" + getName() + "\n";
 		result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
 		result += "Maximum module depth:\t\t\t" + getMaximumModuleDepth() + "\n";
