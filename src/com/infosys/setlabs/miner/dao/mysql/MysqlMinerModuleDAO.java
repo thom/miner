@@ -74,12 +74,12 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 				name);
 	}
 
-	protected String countSQL(boolean hasRenamedFiles) {
-		if (hasRenamedFiles) {
-			return String.format(
-					"SELECT COUNT(id) FROM %s WHERE has_renamed_files", name);
+	protected String countSQL(boolean allModules) {
+		if (allModules) {
+			return String.format("SELECT COUNT(id) FROM %s", name);			
 		} else {
-			return String.format("SELECT COUNT(id) FROM %s", name);
+			return String.format(
+					"SELECT COUNT(id) FROM %s WHERE has_renamed_files", name);			
 		}
 	}
 
@@ -210,13 +210,13 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	}
 
 	@Override
-	public int count(boolean hasRenamedFiles) {
+	public int count(boolean allModules) {
 		int result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			ps = this.getConnection().prepareStatement(
-					countSQL(hasRenamedFiles));
+					countSQL(allModules));
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = rs.getInt("count");
