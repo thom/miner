@@ -5,12 +5,25 @@ import java.sql.Connection;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.MetricsDAO;
 
-// TODO: Comment
+/**
+ * MySQL Metrics DAO
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class MysqlMetricsDAO extends JdbcDAO implements MetricsDAO {
-	// TODO: Comment
+	/**
+	 * Creates a new DAO
+	 * 
+	 * @param conn
+	 *            connection to connect to
+	 */
 	public MysqlMetricsDAO(Connection conn) {
 		super(conn);
 	}
-	
-	// TODO: MysqlMetricsDAO
+
+	@Override
+	public double modularization(boolean hasRenamedFiles) {
+		// TODO: modularization metrics
+		return 0;
+	}
 }
