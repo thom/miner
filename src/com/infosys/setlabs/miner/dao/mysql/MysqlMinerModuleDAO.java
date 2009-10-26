@@ -211,7 +211,6 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 
 	@Override
 	public int count(boolean hasRenamedFiles) {
-		// TODO: count(boolean hasRenamedFiles)
 		int result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
