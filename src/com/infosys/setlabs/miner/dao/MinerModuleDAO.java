@@ -12,7 +12,7 @@ import com.infosys.setlabs.miner.domain.MinerModule;
  */
 public interface MinerModuleDAO extends ObjectDAO<MinerModule>, CreateTablesDAO {
 	public static String name = "miner_modules";
-	
+
 	/**
 	 * Finds a module by name.
 	 * 
@@ -22,4 +22,13 @@ public interface MinerModuleDAO extends ObjectDAO<MinerModule>, CreateTablesDAO 
 	 * @throws DataAccessException
 	 */
 	public MinerModule find(String moduleName) throws DataAccessException;
+
+	/**
+	 * Returns the number of modules
+	 * 
+	 * @param hasRenamedFiles
+	 *            renamed modules?
+	 * @return number of modules (renamed or not)
+	 */
+	public int count(boolean hasRenamedFiles);
 }

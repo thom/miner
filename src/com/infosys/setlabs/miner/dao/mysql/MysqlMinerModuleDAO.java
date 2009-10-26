@@ -28,7 +28,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	public MysqlMinerModuleDAO(Connection conn) {
 		super(conn);
 	}
-	
+
 	protected String createTableSQL() {
 		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
@@ -72,7 +72,16 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		return String.format("UPDATE miner_modules "
 				+ "SET module_name=?, has_renamed_files=? " + "WHERE id=?",
 				name);
-	}	
+	}
+
+	protected String countSQL(boolean hasRenamedFiles) {
+		if (hasRenamedFiles) {
+			return String.format(
+					"SELECT COUNT(id) FROM %s WHERE has_renamed_files", name);
+		} else {
+			return String.format("SELECT COUNT(id) FROM %s", name);
+		}
+	}
 
 	@Override
 	public MinerModule find(int id) throws DataAccessException {
@@ -200,8 +209,28 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		}
 	}
 
-	// TODO: count(boolean hasRenamedFiles)	
-	
+	@Override
+	public int count(boolean hasRenamedFiles) {
+		// TODO: count(boolean hasRenamedFiles)
+		int result = 0;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = this.getConnection().prepareStatement(
+					countSQL(hasRenamedFiles));
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				result = rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
+		return result;
+	}
+
 	@Override
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;

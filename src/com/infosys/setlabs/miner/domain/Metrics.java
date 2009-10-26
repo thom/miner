@@ -6,4 +6,6 @@ public class Metrics {
 	// private int filesInFrequentItemSet;
 	// private int files;
 	// private int renamedFiles;
+	// private int modules;
+	// private int modulesWithRenamedFiles;
 }
