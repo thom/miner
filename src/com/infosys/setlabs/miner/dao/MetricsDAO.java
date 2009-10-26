@@ -1,5 +1,7 @@
 package com.infosys.setlabs.miner.dao;
 
+import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
+
 /**
  * Metrics DAO
  * 
@@ -7,11 +9,39 @@ package com.infosys.setlabs.miner.dao;
  */
 public interface MetricsDAO {
 	/**
+	 * Returns the name
+	 * 
+	 * @return name
+	 */
+	public String getName();
+
+	/**
+	 * Sets the name
+	 * 
+	 * @param name
+	 *            name to set
+	 */
+	public void setName(String name);
+
+	/**
+	 * Returns code files
+	 * 
+	 * @return codeFiles
+	 */
+	public CodeFiles getCodeFiles();
+
+	/**
+	 * Sets code files
+	 * 
+	 * @param codeFiles
+	 *            code files to set
+	 */
+	public void setCodeFiles(CodeFiles codeFiles);
+
+	/**
 	 * Returns modularization metrics
 	 * 
-	 * @param hasRenamedFiles
-	 *            modules with renamed files?
 	 * @return modularization
 	 */
-	public double modularization(String name, boolean hasRenamedFiles);
+	public double modularization();
 }
