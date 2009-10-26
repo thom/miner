@@ -186,12 +186,9 @@ public class Metrics {
 				+ " code files\n-------------------------------------------------------------------------------\n";
 		result += "Files in frequent item set:\t\t"
 				+ getFilesInFrequentItemSet() + "\n";
-		result += "Percentage of "
-				+ minerInfo.getCodeFiles().toString().toLowerCase()
-				+ " files in FIS:\t" + includedFilesInFrequentItemSet() + "%\n";
-		result += "Modularization for "
-				+ minerInfo.getCodeFiles().toString().toLowerCase()
-				+ " files:\t" + getModularization() + "\n\n";
+		result += "Percentage of files in FIS:\t\t"
+				+ includedFilesInFrequentItemSet() + "%\n";
+		result += "Modularization:\t\t\t\t" + getModularization() + "\n\n";
 		result += "Miner information\n-------------------------------------------------------------------------------\n";
 		result += minerInfo;
 		return result;
