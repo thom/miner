@@ -44,6 +44,9 @@ public class MinerApp {
 	// Miner Info
 	private MinerInfoManager minerInfoManager;
 	private MinerInfo minerInfo;
+	
+	// Maximum module depth
+	private int maximumModuleDepth;
 
 	/**
 	 * Parses command line arguments, sets the database connection arguments and
@@ -104,6 +107,9 @@ public class MinerApp {
 					"The data must be massaged with "
 							+ "shiatsu before running the miner."));
 		}
+		
+		// Set maximum module depth
+		maximumModuleDepth = minerInfoDefault.getMaximumModuleDepth();
 	}
 	/**
 	 * Prints miner information
@@ -232,6 +238,7 @@ public class MinerApp {
 		if (runApriori() || !minerInfo.isMiner()) {
 			minerInfo.setName(values.getName());
 			minerInfo.setShiatsu(true);
+			minerInfo.setMaximumModuleDepth(maximumModuleDepth);
 			minerInfo.setMiner(true);
 			minerInfo.setCodeFiles(values.getIncludedFiles());
 			minerInfo.setMinimumItems(values.getMinItems());
