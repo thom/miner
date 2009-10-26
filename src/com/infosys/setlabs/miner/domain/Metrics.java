@@ -31,9 +31,10 @@ public class Metrics {
 	 */
 	public double includedFilesInFrequentItemSet() {
 		if (minerInfo.getCodeFiles() == CodeFiles.ALL) {
-			return 100 * filesInFrequentItemSet / files;
+			return 100 * (double) filesInFrequentItemSet / (double) files;
 		} else if (minerInfo.getCodeFiles() == CodeFiles.RENAMED) {
-			return 100 * filesInFrequentItemSet / renamedFiles;
+			return 100 * (double) filesInFrequentItemSet
+					/ (double) renamedFiles;
 		} else {
 			return 0;
 		}
@@ -175,16 +176,19 @@ public class Metrics {
 	@Override
 	public String toString() {
 		String result = "";
-		result += "Files in frequent item set:\t\t"
-				+ getFilesInFrequentItemSet() + "\n";
 		result += "Code files:\t\t\t\t" + getFiles() + "\n";
 		result += "Renamed code files:\t\t\t" + getRenamedFiles() + "\n";
-		result += "Percentage of "
-				+ minerInfo.getCodeFiles().toString().toLowerCase()
-				+ " files in FIS:\t" + includedFilesInFrequentItemSet() + "\n";
 		result += "Modules:\t\t\t\t" + getModules() + "\n";
 		result += "Modules with renamed files:\t\t"
-				+ getModulesWithRenamedFiles() + "\n";
+				+ getModulesWithRenamedFiles() + "\n\n";
+		result += "Metrics for "
+				+ minerInfo.getCodeFiles().toString().toLowerCase()
+				+ " code files\n-------------------------------------------------------------------------------\n";
+		result += "Files in frequent item set:\t\t"
+				+ getFilesInFrequentItemSet() + "\n";
+		result += "Percentage of "
+				+ minerInfo.getCodeFiles().toString().toLowerCase()
+				+ " files in FIS:\t" + includedFilesInFrequentItemSet() + "%\n";
 		result += "Modularization for "
 				+ minerInfo.getCodeFiles().toString().toLowerCase()
 				+ " files:\t" + getModularization() + "\n\n";
