@@ -13,5 +13,5 @@ public interface MetricsDAO {
 	 *            modules with renamed files?
 	 * @return modularization
 	 */
-	public double modularization(boolean hasRenamedFiles);
+	public double modularization(String name, boolean hasRenamedFiles);
 }

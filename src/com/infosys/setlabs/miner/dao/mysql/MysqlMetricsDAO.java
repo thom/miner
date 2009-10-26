@@ -22,7 +22,7 @@ public class MysqlMetricsDAO extends JdbcDAO implements MetricsDAO {
 	}
 
 	@Override
-	public double modularization(boolean hasRenamedFiles) {
+	public double modularization(String name, boolean hasRenamedFiles) {
 		// TODO: modularization metrics
 		return 0;
 	}
