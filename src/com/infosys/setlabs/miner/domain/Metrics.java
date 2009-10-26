@@ -1,5 +1,7 @@
 package com.infosys.setlabs.miner.domain;
 
+import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
+
 /**
  * Metrics
  * 
@@ -13,6 +15,29 @@ public class Metrics {
 	private int modulesWithRenamedFiles;
 	private double modularization;
 	private MinerInfo minerInfo;
+
+	/**
+	 * Creates a new metrics object
+	 * 
+	 * @param minerInfo
+	 *            miner info
+	 */
+	public Metrics(MinerInfo minerInfo) {
+		this.minerInfo = minerInfo;
+	}
+
+	/**
+	 * Returns the percentage of the included files in the frequent item set
+	 */
+	public double includedFilesInFrequentItemSet() {
+		if (minerInfo.getCodeFiles() == CodeFiles.ALL) {
+			return 100 * filesInFrequentItemSet / files;
+		} else if (minerInfo.getCodeFiles() == CodeFiles.RENAMED) {
+			return 100 * filesInFrequentItemSet / renamedFiles;
+		} else {
+			return 0;
+		}
+	}
 
 	/**
 	 * Returns the number of files in the frequent item set
@@ -150,7 +175,20 @@ public class Metrics {
 	@Override
 	public String toString() {
 		String result = "";
-		// TODO: string representation
+		result += "Files in frequent item set:\t\t"
+				+ getFilesInFrequentItemSet() + "\n";
+		result += "Code files:\t\t\t\t" + getFiles() + "\n";
+		result += "Renamed code files:\t\t\t" + getRenamedFiles() + "\n";
+		result += "Percentage of "
+				+ minerInfo.getCodeFiles().toString().toLowerCase()
+				+ " files in FIS:\t" + includedFilesInFrequentItemSet() + "\n";
+		result += "Modules:\t\t\t\t" + getModules() + "\n";
+		result += "Modules with renamed files:\t\t"
+				+ getModulesWithRenamedFiles() + "\n";
+		result += "Modularization for "
+				+ minerInfo.getCodeFiles().toString().toLowerCase()
+				+ " files:\t" + getModularization() + "\n\n";
+		result += "Miner information\n-------------------------------------------------------------------------------\n";
 		result += minerInfo;
 		return result;
 	}
