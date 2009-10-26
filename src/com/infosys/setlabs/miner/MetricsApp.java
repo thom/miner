@@ -10,6 +10,7 @@ import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.manage.Manager;
+import com.infosys.setlabs.miner.manage.MetricsManager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
 
 /**
@@ -81,8 +82,21 @@ public class MetricsApp {
 	 * @throws MinerException
 	 */
 	public void print() throws MinerException {
-		// TODO: Metrics App
-		System.out.println("TODO");
+		MetricsManager metricsManager = null;
+		try {
+			// Connect to the database
+			metricsManager = new MetricsManager(connectionArgs);
+			
+			// Set name
+			metricsManager.setName(values.getName());
+
+			// Get metrics and print them
+			System.out.println(metricsManager.metrics());
+		} finally {
+			if (metricsManager != null) {
+				metricsManager.close();
+			}
+		}
 	}
 	
 	/**
