@@ -12,7 +12,7 @@ public class RepositoryFile {
 	private String fileName;
 	private String path;
 	private Type type;
-	private boolean renamed;
+	private boolean isRenamed;
 
 	/**
 	 * File types
@@ -147,17 +147,17 @@ public class RepositoryFile {
 	 * @return renamed
 	 */
 	public boolean isRenamed() {
-		return renamed;
+		return isRenamed;
 	}
 
 	/**
 	 * Sets renamed
 	 * 
-	 * @param renamed
+	 * @param isRenamed
 	 *            was the file ever renamed?
 	 */
-	public void setRenamed(boolean renamed) {
-		this.renamed = renamed;
+	public void setRenamed(boolean isRenamed) {
+		this.isRenamed = isRenamed;
 	}
 
 	@Override
@@ -165,7 +165,7 @@ public class RepositoryFile {
 		String result = "";
 		result += "ID:\t\t" + getId() + "\n";
 		result += "File name:\t" + getFileName() + "\n";
-		result += "Renamed?:\t" + isRenamed() + "\n";
+		result += "Is renamed?:\t" + isRenamed() + "\n";
 		result += "Path:\t\t" + getPath() + "\n";
 		result += "Directory:\t" + getDirectory() + "\n";
 		result += "Type:\t\t" + getType().toString().toLowerCase();

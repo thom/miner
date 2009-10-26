@@ -34,7 +34,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL PRIMARY KEY, file_name VARCHAR(255), "
 				+ "path MEDIUMTEXT, type VARCHAR(255), "
-				+ "renamed BOOLEAN, miner_module_id INT NOT NULL, "
+				+ "is_renamed BOOLEAN, miner_module_id INT NOT NULL, "
 				+ "INDEX(file_name), FOREIGN KEY(id) REFERENCES files(id), "
 				+ "FOREIGN KEY(miner_module_id) REFERENCES %s(id)"
 				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
@@ -48,17 +48,17 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	}
 
 	protected String selectSQL() {
-		return String.format("SELECT id, file_name, path, type, renamed, "
+		return String.format("SELECT id, file_name, path, type, is_renamed, "
 				+ "miner_module_id " + "FROM %s WHERE id=?", name);
 	}
 
 	protected String selectAllSQL() {
-		return String.format("SELECT id, file_name, path, type, renamed, "
+		return String.format("SELECT id, file_name, path, type, is_renamed, "
 				+ "miner_module_id " + "FROM %s", name);
 	}
 	protected String createSQL() {
 		return String.format("INSERT INTO %s (id, file_name, path, type, "
-				+ "renamed, miner_module_id) VALUES (?,?,?,?,?,?)", name);
+				+ "is_renamed, miner_module_id) VALUES (?,?,?,?,?,?)", name);
 	}
 
 	protected String deleteSQL() {
@@ -67,12 +67,12 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 
 	protected String updateSQL() {
 		return String.format("UPDATE %s SET file_name=?, path=?, type=?, "
-				+ "renamed=?, miner_module_id=? WHERE id=?", name);
+				+ "is_renamed=?, miner_module_id=? WHERE id=?", name);
 	}
 
-	protected String countSQL(boolean renamed) {
-		if (renamed) {
-			return String.format("SELECT COUNT(id) FROM %s WHERE renamed", name);
+	protected String countSQL(boolean is_renamed) {
+		if (is_renamed) {
+			return String.format("SELECT COUNT(id) FROM %s WHERE is_renamed", name);
 		} else {
 			return String.format("SELECT COUNT(id) FROM %s", name);
 		}
@@ -92,7 +92,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				result.setFileName(rs.getString("file_name"));
 				result.setPath(rs.getString("path"));
 				result.setType(rs.getString("type"));
-				result.setRenamed(rs.getBoolean("renamed"));
+				result.setRenamed(rs.getBoolean("is_renamed"));
 				result.setModule(new MysqlMinerModuleDAO(this.getConnection())
 						.find(rs.getInt("miner_module_id")));
 			}
@@ -118,7 +118,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				minerFile.setFileName(rs.getString("file_name"));
 				minerFile.setPath(rs.getString("path"));
 				minerFile.setType(rs.getString("type"));
-				minerFile.setRenamed(rs.getBoolean("renamed"));
+				minerFile.setRenamed(rs.getBoolean("is_renamed"));
 				minerFile.setModule(new MysqlMinerModuleDAO(this
 						.getConnection()).find(rs.getInt("miner_module_id")));
 				result.add(minerFile);
