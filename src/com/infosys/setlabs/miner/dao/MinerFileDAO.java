@@ -18,10 +18,11 @@ public interface MinerFileDAO extends ObjectDAO<MinerFile>, CreateTablesDAO {
 	public static String name = "miner_files";
 
 	/**
-	 * Returns the number of renamed files
+	 * Returns the number of files
 	 * 
 	 * @param isRenamed
-	 * @return number of renamed files
+	 *            renamed files?
+	 * @return number of files (renamed or not)
 	 * @throws DataAccessException
 	 */
 	public int count(boolean isRenamed) throws DataAccessException;
