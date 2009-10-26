@@ -50,6 +50,14 @@ public interface FrequentItemSetDAO
 	 * @throws DataAccessException
 	 */
 	public int create(String frequentItemSetLine) throws DataAccessException;
+	
+	/**
+	 * Returns the number of files in the frequent item set
+	 * 
+	 * @return number of files in frequent item set
+	 * @throws DataAccessException
+	 */
+	public int count() throws DataAccessException;
 
 	/**
 	 * Sets the number of modules touched for a given frequent item set

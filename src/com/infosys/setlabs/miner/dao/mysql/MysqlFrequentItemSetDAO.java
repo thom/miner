@@ -101,9 +101,15 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				+ "relative_item_set_support, modules_touched) "
 				+ "VALUES (?,?,?,?,?)", frequentItemSetsTableName());
 	}
+
 	protected String updateModulesTouchedSQL() {
 		return String.format("UPDATE %s SET modules_touched=? WHERE id=?",
 				frequentItemSetsTableName());
+	}
+
+	protected String countSQL() {
+		return String.format("SELECT COUNT(DISTINCT file_id) as count FROM %s",
+				frequentItemsTableName());
 	}
 
 	protected String getModulesTouchedSQL() {
@@ -113,13 +119,13 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				+ "AND fi.miner_frequent_item_set_id = ?) AS modules_count",
 				frequentItemsTableName());
 	}
-	
+
 	protected String createItemSQL() {
 		return String.format("INSERT INTO %s "
 				+ "(miner_frequent_item_set_id, file_id) VALUES (?,?)",
 				frequentItemsTableName());
 	}
-	
+
 	@Override
 	public String getName() {
 		return name;
@@ -164,8 +170,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection()
-					.prepareStatement(selectAllSQL());
+			ps = this.getConnection().prepareStatement(selectAllSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				FrequentItemSet frequentItemSet = new FrequentItemSet(rs
@@ -210,8 +215,8 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		PreparedStatement psItem = null;
 		ResultSet rs = null;
 		try {
-			psItemSet = this.getConnection().prepareStatement(
-					createSQL(), Statement.RETURN_GENERATED_KEYS);
+			psItemSet = this.getConnection().prepareStatement(createSQL(),
+					Statement.RETURN_GENERATED_KEYS);
 			psItemSet.setInt(1, 0);
 			psItemSet.setInt(2, fileIds.size());
 			psItemSet.setInt(3, Integer.parseInt(supports[0]));
@@ -270,15 +275,33 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			this.closeStatement(psModulesTouched);
 		}
 	}
-	
-	// TODO: count() (Number of files in FIS)
+
+	@Override
+	public int count() throws DataAccessException {
+		int result = 0;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = this.getConnection().prepareStatement(countSQL());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				result = rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
+		return result;
+	}
 
 	@Override
 	public void createTables() throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
-			ps = this.getConnection()
-					.prepareStatement(dropFrequentItemsTableSQL());
+			ps = this.getConnection().prepareStatement(
+					dropFrequentItemsTableSQL());
 			ps.executeUpdate();
 			ps.executeUpdate(dropFrequentItemSetsTableSQL());
 			ps.executeUpdate(createFrequentItemSetsTableSQL());
