@@ -1,5 +1,6 @@
 package com.infosys.setlabs.miner;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.kohsuke.args4j.Argument;
@@ -60,21 +61,6 @@ public class MetricsApp {
 
 		// Set database engine
 		Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
-
-		// Get miner info
-		MinerInfoManager minerInfoManager = new MinerInfoManager(connectionArgs);
-		MinerInfo minerInfo = minerInfoManager.find(values.getName());
-		minerInfoManager.close();		
-
-		// Check prerequisites
-		if (minerInfo == null
-				|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
-			throw new MinerException(
-					new Exception(
-							"No mining called '"
-									+ values.getName()
-									+ "' found. The data must be mined before running metrics."));
-		}
 	}
 
 	/**
@@ -84,22 +70,54 @@ public class MetricsApp {
 	 */
 	public void print() throws MinerException {
 		MetricsManager metricsManager = null;
+		MinerInfoManager minerInfoManager = null;
+
 		try {
 			// Connect to the database
 			metricsManager = new MetricsManager(connectionArgs);
-			
-			// Set name
-			metricsManager.setName(values.getName());
+			minerInfoManager = new MinerInfoManager(connectionArgs);
 
-			// Get metrics and print them
-			System.out.println(metricsManager.metrics());
+			if (values.isAll()) {
+				Collection<MinerInfo> minerInfos = minerInfoManager.findAll();
+
+				if (minerInfos == null) {
+					throw new MinerException(new Exception(
+							"No minings found. The data must be mined before "
+									+ "running metrics."));
+				}
+
+				for (MinerInfo minerInfo : minerInfos) {
+					metricsManager.setName(minerInfo.getName());
+					System.out.println(metricsManager.metrics());
+					System.out
+							.println("-------------------------------------------------------------------------------");
+				}
+			} else {
+				MinerInfo minerInfo = minerInfoManager.find(values.getName());
+
+				if (minerInfo == null
+						|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
+					minerInfoManager.close();
+					throw new MinerException(
+							new Exception(
+									"No mining called '"
+											+ values.getName()
+											+ "' found. The data must be mined before running metrics."));
+				}
+
+				metricsManager.setName(values.getName());
+				System.out.println(metricsManager.metrics());
+			}
 		} finally {
 			if (metricsManager != null) {
 				metricsManager.close();
 			}
+			if (minerInfoManager != null) {
+				minerInfoManager.close();
+			}
 		}
 	}
-	
+
 	/**
 	 * Starts frequent item set info
 	 * 
@@ -129,6 +147,9 @@ public class MetricsApp {
 
 		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
 		private String name = MinerInfo.defaultName;
+
+		@Option(name = "-a", aliases = {"--all"}, usage = "show all metrics")
+		private boolean all = false;
 
 		/**
 		 * Returns database name
@@ -164,6 +185,15 @@ public class MetricsApp {
 		 */
 		public String getName() {
 			return name;
+		}
+
+		/**
+		 * Does the user want all metrics?
+		 * 
+		 * @return all
+		 */
+		public boolean isAll() {
+			return all;
 		}
 	}
 }

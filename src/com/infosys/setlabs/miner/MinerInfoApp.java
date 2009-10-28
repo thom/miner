@@ -172,9 +172,9 @@ public class MinerInfoApp {
 		}
 
 		/**
-		 * Does the user want the default mining?
+		 * Does the user want all minings?
 		 * 
-		 * @return defaultMining
+		 * @return all
 		 */
 		public boolean isAll() {
 			return all;

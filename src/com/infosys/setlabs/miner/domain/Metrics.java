@@ -127,7 +127,6 @@ public class Metrics {
 	@Override
 	public String toString() {
 		String result = "";
-		result += "Metrics\n-------------------------------------------------------------------------------\n";
 		result += "Code files:\t\t\t\t" + getFiles() + "\n";
 		result += "Modules:\t\t\t\t" + getModules() + "\n";		
 		result += "Files in frequent item set:\t\t"
@@ -135,7 +134,7 @@ public class Metrics {
 		result += "Percentage of files in FIS:\t\t"
 				+ includedFilesInFrequentItemSet() + "%\n";
 		result += "Modularization:\t\t\t\t" + getModularization() + "\n\n";
-		result += "Miner information\n-------------------------------------------------------------------------------\n";
+		result += "Miner information\n";
 		result += minerInfo;
 		return result;
 	}
