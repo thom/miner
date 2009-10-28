@@ -29,9 +29,8 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
 				+ "name VARCHAR(255) NOT NULL DEFAULT 'default', "
 				+ "shiatsu BOOLEAN, maximum_module_depth INT, "
-				+ "miner BOOLEAN, included_files VARCHAR(255), "
-				+ "minimum_items INT, minimum_support DOUBLE, "
-				+ "UNIQUE(name(255))"
+				+ "miner BOOLEAN, minimum_items INT, "
+				+ "minimum_support DOUBLE, UNIQUE(name(255))"
 				// MyISAM doesn't support foreign keys, but as
 				// CVSAnaly2 uses
 				// MyISAM
@@ -45,27 +44,25 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 
 	protected String selectSQL() {
 		return String.format("SELECT id, name, shiatsu, maximum_module_depth, "
-				+ "miner, included_files, minimum_items, minimum_support "
+				+ "miner, minimum_items, minimum_support "
 				+ "FROM %s WHERE id=?", name);
 	}
 
 	protected String selectByNameSQL() {
 		return String.format("SELECT id, name, shiatsu, maximum_module_depth, "
-				+ "miner, included_files, minimum_items, minimum_support "
+				+ "miner, minimum_items, minimum_support "
 				+ "FROM %s WHERE name=?", name);
 	}
 
 	protected String selectAllSQL() {
 		return String.format("SELECT id, name, shiatsu, maximum_module_depth, "
-				+ "miner, included_files, " + "minimum_items, "
-				+ "minimum_support FROM %s", name);
+				+ "miner, minimum_items, minimum_support FROM %s", name);
 	}
 
 	protected String createSQL() {
 		return String.format("INSERT INTO %s (id, name, shiatsu, "
-				+ "maximum_module_depth, miner, included_files, "
-				+ "minimum_items, minimum_support) "
-				+ "VALUES (?,?,?,?,?,?,?,?)", name);
+				+ "maximum_module_depth, miner, minimum_items, "
+				+ "minimum_support) VALUES (?,?,?,?,?,?,?)", name);
 	}
 
 	protected String deleteSQL() {
@@ -74,7 +71,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 
 	protected String updateSQL() {
 		return String.format("UPDATE %s SET name=?, shiatsu=?, "
-				+ "maximum_module_depth=?, miner=?, included_files=?, "
+				+ "maximum_module_depth=?, miner=?, "
 				+ "minimum_items=?, minimum_support=? WHERE id=?", name);
 	}
 
@@ -94,7 +91,6 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 				result.setShiatsu(rs.getBoolean("shiatsu"));
 				result.setMaximumModuleDepth(rs.getInt("maximum_module_depth"));
 				result.setMiner(rs.getBoolean("miner"));
-				result.setCodeFiles(rs.getString("included_files"));
 				result.setMinimumItems(rs.getInt("minimum_items"));
 				result.setMinimumSupport(rs.getDouble("minimum_support"));
 			}
@@ -121,9 +117,8 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 				result.setId(rs.getInt("id"));
 				result.setName(rs.getString("name"));
 				result.setShiatsu(rs.getBoolean("shiatsu"));
-				result.setMaximumModuleDepth(rs.getInt("maximum_module_depth"));				
+				result.setMaximumModuleDepth(rs.getInt("maximum_module_depth"));
 				result.setMiner(rs.getBoolean("miner"));
-				result.setCodeFiles(rs.getString("included_files"));
 				result.setMinimumItems(rs.getInt("minimum_items"));
 				result.setMinimumSupport(rs.getDouble("minimum_support"));
 			}
@@ -152,7 +147,6 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 				minerInfo.setMaximumModuleDepth(rs
 						.getInt("maximum_module_depth"));
 				minerInfo.setMiner(rs.getBoolean("miner"));
-				minerInfo.setCodeFiles(rs.getString("included_files"));
 				minerInfo.setMinimumItems(rs.getInt("minimum_items"));
 				minerInfo.setMinimumSupport(rs.getDouble("minimum_support"));
 				result.add(minerInfo);
@@ -180,9 +174,8 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 			ps.setBoolean(3, minerInfo.isShiatsu());
 			ps.setInt(4, minerInfo.getMaximumModuleDepth());
 			ps.setBoolean(5, minerInfo.isMiner());
-			ps.setString(6, minerInfo.getCodeFiles().toString());
-			ps.setInt(7, minerInfo.getMinimumItems());
-			ps.setDouble(8, minerInfo.getMinimumSupport());
+			ps.setInt(6, minerInfo.getMinimumItems());
+			ps.setDouble(7, minerInfo.getMinimumSupport());
 			ps.execute();
 
 			rs = ps.getGeneratedKeys();
@@ -220,10 +213,9 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 			ps.setBoolean(2, minerInfo.isShiatsu());
 			ps.setInt(3, minerInfo.getMaximumModuleDepth());
 			ps.setBoolean(4, minerInfo.isMiner());
-			ps.setString(5, minerInfo.getCodeFiles().toString());
-			ps.setInt(6, minerInfo.getMinimumItems());
-			ps.setDouble(7, minerInfo.getMinimumSupport());
-			ps.setInt(8, minerInfo.getId());
+			ps.setInt(5, minerInfo.getMinimumItems());
+			ps.setDouble(6, minerInfo.getMinimumSupport());
+			ps.setInt(7, minerInfo.getId());
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();

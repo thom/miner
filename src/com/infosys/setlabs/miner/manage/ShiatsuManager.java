@@ -11,7 +11,6 @@ import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.dao.MinerInfoDAO;
 import com.infosys.setlabs.miner.dao.MinerModuleDAO;
 import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
-import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
 import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.domain.MinerModule;
@@ -76,7 +75,6 @@ public class ShiatsuManager extends Manager {
 			minerInfo.setName(MinerInfo.defaultName);
 			minerInfo.setShiatsu(true);
 			minerInfo.setMaximumModuleDepth(maxModuleDepth);
-			minerInfo.setCodeFiles(CodeFiles.NONE);
 			minerInfoDAO.create(minerInfo);
 
 			// Commit transaction

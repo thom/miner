@@ -1,7 +1,5 @@
 package com.infosys.setlabs.miner.domain;
 
-import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
-
 /**
  * Metrics
  * 
@@ -30,14 +28,7 @@ public class Metrics {
 	 * Returns the percentage of the included files in the frequent item set
 	 */
 	public double includedFilesInFrequentItemSet() {
-		if (minerInfo.getCodeFiles() == CodeFiles.ALL) {
-			return 100 * (double) filesInFrequentItemSet / (double) files;
-		} else if (minerInfo.getCodeFiles() == CodeFiles.RENAMED) {
-			return 100 * (double) filesInFrequentItemSet
-					/ (double) renamedFiles;
-		} else {
-			return 0;
-		}
+		return 100 * (double) filesInFrequentItemSet / (double) files;
 	}
 
 	/**
@@ -181,9 +172,7 @@ public class Metrics {
 		result += "Modules:\t\t\t\t" + getModules() + "\n";
 		result += "Modules with renamed files:\t\t"
 				+ getModulesWithRenamedFiles() + "\n\n";
-		result += "Metrics for "
-				+ minerInfo.getCodeFiles().toString().toLowerCase()
-				+ " code files\n-------------------------------------------------------------------------------\n";
+		result += "Metrics\n-------------------------------------------------------------------------------\n";
 		result += "Files in frequent item set:\t\t"
 				+ getFilesInFrequentItemSet() + "\n";
 		result += "Percentage of files in FIS:\t\t"

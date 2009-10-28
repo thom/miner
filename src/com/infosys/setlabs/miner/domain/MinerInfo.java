@@ -1,7 +1,5 @@
 package com.infosys.setlabs.miner.domain;
 
-import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
-
 /**
  * Saves information about the miner, e.g. what arguments where used
  * 
@@ -30,9 +28,6 @@ public class MinerInfo {
 
 	// Minimum support
 	private double minimumSupport;
-
-	// Included files
-	private CodeFiles codeFiles;
 
 	/**
 	 * Returns the ID
@@ -130,35 +125,6 @@ public class MinerInfo {
 	}
 
 	/**
-	 * Returns code files
-	 * 
-	 * @return codeFiles
-	 */
-	public CodeFiles getCodeFiles() {
-		return codeFiles;
-	}
-
-	/**
-	 * Sets code files
-	 * 
-	 * @param codeFiles
-	 *            code files to set
-	 */
-	public void setCodeFiles(CodeFiles codeFiles) {
-		this.codeFiles = codeFiles;
-	}
-
-	/**
-	 * Sets code files
-	 * 
-	 * @param codeFilesName
-	 *            code files to set
-	 */
-	public void setCodeFiles(String codeFilesName) {
-		codeFiles = CodeFiles.valueOf(codeFilesName.toUpperCase());
-	}
-
-	/**
 	 * Returns the minimum items per frequent item set
 	 * 
 	 * @return minimumItems
@@ -203,9 +169,7 @@ public class MinerInfo {
 		result += "Maximum module depth:\t\t\t" + getMaximumModuleDepth() + "\n";
 		result += "Miner run?\t\t\t\t" + isMiner();
 		if (isMiner()) {
-			result += "\nCode files:\t\t\t\t"
-					+ getCodeFiles().toString().toLowerCase() + "\n";
-			result += "Minimum support per frequent item set:\t";
+			result += "\nMinimum support per frequent item set:\t";
 			if (getMinimumSupport() < 0) {
 				result += -getMinimumSupport() + " (absolute)\n";
 			} else {

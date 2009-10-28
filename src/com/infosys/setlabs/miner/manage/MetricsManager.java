@@ -96,7 +96,6 @@ public class MetricsManager extends Manager {
 			MetricsDAO metricsDAO = this.getFactory().getMetricsDAO(
 					this.getSession());
 			metricsDAO.setName(getName());
-			metricsDAO.setCodeFiles(minerInfo.getCodeFiles());
 			result.setModularization(metricsDAO.modularization());
 
 			// Commit transaction
