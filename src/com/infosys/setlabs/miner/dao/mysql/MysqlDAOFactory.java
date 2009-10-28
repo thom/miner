@@ -65,7 +65,6 @@ public class MysqlDAOFactory extends DAOFactory {
 
 	private Connection getConnection() throws DataAccessException {
 		try {
-			// Use MySQL directly for the moment, this will be replaced by a DAO
 			MysqlDataSource mds = new MysqlDataSource();
 
 			mds.setServerName(server);
