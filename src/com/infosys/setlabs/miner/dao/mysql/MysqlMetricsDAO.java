@@ -31,12 +31,10 @@ public class MysqlMetricsDAO extends JdbcDAO implements MetricsDAO {
 	protected String modularizationSQL() {
 		String tableName = FrequentItemSetDAO.frequentItemSetsPrefix
 				+ getName();
-		
-		// TODO: Fix this!
-		return String.format("SELECT (SUM(1 - (modules_touched - 1)/"
-				+ "(SELECT COUNT(id) FROM miner_modules))/"
-				+ "(SELECT COUNT(id) FROM %s)) AS modularization FROM %s",
-				tableName, tableName);
+
+		return String.format("SELECT (SUM(1 - (modules_touched - 1) / "
+				+ "(size - 1)) / (SELECT COUNT(id) FROM %s)) "
+				+ "AS modularization FROM %s", tableName, tableName);
 	}
 
 	@Override
