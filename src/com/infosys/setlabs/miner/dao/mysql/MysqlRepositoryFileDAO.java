@@ -31,17 +31,13 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 	}
 
 	protected String selectSQL() {
-		return String.format("SELECT id, file_name, repository_id, id IN "
-				+ "(SELECT DISTINCT a.file_id FROM actions a, file_copies fc "
-				+ "WHERE a.type = 'V' AND a.file_id = fc.to_id) AS renamed "
-				+ "FROM %s WHERE id = ?", name);
+		return String.format("SELECT id, file_name, repository_id FROM %s "
+				+ "WHERE id = ?", name);
 	}
 
 	protected String selectAllSQL() {
-		return String.format("SELECT id, file_name, repository_id, id IN "
-				+ "(SELECT DISTINCT a.file_id FROM actions a, file_copies fc "
-				+ "WHERE a.type = 'V' AND a.file_id = fc.to_id) AS renamed "
-				+ "FROM %s", name);
+		return String.format("SELECT id, file_name, repository_id FROM %s",
+				name);
 	}
 
 	protected String selectFileTypeSQL() {
@@ -83,9 +79,6 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 
 				// Set type
 				result.setType(getFileType(id));
-
-				// Set renamed
-				result.setRenamed(rs.getBoolean("renamed"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -121,9 +114,6 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 
 				// Set type
 				repositoryFile.setType(getFileType(id));
-
-				// Set renamed
-				repositoryFile.setRenamed(rs.getBoolean("renamed"));
 
 				result.add(repositoryFile);
 			}

@@ -110,12 +110,12 @@ public class ShiatsuManager extends Manager {
 					minerFile.setFileName(repositoryFile.getFileName());
 					minerFile.setPath(repositoryFile.getPath());
 					minerFile.setType(repositoryFile.getType());
-					minerFile.setRenamed(repositoryFile.isRenamed());
 
 					if (maxModuleDepth > maxModuleDepthPattern.length) {
 						throw new MinerException(new Exception("Size: "
 								+ maxModuleDepthPattern.length));
 					}
+					
 					Pattern p = maxModuleDepthPattern[maxModuleDepth];
 					Matcher m = p.matcher(minerFile.getDirectory());
 					m.find();

@@ -8,7 +8,6 @@ package com.infosys.setlabs.miner.domain;
 public class Metrics {
 	private int filesInFrequentItemSet;
 	private int files;
-	private int renamedFiles;
 	private int modules;
 	private double modularization;
 	private MinerInfo minerInfo;
@@ -66,25 +65,6 @@ public class Metrics {
 	 */
 	public void setFiles(int files) {
 		this.files = files;
-	}
-
-	/**
-	 * Returns the number of renamed code files
-	 * 
-	 * @return renamedFiles
-	 */
-	public int getRenamedFiles() {
-		return renamedFiles;
-	}
-
-	/**
-	 * Sets the number of renamed code files
-	 * 
-	 * @param renamedFiles
-	 *            number of renamed code files
-	 */
-	public void setRenamedFiles(int renamedFiles) {
-		this.renamedFiles = renamedFiles;
 	}
 
 	/**
@@ -147,10 +127,9 @@ public class Metrics {
 	@Override
 	public String toString() {
 		String result = "";
-		result += "Code files:\t\t\t\t" + getFiles() + "\n";
-		result += "Renamed code files:\t\t\t" + getRenamedFiles() + "\n";
-		result += "Modules:\t\t\t\t" + getModules() + "\n\n";
 		result += "Metrics\n-------------------------------------------------------------------------------\n";
+		result += "Code files:\t\t\t\t" + getFiles() + "\n";
+		result += "Modules:\t\t\t\t" + getModules() + "\n";		
 		result += "Files in frequent item set:\t\t"
 				+ getFilesInFrequentItemSet() + "\n";
 		result += "Percentage of files in FIS:\t\t"

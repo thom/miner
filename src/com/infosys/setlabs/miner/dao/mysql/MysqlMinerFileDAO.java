@@ -34,7 +34,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL PRIMARY KEY, file_name VARCHAR(255), "
 				+ "path MEDIUMTEXT, type VARCHAR(255), "
-				+ "is_renamed BOOLEAN, miner_module_id INT NOT NULL, "
+				+ "miner_module_id INT NOT NULL, "
 				+ "INDEX(file_name), FOREIGN KEY(id) REFERENCES files(id), "
 				+ "FOREIGN KEY(miner_module_id) REFERENCES %s(id)"
 				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
@@ -48,17 +48,17 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	}
 
 	protected String selectSQL() {
-		return String.format("SELECT id, file_name, path, type, is_renamed, "
-				+ "miner_module_id " + "FROM %s WHERE id=?", name);
+		return String.format("SELECT id, file_name, path, type, "
+				+ "miner_module_id FROM %s WHERE id=?", name);
 	}
 
 	protected String selectAllSQL() {
-		return String.format("SELECT id, file_name, path, type, is_renamed, "
-				+ "miner_module_id " + "FROM %s", name);
+		return String.format("SELECT id, file_name, path, type, "
+				+ "miner_module_id FROM %s", name);
 	}
 	protected String createSQL() {
 		return String.format("INSERT INTO %s (id, file_name, path, type, "
-				+ "is_renamed, miner_module_id) VALUES (?,?,?,?,?,?)", name);
+				+ "miner_module_id) VALUES (?,?,?,?,?)", name);
 	}
 
 	protected String deleteSQL() {
@@ -67,16 +67,11 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 
 	protected String updateSQL() {
 		return String.format("UPDATE %s SET file_name=?, path=?, type=?, "
-				+ "is_renamed=?, miner_module_id=? WHERE id=?", name);
+				+ "miner_module_id=? WHERE id=?", name);
 	}
 
-	protected String countSQL(boolean allFiles) {
-		if (allFiles) {
-			return String.format("SELECT COUNT(id) AS count FROM %s", name);
-		} else {
-			return String.format("SELECT COUNT(id) AS count "
-					+ "FROM %s WHERE is_renamed", name);
-		}
+	protected String countSQL() {
+		return String.format("SELECT COUNT(id) AS count FROM %s", name);
 	}
 
 	@Override
@@ -94,7 +89,6 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				result.setFileName(rs.getString("file_name"));
 				result.setPath(rs.getString("path"));
 				result.setType(rs.getString("type"));
-				result.setRenamed(rs.getBoolean("is_renamed"));
 				result.setModule(new MysqlMinerModuleDAO(this.getConnection())
 						.find(rs.getInt("miner_module_id")));
 			}
@@ -120,7 +114,6 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				minerFile.setFileName(rs.getString("file_name"));
 				minerFile.setPath(rs.getString("path"));
 				minerFile.setType(rs.getString("type"));
-				minerFile.setRenamed(rs.getBoolean("is_renamed"));
 				minerFile.setModule(new MysqlMinerModuleDAO(this
 						.getConnection()).find(rs.getInt("miner_module_id")));
 				result.add(minerFile);
@@ -147,8 +140,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			ps.setString(2, minerFile.getFileName());
 			ps.setString(3, minerFile.getPath());
 			ps.setString(4, minerFile.getType().toString());
-			ps.setBoolean(5, minerFile.isRenamed());
-			ps.setInt(6, minerFile.getModule().getId());
+			ps.setInt(5, minerFile.getModule().getId());
 			ps.execute();
 
 			rs = ps.getGeneratedKeys();
@@ -185,9 +177,8 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			ps.setString(1, minerFile.getFileName());
 			ps.setString(2, minerFile.getPath());
 			ps.setString(3, minerFile.getType().toString());
-			ps.setBoolean(4, minerFile.isRenamed());
-			ps.setInt(5, minerFile.getModule().getId());
-			ps.setInt(6, minerFile.getId());
+			ps.setInt(4, minerFile.getModule().getId());
+			ps.setInt(5, minerFile.getId());
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -202,7 +193,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(countSQL(allFiles));
+			ps = this.getConnection().prepareStatement(countSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = rs.getInt("count");

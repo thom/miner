@@ -84,7 +84,6 @@ public class MetricsManager extends Manager {
 			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
 					this.getSession());
 			result.setFiles(minerFileDAO.count(true));
-			result.setRenamedFiles(minerFileDAO.count(false));
 
 			// Set miner modules
 			MinerModuleDAO minerModuleDAO = this.getFactory()

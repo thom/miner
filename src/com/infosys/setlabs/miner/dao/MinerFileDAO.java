@@ -20,8 +20,6 @@ public interface MinerFileDAO extends ObjectDAO<MinerFile>, CreateTablesDAO {
 	/**
 	 * Returns the number of files
 	 * 
-	 * @param allFiles
-	 *            all files or only the ones that have been renamed?
 	 * @return number of files
 	 * @throws DataAccessException
 	 */
