@@ -12,7 +12,6 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
-import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
@@ -44,7 +43,7 @@ public class MinerApp {
 	// Miner Info
 	private MinerInfoManager minerInfoManager;
 	private MinerInfo minerInfo;
-	
+
 	// Maximum module depth
 	private int maximumModuleDepth;
 
@@ -107,7 +106,7 @@ public class MinerApp {
 					"The data must be massaged with "
 							+ "shiatsu before running the miner."));
 		}
-		
+
 		// Set maximum module depth
 		maximumModuleDepth = minerInfoDefault.getMaximumModuleDepth();
 	}
@@ -183,7 +182,7 @@ public class MinerApp {
 	private void format() throws MinerException {
 		if (!transactionsExistedBefore || values.isOverwriteFiles()) {
 			System.out.println("EXEC  > format");
-			minerManager.format(transactions, values.getIncludedFiles(), false);
+			minerManager.format(transactions, false);
 			System.out.println("DONE  > format\n");
 		} else {
 			System.out
@@ -240,7 +239,6 @@ public class MinerApp {
 			minerInfo.setShiatsu(true);
 			minerInfo.setMaximumModuleDepth(maximumModuleDepth);
 			minerInfo.setMiner(true);
-			minerInfo.setCodeFiles(values.getIncludedFiles());
 			minerInfo.setMinimumItems(values.getMinItems());
 			minerInfo.setMinimumSupport(values.getMinSupport());
 
@@ -334,9 +332,6 @@ public class MinerApp {
 
 		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
 		private Mode mode = Mode.ALL;
-
-		@Option(name = "-c", aliases = {"--files, --code-files"}, usage = "files to include (all: all code files, renamed: all renamed code files (default))", metaVar = "all|renamed")
-		private CodeFiles codeFiles = CodeFiles.RENAMED;
 
 		@Option(name = "-t", aliases = {"--trans", "--transactions"}, usage = "file containing transactions in basket format (if the file doesn't already exist, the miner tool creates it and writes data to it)")
 		private String transactions;
@@ -466,15 +461,6 @@ public class MinerApp {
 		 */
 		public Mode getMode() {
 			return mode;
-		}
-
-		/**
-		 * Returns the included files
-		 * 
-		 * @return codeFiles
-		 */
-		public CodeFiles getIncludedFiles() {
-			return codeFiles;
 		}
 
 		/**

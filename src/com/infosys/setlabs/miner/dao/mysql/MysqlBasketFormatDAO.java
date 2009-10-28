@@ -29,42 +29,17 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 	}
 
 	protected String selectSQL() {
-		return "SELECT a.commit_id, s.rev, f.id AS modified_files "
-				+ "FROM actions a, files f, file_types ft, scmlog s "
-				+ "WHERE f.id = a.file_id AND f.id = ft.file_id AND s.id = a.commit_id ";
-	}
-
-	protected String orderSQL() {
-		return "ORDER BY a.commit_id ASC, modified_files ASC";
-	}
-
-	protected String filterCodeSQL() {
-		return " AND ft.type = 'code' ";
-	}
-
-	protected String filterRenamedSQL() {
-		return " AND f.id IN (SELECT DISTINCT a.file_id "
-				+ "FROM actions a, file_copies fc "
-				+ "WHERE a.type = 'V' AND a.file_id = fc.to_id) ";
+		return "SELECT a.commit_id, s.rev, m.id AS modified_files "
+				+ "FROM actions a, miner_files m, scmlog s "
+				+ "WHERE m.id = a.file_id AND a.commit_id = s.id "
+				+ "ORDER BY a.commit_id ASC, modified_files ASC";
 	}
 
 	@Override
-	public String format(File output, CodeFiles codeFiles, boolean revs) {
+	public String format(File output, boolean revs) {
 		String result = "";
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-
-		// Build the statement
-		String sqlStatement = selectSQL();
-
-		switch (codeFiles) {
-			case ALL :
-				sqlStatement += filterCodeSQL() + orderSQL();
-				break;
-			case RENAMED :
-				sqlStatement += filterCodeSQL() + filterRenamedSQL() + orderSQL();
-				break;
-		}
 
 		int counter = -1;
 
@@ -72,7 +47,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 			// Open output file
 			BufferedWriter out = new BufferedWriter(new FileWriter(output));
 
-			ps = this.getConnection().prepareStatement(sqlStatement);
+			ps = this.getConnection().prepareStatement(selectSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				int commitId = rs.getInt("commit_id");

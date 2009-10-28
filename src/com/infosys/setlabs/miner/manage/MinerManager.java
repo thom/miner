@@ -9,7 +9,6 @@ import java.util.HashMap;
 
 import com.infosys.setlabs.miner.common.ExecWrapper;
 import com.infosys.setlabs.miner.common.MinerException;
-import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
 
 public class MinerManager extends Manager {
 	private HashMap<String, String> connectionArgs = null;
@@ -32,8 +31,7 @@ public class MinerManager extends Manager {
 	 * 
 	 * @throws MinerException
 	 */
-	public void format(File transactions, CodeFiles codeFiles, boolean revs)
-			throws MinerException {
+	public void format(File transactions, boolean revs) throws MinerException {
 		BasketFormatManager basketFormatManager = null;
 
 		try {
@@ -41,7 +39,7 @@ public class MinerManager extends Manager {
 			basketFormatManager = new BasketFormatManager(connectionArgs);
 
 			// Format and write transactions to a file
-			basketFormatManager.format(transactions, codeFiles, revs);
+			basketFormatManager.format(transactions, revs);
 		} finally {
 			if (basketFormatManager != null) {
 				basketFormatManager.close();
@@ -68,7 +66,8 @@ public class MinerManager extends Manager {
 	 * 
 	 * @throws MinerException
 	 */
-	public void frequentItemSets(File frequentItemSets, String name) throws MinerException {
+	public void frequentItemSets(File frequentItemSets, String name)
+			throws MinerException {
 		FrequentItemSetManager frequentItemSetManager = null;
 
 		try {

@@ -20,11 +20,9 @@ public interface BasketFormatDAO {
 	 * 
 	 * @param output
 	 *            file to write the output to
-	 * @param codeFiles
-	 *            type of files to be included in the transactions
 	 * @param revs
 	 *            should revisions be written in comments?
 	 * @return transactions in basket format
 	 */
-	public String format(File output, CodeFiles codeFiles, boolean revs);
+	public String format(File output, boolean revs);
 }
