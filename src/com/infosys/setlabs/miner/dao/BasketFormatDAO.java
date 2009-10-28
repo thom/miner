@@ -9,13 +9,6 @@ import java.io.File;
  */
 public interface BasketFormatDAO {
 	/**
-	 * Type of the basket format to generate
-	 */
-	public static enum CodeFiles {
-		ALL, RENAMED, NONE
-	}
-
-	/**
 	 * Formats transactions to basket format
 	 * 
 	 * @param output

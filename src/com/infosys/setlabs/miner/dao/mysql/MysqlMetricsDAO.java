@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
 import com.infosys.setlabs.miner.dao.MetricsDAO;
-import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 
 /**
@@ -18,7 +17,6 @@ import com.infosys.setlabs.miner.domain.MinerInfo;
  */
 public class MysqlMetricsDAO extends JdbcDAO implements MetricsDAO {
 	private String name = MinerInfo.defaultName;
-	private CodeFiles codeFiles = CodeFiles.NONE;
 
 	/**
 	 * Creates a new DAO
@@ -31,17 +29,14 @@ public class MysqlMetricsDAO extends JdbcDAO implements MetricsDAO {
 	}
 
 	protected String modularizationSQL() {
-		String tmp = "SELECT (SUM(1 - (modules_touched - 1)/"
-				+ "(SELECT COUNT(id) FROM miner_modules";
 		String tableName = FrequentItemSetDAO.frequentItemSetsPrefix
 				+ getName();
-
-		if (codeFiles == CodeFiles.RENAMED) {
-			tmp += " WHERE has_renamed_files";
-		}
-
-		return String.format(tmp + "))/(SELECT COUNT(id) FROM %s)) "
-				+ "AS modularization FROM %s", tableName, tableName);
+		
+		// TODO: Fix this!
+		return String.format("SELECT (SUM(1 - (modules_touched - 1)/"
+				+ "(SELECT COUNT(id) FROM miner_modules))/"
+				+ "(SELECT COUNT(id) FROM %s)) AS modularization FROM %s",
+				tableName, tableName);
 	}
 
 	@Override
@@ -52,16 +47,6 @@ public class MysqlMetricsDAO extends JdbcDAO implements MetricsDAO {
 	@Override
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	@Override
-	public CodeFiles getCodeFiles() {
-		return codeFiles;
-	}
-
-	@Override
-	public void setCodeFiles(CodeFiles codeFiles) {
-		this.codeFiles = codeFiles;
 	}
 
 	@Override

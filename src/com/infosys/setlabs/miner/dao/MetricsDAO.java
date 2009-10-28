@@ -1,6 +1,5 @@
 package com.infosys.setlabs.miner.dao;
 
-import com.infosys.setlabs.miner.dao.BasketFormatDAO.CodeFiles;
 
 /**
  * Metrics DAO
@@ -22,21 +21,6 @@ public interface MetricsDAO {
 	 *            name to set
 	 */
 	public void setName(String name);
-
-	/**
-	 * Returns code files
-	 * 
-	 * @return codeFiles
-	 */
-	public CodeFiles getCodeFiles();
-
-	/**
-	 * Sets code files
-	 * 
-	 * @param codeFiles
-	 *            code files to set
-	 */
-	public void setCodeFiles(CodeFiles codeFiles);
 
 	/**
 	 * Returns modularization metrics
