@@ -182,7 +182,7 @@ public class MinerApp {
 	private void format() throws MinerException {
 		if (!transactionsExistedBefore || values.isOverwriteFiles()) {
 			System.out.println("EXEC  > format");
-			minerManager.format(transactions, false);
+			minerManager.format(transactions, values.isRevs());
 			System.out.println("DONE  > format\n");
 		} else {
 			System.out
@@ -330,6 +330,9 @@ public class MinerApp {
 		@Option(name = "-o", aliases = {"--overwrite", "--overwrite-files"}, usage = "overwrite all generated files, even those given as input")
 		private boolean overwriteFiles = false;
 
+		@Option(name = "-r", aliases = {"--revs", "--revisions"}, usage = "add revision IDs as comments above transactions in the transactions file")
+		private boolean revs = false;
+
 		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
 		private Mode mode = Mode.ALL;
 
@@ -452,6 +455,16 @@ public class MinerApp {
 		 */
 		public boolean isOverwriteFiles() {
 			return overwriteFiles;
+		}
+
+		/**
+		 * Should revision IDs be added as comments above transactions in the
+		 * transactions file?
+		 * 
+		 * @return revs
+		 */
+		public boolean isRevs() {
+			return revs;
 		}
 
 		/**
