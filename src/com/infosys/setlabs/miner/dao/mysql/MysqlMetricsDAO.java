@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
-import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
 import com.infosys.setlabs.miner.dao.MetricsDAO;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 
@@ -29,7 +28,7 @@ public class MysqlMetricsDAO extends JdbcDAO implements MetricsDAO {
 	}
 
 	protected String modularizationSQL() {
-		String tableName = FrequentItemSetDAO.frequentItemSetsPrefix
+		String tableName = MysqlFrequentItemSetDAO.frequentItemSetsPrefix
 				+ getName();
 
 		return String.format("SELECT (SUM(1 - (modules_touched - 1) / "

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
+import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
 
 /**
@@ -14,6 +15,8 @@ import com.infosys.setlabs.miner.domain.MinerFile;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MinerFileManager extends Manager {
+	private boolean randomizedModules;
+
 	/**
 	 * Creates a new miner file manager
 	 * 
@@ -24,6 +27,25 @@ public class MinerFileManager extends Manager {
 	public MinerFileManager(HashMap<String, String> connectionArgs)
 			throws MinerException {
 		super(connectionArgs);
+	}
+
+	/**
+	 * Sets randomized modules
+	 * 
+	 * @return randomizedModules
+	 */
+	public boolean hasRandomizedModules() {
+		return randomizedModules;
+	}
+
+	/**
+	 * Sets randomized modules
+	 * 
+	 * @param randomizedModules
+	 *            are the modules randomized?
+	 */
+	public void setRandomizedModules(boolean randomizedModules) {
+		this.randomizedModules = randomizedModules;
 	}
 
 	/**
@@ -38,7 +60,10 @@ public class MinerFileManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getMinerFileDAO(this.getSession()).createTables();
+			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
+					this.getSession());
+			minerFileDAO.setRandomizedModules(hasRandomizedModules());
+			minerFileDAO.createTables();
 
 			// Commit transaction
 			trans.commit();
@@ -70,8 +95,10 @@ public class MinerFileManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			result = this.getFactory().getMinerFileDAO(this.getSession()).find(
-					id);
+			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
+					this.getSession());
+			minerFileDAO.setRandomizedModules(hasRandomizedModules());
+			result = minerFileDAO.find(id);
 
 			// Commit transaction
 			trans.commit();
@@ -102,8 +129,10 @@ public class MinerFileManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			result = this.getFactory().getMinerFileDAO(this.getSession())
-					.findAll();
+			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
+					this.getSession());
+			minerFileDAO.setRandomizedModules(hasRandomizedModules());
+			result = minerFileDAO.findAll();
 
 			// Commit transaction
 			trans.commit();
@@ -134,8 +163,10 @@ public class MinerFileManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getMinerFileDAO(this.getSession()).create(
-					minerFile);
+			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
+					this.getSession());
+			minerFileDAO.setRandomizedModules(hasRandomizedModules());
+			minerFileDAO.create(minerFile);
 
 			// Commit transaction
 			trans.commit();
@@ -165,8 +196,10 @@ public class MinerFileManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getMinerFileDAO(this.getSession()).delete(
-					minerFile);
+			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
+					this.getSession());
+			minerFileDAO.setRandomizedModules(hasRandomizedModules());
+			minerFileDAO.delete(minerFile);
 
 			// Commit transaction
 			trans.commit();
@@ -196,8 +229,10 @@ public class MinerFileManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			this.getFactory().getMinerFileDAO(this.getSession()).update(
-					minerFile);
+			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
+					this.getSession());
+			minerFileDAO.setRandomizedModules(hasRandomizedModules());
+			minerFileDAO.update(minerFile);
 
 			// Commit transaction
 			trans.commit();

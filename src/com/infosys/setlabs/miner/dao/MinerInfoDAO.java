@@ -7,11 +7,6 @@ import com.infosys.setlabs.miner.domain.MinerInfo;
 
 public interface MinerInfoDAO extends ObjectDAO<MinerInfo>, CreateTablesDAO {
 	/**
-	 * Name
-	 */
-	public static String name = "miner_infos";
-	
-	/**
 	 * Finds a miner info by name.
 	 * 
 	 * @param minerInfoName

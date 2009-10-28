@@ -1,6 +1,8 @@
 package com.infosys.setlabs.miner.manage;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,7 +52,8 @@ public class ShiatsuManager extends Manager {
 	 * 
 	 * @throws MinerException
 	 */
-	public void massage(int maxModuleDepth) throws MinerException {
+	public void massage(int maxModuleDepth)
+			throws MinerException {
 		this.maxModuleDepth = maxModuleDepth;
 
 		DAOTransaction trans = null;
@@ -66,8 +69,9 @@ public class ShiatsuManager extends Manager {
 
 			// Fill miner files and modules tables
 			fillTables();
-			
-			// TODO: Randomize modules
+
+			// Fill separate miner files table with randomized modules
+			randomizeModules();
 
 			// Create miner info table
 			MinerInfoDAO minerInfoDAO = this.getFactory().getMinerInfoDAO(
@@ -92,9 +96,13 @@ public class ShiatsuManager extends Manager {
 			throw new MinerException(de);
 		}
 	}
-
 	private void fillTables() throws MinerException {
+		DAOTransaction trans = null;
 		try {
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
 			RepositoryFileDAO repositoryFileDAO = this.getFactory().getFileDAO(
 					this.getSession());
 			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
@@ -134,8 +142,55 @@ public class ShiatsuManager extends Manager {
 					minerFileDAO.create(minerFile);
 				}
 			}
-		} catch (DataAccessException e) {
-			throw new MinerException(e);
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
+		}
+	}
+
+	private void randomizeModules() throws MinerException {
+		Random random = null;
+		DAOTransaction trans = null;
+		try {
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
+			int modules = this.getFactory()
+					.getMinerModuleDAO(this.getSession()).count();
+			random = new Random();
+			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
+					this.getSession());
+			Collection<MinerFile> minerFiles = minerFileDAO.findAll();
+			
+			minerFileDAO.setRandomizedModules(true);
+			minerFileDAO.createTables();
+
+			for (MinerFile file : minerFiles) {
+				file.changeModuleId(random.nextInt(modules) + 1);
+				minerFileDAO.create(file);
+			}
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
 		}
 	}
 }

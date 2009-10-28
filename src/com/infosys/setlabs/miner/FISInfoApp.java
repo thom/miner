@@ -26,6 +26,8 @@ public class FISInfoApp {
 
 	// Database connection arguments
 	private HashMap<String, String> connectionArgs;
+	
+	private boolean randomized;
 
 	/**
 	 * Parses command line arguments and sets the database connection arguments.
@@ -76,6 +78,9 @@ public class FISInfoApp {
 									+ values.getName()
 									+ "' found. The data must be mined before running fis-info."));
 		}
+		
+		// Set randomized
+		randomized = minerInfo.hasRandomizedModules();
 	}
 
 	/**
@@ -93,6 +98,9 @@ public class FISInfoApp {
 			
 			// Set name
 			frequentItemSetManager.setName(values.getName());
+			
+			// Set randomized modules
+			frequentItemSetManager.setRandomizedModules(randomized);			
 
 			// Get frequent item set
 			fis = frequentItemSetManager.find(values.getId());

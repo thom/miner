@@ -15,16 +15,6 @@ public interface FrequentItemSetDAO
 			ReadObjectDAO<FrequentItemSet>,
 			CreateTablesDAO {
 	/**
-	 * Prefix of frequent item sets table
-	 */
-	public static String frequentItemSetsPrefix = "miner_fis_";
-	
-	/**
-	 * Prefix of frequent items table
-	 */
-	public static String frequentItemsPrefix = "miner_fi_";
-	
-	/**
 	 * Returns the name
 	 * 
 	 * @return name
@@ -37,7 +27,22 @@ public interface FrequentItemSetDAO
 	 * @param name
 	 *            name to set
 	 */
-	public void setName(String name);	
+	public void setName(String name);
+
+	/**
+	 * Sets randomized modules
+	 * 
+	 * @return randomizedModules
+	 */
+	public boolean hasRandomizedModules();
+
+	/**
+	 * Sets randomized modules
+	 * 
+	 * @param randomizedModules
+	 *            are the modules randomized?
+	 */
+	public void setRandomizedModules(boolean randomizedModules);
 
 	/**
 	 * Expects an input in the form of <code>5 23 42:10 23.4200</code> whereas
@@ -50,7 +55,7 @@ public interface FrequentItemSetDAO
 	 * @throws DataAccessException
 	 */
 	public int create(String frequentItemSetLine) throws DataAccessException;
-	
+
 	/**
 	 * Returns the number of files in the frequent item set
 	 * 

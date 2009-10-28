@@ -29,6 +29,9 @@ public class MinerInfo {
 	// Minimum support
 	private double minimumSupport;
 
+	// Have the files randomized modules?
+	private boolean randomizedModules;
+
 	/**
 	 * Returns the ID
 	 * 
@@ -161,15 +164,36 @@ public class MinerInfo {
 		this.minimumSupport = minimumSupport;
 	}
 
+	/**
+	 * Have the modules been randomized?
+	 * 
+	 * @return randomizedModules
+	 */
+	public boolean hasRandomizedModules() {
+		return randomizedModules;
+	}
+
+	/**
+	 * Sets randomized
+	 * 
+	 * @param randomizedModules
+	 *            have the modules been randomized?
+	 */
+	public void setRandomizedModules(boolean randomizedModules) {
+		this.randomizedModules = randomizedModules;
+	}
+
 	@Override
 	public String toString() {
 		String result = "";
 		result += "Name\t\t\t\t\t" + getName() + "\n";
 		result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
-		result += "Maximum module depth:\t\t\t" + getMaximumModuleDepth() + "\n";
+		result += "Maximum module depth:\t\t\t" + getMaximumModuleDepth()
+				+ "\n";
 		result += "Miner run?\t\t\t\t" + isMiner();
 		if (isMiner()) {
-			result += "\nMinimum support per frequent item set:\t";
+			result += "\nRandomized?\t\t\t\t" + hasRandomizedModules() + "\n";
+			result += "Minimum support per frequent item set:\t";
 			if (getMinimumSupport() < 0) {
 				result += -getMinimumSupport() + " (absolute)\n";
 			} else {

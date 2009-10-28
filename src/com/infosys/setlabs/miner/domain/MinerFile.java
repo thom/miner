@@ -44,6 +44,16 @@ public class MinerFile extends RepositoryFile {
 		this.module = module;
 	}
 
+	/**
+	 * Change module ID
+	 * 
+	 * @param id
+	 *            module ID to set
+	 */
+	public void changeModuleId(int id) {
+		this.module.setId(id);
+	}
+
 	@Override
 	public String toString() {
 		String result = "";

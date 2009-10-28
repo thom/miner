@@ -75,7 +75,8 @@ public class FileInfoApp {
 		try {
 			// Connect to the database
 			minerFileManager = new MinerFileManager(connectionArgs);
-
+			minerFileManager.setRandomizedModules(values.isRandomize());
+			
 			// Get file path
 			file = minerFileManager.find(values.getId());
 
@@ -130,6 +131,9 @@ public class FileInfoApp {
 		@Argument(index = 1, usage = "ID of the file", metaVar = "ID", required = true)
 		private int id;
 
+		@Option(name = "-r", aliases = {"--randomize", "--randomize-modules"}, usage = "sets random modules for files")
+		private boolean randomize = false;
+
 		/**
 		 * Returns database name
 		 * 
@@ -164,6 +168,15 @@ public class FileInfoApp {
 		 */
 		public int getId() {
 			return id;
+		}
+
+		/**
+		 * Are the modules randomized?
+		 * 
+		 * @return randomize
+		 */
+		public boolean isRandomize() {
+			return randomize;
 		}
 	}
 }

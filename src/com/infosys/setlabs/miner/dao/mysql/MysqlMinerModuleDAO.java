@@ -19,6 +19,8 @@ import com.infosys.setlabs.miner.domain.MinerModule;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
+	public static String tableName = "miner_modules";	
+	
 	/**
 	 * Creates a new DAO
 	 * 
@@ -36,42 +38,42 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 				+ "UNIQUE(module_name(255))"
 				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
 				// MyISAM too, we can't use InnoDB here
-				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", name);
+				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", tableName);
 	}
 
 	protected String dropTableSQL() {
-		return String.format("DROP TABLE IF EXISTS %s", name);
+		return String.format("DROP TABLE IF EXISTS %s", tableName);
 	}
 
 	protected String selectSQL() {
-		return String.format("SELECT id, module_name FROM %s WHERE id=?", name);
+		return String.format("SELECT id, module_name FROM %s WHERE id=?", tableName);
 	}
 
 	protected String selectByNameSQL() {
 		return String.format("SELECT id, module_name "
-				+ "FROM %s WHERE module_name=?", name);
+				+ "FROM %s WHERE module_name=?", tableName);
 	}
 
 	protected String selectAllSQL() {
-		return String.format("SELECT id, module_name FROM %s", name);
+		return String.format("SELECT id, module_name FROM %s", tableName);
 	}
 
 	protected String createSQL() {
 		return String.format("INSERT INTO %s (id, module_name) "
-				+ "VALUES (?,?)", name);
+				+ "VALUES (?,?)", tableName);
 	}
 
 	protected String deleteSQL() {
-		return String.format("DELETE FROM %s WHERE id=?", name);
+		return String.format("DELETE FROM %s WHERE id=?", tableName);
 	}
 
 	protected String updateSQL() {
 		return String.format("UPDATE miner_modules SET module_name=? "
-				+ "WHERE id=?", name);
+				+ "WHERE id=?", tableName);
 	}
 
 	protected String countSQL() {
-		return String.format("SELECT COUNT(id) AS count FROM %s", name);
+		return String.format("SELECT COUNT(id) AS count FROM %s", tableName);
 	}
 
 	@Override

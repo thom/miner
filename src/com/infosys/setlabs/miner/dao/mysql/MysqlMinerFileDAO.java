@@ -11,7 +11,6 @@ import java.util.Collection;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
-import com.infosys.setlabs.miner.dao.MinerModuleDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
 
 /**
@@ -21,6 +20,18 @@ import com.infosys.setlabs.miner.domain.MinerFile;
  */
 public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	/**
+	 * Table name
+	 */
+	public static String tableName = "miner_files";
+
+	/**
+	 * Table name for files with randomized modules
+	 */
+	public static String tableNameRandomized = "miner_files_randomized";
+
+	private boolean randomizedModules;
+
+	/**
 	 * Creates a new DAO
 	 * 
 	 * @param conn
@@ -28,6 +39,20 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	 */
 	public MysqlMinerFileDAO(Connection conn) {
 		super(conn);
+	}
+
+	@Override
+	public boolean hasRandomizedModules() {
+		return randomizedModules;
+	}
+
+	@Override
+	public void setRandomizedModules(boolean randomizedModules) {
+		this.randomizedModules = randomizedModules;
+	}
+
+	protected String getName() {
+		return randomizedModules ? tableNameRandomized : tableName;
 	}
 
 	protected String createTableSQL() {
@@ -39,39 +64,39 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				+ "FOREIGN KEY(miner_module_id) REFERENCES %s(id)"
 				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
 				// MyISAM too, we can't use InnoDB here
-				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", name,
-				MinerModuleDAO.name);
+				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", getName(),
+				MysqlMinerModuleDAO.tableName);
 	}
 
 	protected String dropTableSQL() {
-		return String.format("DROP TABLE IF EXISTS %s", name);
+		return String.format("DROP TABLE IF EXISTS %s", getName());
 	}
 
 	protected String selectSQL() {
 		return String.format("SELECT id, file_name, path, type, "
-				+ "miner_module_id FROM %s WHERE id=?", name);
+				+ "miner_module_id FROM %s WHERE id=?", getName());
 	}
 
 	protected String selectAllSQL() {
 		return String.format("SELECT id, file_name, path, type, "
-				+ "miner_module_id FROM %s", name);
+				+ "miner_module_id FROM %s", getName());
 	}
 	protected String createSQL() {
 		return String.format("INSERT INTO %s (id, file_name, path, type, "
-				+ "miner_module_id) VALUES (?,?,?,?,?)", name);
+				+ "miner_module_id) VALUES (?,?,?,?,?)", getName());
 	}
 
 	protected String deleteSQL() {
-		return String.format("DELETE FROM %s WHERE id=?", name);
+		return String.format("DELETE FROM %s WHERE id=?", getName());
 	}
 
 	protected String updateSQL() {
 		return String.format("UPDATE %s SET file_name=?, path=?, type=?, "
-				+ "miner_module_id=? WHERE id=?", name);
+				+ "miner_module_id=? WHERE id=?", getName());
 	}
 
 	protected String countSQL() {
-		return String.format("SELECT COUNT(id) AS count FROM %s", name);
+		return String.format("SELECT COUNT(id) AS count FROM %s", getName());
 	}
 
 	@Override

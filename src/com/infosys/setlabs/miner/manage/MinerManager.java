@@ -66,14 +66,15 @@ public class MinerManager extends Manager {
 	 * 
 	 * @throws MinerException
 	 */
-	public void frequentItemSets(File frequentItemSets, String name)
-			throws MinerException {
+	public void frequentItemSets(File frequentItemSets, String name,
+			boolean randomizedModules) throws MinerException {
 		FrequentItemSetManager frequentItemSetManager = null;
 
 		try {
 			// Connect to MySQL database
 			frequentItemSetManager = new FrequentItemSetManager(connectionArgs);
 			frequentItemSetManager.setName(name);
+			frequentItemSetManager.setRandomizedModules(randomizedModules);			
 
 			// Create tables
 			frequentItemSetManager.createTables();

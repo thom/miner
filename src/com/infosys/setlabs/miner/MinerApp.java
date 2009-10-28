@@ -225,7 +225,8 @@ public class MinerApp {
 	private void frequentItemSets() throws MinerException {
 		System.out.println("EXEC  > frequent item sets");
 
-		minerManager.frequentItemSets(frequentItemSets, values.getName());
+		minerManager.frequentItemSets(frequentItemSets, values.getName(),
+				values.isRandomize());
 
 		boolean create = false;
 
@@ -235,13 +236,15 @@ public class MinerApp {
 			create = true;
 		}
 
-		if (runApriori() || !minerInfo.isMiner()) {
+		if (runApriori() || !minerInfo.isMiner()
+				|| minerInfo.hasRandomizedModules() != values.isRandomize()) {
 			minerInfo.setName(values.getName());
 			minerInfo.setShiatsu(true);
 			minerInfo.setMaximumModuleDepth(maximumModuleDepth);
 			minerInfo.setMiner(true);
 			minerInfo.setMinimumItems(values.getMinItems());
 			minerInfo.setMinimumSupport(values.getMinSupport());
+			minerInfo.setRandomizedModules(values.isRandomize());
 
 			if (create) {
 				minerInfoManager.create(minerInfo);
@@ -331,7 +334,7 @@ public class MinerApp {
 		@Option(name = "-o", aliases = {"--overwrite", "--overwrite-files"}, usage = "overwrite all generated files, even those given as input")
 		private boolean overwriteFiles = false;
 
-		@Option(name = "-r", aliases = {"--revs", "--revisions"}, usage = "add revision IDs as comments above transactions in the transactions file")
+		@Option(name = "-v", aliases = {"--revs", "--revisions"}, usage = "add revision IDs as comments above transactions in the transactions file")
 		private boolean revs = false;
 
 		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
@@ -345,6 +348,9 @@ public class MinerApp {
 
 		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
 		private String name = MinerInfo.defaultName;
+
+		@Option(name = "-r", aliases = {"--randomize", "--randomize-modules"}, usage = "sets random modules for files")
+		private boolean randomize = false;
 
 		/**
 		 * Sets default values for some of the command line arguments
@@ -502,6 +508,15 @@ public class MinerApp {
 		 */
 		public String getName() {
 			return name;
+		}
+
+		/**
+		 * Should the modules be randomized?
+		 * 
+		 * @return randomize
+		 */
+		public boolean isRandomize() {
+			return randomize;
 		}
 	}
 }

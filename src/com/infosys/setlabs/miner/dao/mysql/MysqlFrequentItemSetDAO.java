@@ -24,7 +24,18 @@ import com.infosys.setlabs.miner.domain.MinerInfo;
 public class MysqlFrequentItemSetDAO extends JdbcDAO
 		implements
 			FrequentItemSetDAO {
+	/**
+	 * Prefix of frequent item sets table
+	 */
+	public static String frequentItemSetsPrefix = "miner_fis_";
+
+	/**
+	 * Prefix of frequent items table
+	 */
+	public static String frequentItemsPrefix = "miner_fi_";
+
 	private String name = MinerInfo.defaultName;
+	private boolean randomizedModules;
 
 	/**
 	 * Creates a new DAO
@@ -60,12 +71,15 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
 				+ "miner_frequent_item_set_id INT, file_id INT, "
 				+ "FOREIGN KEY(miner_frequent_item_set_id) REFERENCES %s(id), "
-				+ "FOREIGN KEY(file_id) REFERENCES miner_files(id), "
+				+ "FOREIGN KEY(file_id) REFERENCES %s(id), "
 				+ "UNIQUE(miner_frequent_item_set_id, file_id)"
 				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
 				// MyISAM too, we can't use InnoDB here
 				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8",
-				frequentItemsTableName(), frequentItemSetsTableName());
+				frequentItemsTableName(), hasRandomizedModules()
+						? MysqlMinerFileDAO.tableNameRandomized
+						: MysqlMinerFileDAO.tableName,
+				frequentItemSetsTableName());
 	}
 
 	protected String dropFrequentItemSetsTableSQL() {
@@ -115,9 +129,11 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	protected String getModulesTouchedSQL() {
 		return String.format("SELECT COUNT(*) count "
 				+ "FROM (SELECT DISTINCT f.miner_module_id FROM %s fi, "
-				+ "miner_files f WHERE f.id = fi.file_id "
+				+ "%s f WHERE f.id = fi.file_id "
 				+ "AND fi.miner_frequent_item_set_id = ?) AS modules_count",
-				frequentItemsTableName());
+				frequentItemsTableName(), hasRandomizedModules()
+						? MysqlMinerFileDAO.tableNameRandomized
+						: MysqlMinerFileDAO.tableName);
 	}
 
 	protected String createItemSQL() {
@@ -134,6 +150,16 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	@Override
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public boolean hasRandomizedModules() {
+		return randomizedModules;
+	}
+
+	@Override
+	public void setRandomizedModules(boolean randomizedModules) {
+		this.randomizedModules = randomizedModules;
 	}
 
 	@Override
@@ -321,9 +347,13 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			ps = this.getConnection().prepareStatement(selectItemSQL());
 			ps.setInt(1, frequentItemSet.getId());
 			rs = ps.executeQuery();
+
+			MysqlMinerFileDAO minerFileDAO = new MysqlMinerFileDAO(this
+					.getConnection());
+			minerFileDAO.setRandomizedModules(hasRandomizedModules());
 			while (rs.next()) {
-				frequentItemSet.addItem(new MysqlMinerFileDAO(this
-						.getConnection()).find(rs.getInt("file_id")));
+				frequentItemSet
+						.addItem(minerFileDAO.find(rs.getInt("file_id")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

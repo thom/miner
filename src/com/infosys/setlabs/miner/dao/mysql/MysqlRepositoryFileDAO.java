@@ -21,6 +21,11 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		implements
 			RepositoryFileDAO {
 	/**
+	 * Table name
+	 */
+	public static String tableName = "files";	
+	
+	/**
 	 * Creates a new DAO
 	 * 
 	 * @param conn
@@ -32,12 +37,12 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 
 	protected String selectSQL() {
 		return String.format("SELECT id, file_name, repository_id FROM %s "
-				+ "WHERE id = ?", name);
+				+ "WHERE id = ?", tableName);
 	}
 
 	protected String selectAllSQL() {
 		return String.format("SELECT id, file_name, repository_id FROM %s",
-				name);
+				tableName);
 	}
 
 	protected String selectFileTypeSQL() {
@@ -47,7 +52,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 	protected String selectPathSQL() {
 		return String.format("SELECT f.id, f.file_name, fl.parent_id "
 				+ "FROM %s f, file_links fl "
-				+ "WHERE f.id = fl.file_id AND f.id = ?", name);
+				+ "WHERE f.id = fl.file_id AND f.id = ?", tableName);
 	}
 
 	protected String selectNewestFileNameSQL() {

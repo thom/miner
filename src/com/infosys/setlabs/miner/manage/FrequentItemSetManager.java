@@ -17,6 +17,7 @@ import com.infosys.setlabs.miner.domain.MinerInfo;
  */
 public class FrequentItemSetManager extends Manager {
 	private String name = MinerInfo.defaultName;
+	private boolean randomizedModules;
 
 	/**
 	 * Creates a new miner frequent item set manager
@@ -50,6 +51,25 @@ public class FrequentItemSetManager extends Manager {
 	}
 
 	/**
+	 * Sets randomized modules
+	 * 
+	 * @return randomizedModules
+	 */
+	public boolean hasRandomizedModules() {
+		return randomizedModules;
+	}
+
+	/**
+	 * Sets randomized modules
+	 * 
+	 * @param randomizedModules
+	 *            are the modules randomized?
+	 */
+	public void setRandomizedModules(boolean randomizedModules) {
+		this.randomizedModules = randomizedModules;
+	}
+
+	/**
 	 * Creates tables for frequent item sets
 	 * 
 	 * @throws MinerException
@@ -64,6 +84,7 @@ public class FrequentItemSetManager extends Manager {
 			FrequentItemSetDAO frequentItemSetDAO = this.getFactory()
 					.getFrequentItemSetDAO(this.getSession());
 			frequentItemSetDAO.setName(getName());
+			frequentItemSetDAO.setRandomizedModules(hasRandomizedModules());
 			frequentItemSetDAO.createTables();
 
 			// Commit transaction
@@ -99,6 +120,7 @@ public class FrequentItemSetManager extends Manager {
 			FrequentItemSetDAO frequentItemSetDAO = this.getFactory()
 					.getFrequentItemSetDAO(this.getSession());
 			frequentItemSetDAO.setName(getName());
+			frequentItemSetDAO.setRandomizedModules(hasRandomizedModules());
 			result = frequentItemSetDAO.find(id);
 
 			// Commit transaction
@@ -133,6 +155,7 @@ public class FrequentItemSetManager extends Manager {
 			FrequentItemSetDAO frequentItemSetDAO = this.getFactory()
 					.getFrequentItemSetDAO(this.getSession());
 			frequentItemSetDAO.setName(getName());
+			frequentItemSetDAO.setRandomizedModules(hasRandomizedModules());
 			result = frequentItemSetDAO.findAll();
 
 			// Commit transaction
@@ -170,6 +193,7 @@ public class FrequentItemSetManager extends Manager {
 			FrequentItemSetDAO frequentItemSetDAO = this.getFactory()
 					.getFrequentItemSetDAO(this.getSession());
 			frequentItemSetDAO.setName(getName());
+			frequentItemSetDAO.setRandomizedModules(hasRandomizedModules());
 			int id = frequentItemSetDAO.create(frequentItemSetLine);
 
 			// Commit transaction

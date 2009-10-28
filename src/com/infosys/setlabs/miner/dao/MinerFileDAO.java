@@ -12,11 +12,20 @@ import com.infosys.setlabs.miner.domain.MinerFile;
  */
 public interface MinerFileDAO extends ObjectDAO<MinerFile>, CreateTablesDAO {
 	/**
-	 * Name
+	 * Sets randomized modules
 	 * 
+	 * @return randomizedModules
 	 */
-	public static String name = "miner_files";
+	public boolean hasRandomizedModules();
 
+	/**
+	 * Sets randomized modules
+	 * 
+	 * @param randomizedModules
+	 *            are the modules randomized?
+	 */
+	public void setRandomizedModules(boolean randomizedModules);	
+	
 	/**
 	 * Returns the number of files
 	 * 

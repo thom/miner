@@ -11,8 +11,6 @@ import com.infosys.setlabs.miner.domain.MinerModule;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public interface MinerModuleDAO extends ObjectDAO<MinerModule>, CreateTablesDAO {
-	public static String name = "miner_modules";
-
 	/**
 	 * Finds a module by name.
 	 * 
