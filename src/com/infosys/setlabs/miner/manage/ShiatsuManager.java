@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
@@ -52,12 +53,19 @@ public class ShiatsuManager extends Manager {
 	 */
 	public void massage(int maxModuleDepth) throws MinerException {
 		this.maxModuleDepth = maxModuleDepth;
-
-		// TODO: use transactions and close DAO correctly (see MetricsManager)!
+		
+		DAOTransaction trans = null;
 		try {
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();	
+		
+			// Create table for miner files and modules
 			this.getFactory().getMinerFileDAO(this.getSession()).createTables();
 			this.getFactory().getMinerModuleDAO(this.getSession())
 					.createTables();
+			
+			// Fill miner files and modules tables
 			fillTables();
 
 			// Create miner info table
@@ -70,13 +78,22 @@ public class ShiatsuManager extends Manager {
 			minerInfo.setMaximumModuleDepth(maxModuleDepth);
 			minerInfo.setCodeFiles(CodeFiles.NONE);
 			minerInfoDAO.create(minerInfo);
-		} catch (DataAccessException e) {
-			throw new MinerException(e);
+
+			// Commit transaction
+			trans.commit();
+		} catch (DataAccessException de) {
+			// Rollback transaction on failure
+			try {
+				if (trans != null)
+					trans.abort();
+			} catch (DataAccessException de2) {
+				throw new MinerException(de2);
+			}
+			throw new MinerException(de);
 		}
 	}
 
 	private void fillTables() throws MinerException {
-		// TODO: use transactions and close DAO correctly (see MetricsManager)!
 		try {
 			RepositoryFileDAO repositoryFileDAO = this.getFactory().getFileDAO(
 					this.getSession());
