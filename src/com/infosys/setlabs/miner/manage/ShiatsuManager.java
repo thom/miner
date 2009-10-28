@@ -52,20 +52,22 @@ public class ShiatsuManager extends Manager {
 	 */
 	public void massage(int maxModuleDepth) throws MinerException {
 		this.maxModuleDepth = maxModuleDepth;
-		
+
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
 			trans = this.getSession().getTransaction();
-			trans.begin();	
-		
+			trans.begin();
+
 			// Create table for miner files and modules
 			this.getFactory().getMinerFileDAO(this.getSession()).createTables();
 			this.getFactory().getMinerModuleDAO(this.getSession())
 					.createTables();
-			
+
 			// Fill miner files and modules tables
 			fillTables();
+			
+			// TODO: Randomize modules
 
 			// Create miner info table
 			MinerInfoDAO minerInfoDAO = this.getFactory().getMinerInfoDAO(
@@ -115,18 +117,18 @@ public class ShiatsuManager extends Manager {
 						throw new MinerException(new Exception("Size: "
 								+ maxModuleDepthPattern.length));
 					}
-					
+
 					Pattern p = maxModuleDepthPattern[maxModuleDepth];
 					Matcher m = p.matcher(minerFile.getDirectory());
 					m.find();
 					String moduleName = m.group(1);
 
 					minerModule = minerModuleDAO.find(moduleName);
-					if (minerModule != null) {
-						minerFile.setModule(minerModule);
-					} else {
+					if (minerModule == null) {
 						minerModule = new MinerModule(moduleName);
 						minerFile.setModule(minerModuleDAO.create(minerModule));
+					} else {
+						minerFile.setModule(minerModule);
 					}
 
 					minerFileDAO.create(minerFile);

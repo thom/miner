@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.Argument;
 
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
@@ -54,9 +55,9 @@ public class ShiatsuApp {
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
-		
+
 		// Set database engine
-		Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);		
+		Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
 	}
 
 	/**
@@ -102,7 +103,7 @@ public class ShiatsuApp {
 	 * @author Thomas Weibel <thomas_401709@infosys.com>
 	 */
 	private static class CommandLineValues {
-		@Option(name = "-d", aliases = {"--database", "--db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
+		@Argument(index = 0, usage = "name of the database to connect to", metaVar = "DATABASE", required = true)
 		private String db;
 
 		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
@@ -110,7 +111,7 @@ public class ShiatsuApp {
 
 		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
-		
+
 		@Option(name = "-m", aliases = {"--max-depth", "--max-module-depth"}, usage = "sets the maximum depth of modules")
 		private int maxModuleDepth = 2;
 
@@ -140,7 +141,7 @@ public class ShiatsuApp {
 		public String getPw() {
 			return pw;
 		}
-		
+
 		/**
 		 * Returns the module depth
 		 * 

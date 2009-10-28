@@ -2,6 +2,7 @@ package com.infosys.setlabs.miner;
 
 import java.util.HashMap;
 
+import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -117,7 +118,7 @@ public class MetricsApp {
 	 * @author Thomas Weibel <thomas_401709@infosys.com>
 	 */
 	private static class CommandLineValues {
-		@Option(name = "-d", aliases = {"database", "db"}, usage = "name of the database to connect to", metaVar = "DB", required = true)
+		@Argument(index = 0, usage = "name of the database to connect to", metaVar = "DATABASE", required = true)
 		private String db;
 
 		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
