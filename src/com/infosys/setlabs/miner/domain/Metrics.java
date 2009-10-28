@@ -10,7 +10,6 @@ public class Metrics {
 	private int files;
 	private int renamedFiles;
 	private int modules;
-	private int modulesWithRenamedFiles;
 	private double modularization;
 	private MinerInfo minerInfo;
 
@@ -108,25 +107,6 @@ public class Metrics {
 	}
 
 	/**
-	 * Returns the number of modules containing renamed code files
-	 * 
-	 * @return modulesWithRenamedFiles
-	 */
-	public int getModulesWithRenamedFiles() {
-		return modulesWithRenamedFiles;
-	}
-
-	/**
-	 * Sets the number of modules containing renamed code files
-	 * 
-	 * @param modulesWithRenamedFiles
-	 *            number of modules containing renamed code files
-	 */
-	public void setModulesWithRenamedFiles(int modulesWithRenamedFiles) {
-		this.modulesWithRenamedFiles = modulesWithRenamedFiles;
-	}
-
-	/**
 	 * Returns the modularization metrics
 	 * 
 	 * @return modularization
@@ -169,9 +149,7 @@ public class Metrics {
 		String result = "";
 		result += "Code files:\t\t\t\t" + getFiles() + "\n";
 		result += "Renamed code files:\t\t\t" + getRenamedFiles() + "\n";
-		result += "Modules:\t\t\t\t" + getModules() + "\n";
-		result += "Modules with renamed files:\t\t"
-				+ getModulesWithRenamedFiles() + "\n\n";
+		result += "Modules:\t\t\t\t" + getModules() + "\n\n";
 		result += "Metrics\n-------------------------------------------------------------------------------\n";
 		result += "Files in frequent item set:\t\t"
 				+ getFilesInFrequentItemSet() + "\n";

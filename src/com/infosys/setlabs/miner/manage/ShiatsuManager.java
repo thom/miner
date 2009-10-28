@@ -123,16 +123,9 @@ public class ShiatsuManager extends Manager {
 
 					minerModule = minerModuleDAO.find(moduleName);
 					if (minerModule != null) {
-						if (minerFile.isRenamed()
-								&& !minerModule.hasRenamedFiles()) {
-							minerModule.setRenamedFiles(true);
-							minerModuleDAO.update(minerModule);
-						}
-
 						minerFile.setModule(minerModule);
 					} else {
 						minerModule = new MinerModule(moduleName);
-						minerModule.setRenamedFiles(minerFile.isRenamed());
 						minerFile.setModule(minerModuleDAO.create(minerModule));
 					}
 

@@ -89,8 +89,7 @@ public class MetricsManager extends Manager {
 			// Set miner modules
 			MinerModuleDAO minerModuleDAO = this.getFactory()
 					.getMinerModuleDAO(this.getSession());
-			result.setModules(minerModuleDAO.count(true));
-			result.setModulesWithRenamedFiles(minerModuleDAO.count(false));
+			result.setModules(minerModuleDAO.count());
 
 			// Set modularization
 			MetricsDAO metricsDAO = this.getFactory().getMetricsDAO(

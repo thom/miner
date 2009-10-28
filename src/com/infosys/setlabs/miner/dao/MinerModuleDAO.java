@@ -26,9 +26,7 @@ public interface MinerModuleDAO extends ObjectDAO<MinerModule>, CreateTablesDAO 
 	/**
 	 * Returns the number of modules
 	 * 
-	 * @param allModules
-	 *            all modules or only the ones with renamed files?
 	 * @return number of modules
 	 */
-	public int count(boolean allModules);
+	public int count();
 }

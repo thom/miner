@@ -8,9 +8,6 @@ package com.infosys.setlabs.miner.domain;
 public class MinerModule {
 	private int id;
 	private String moduleName;
-	private boolean codeFiles;
-	private boolean renamedFiles;
-	private boolean renamedCodeFiles;
 
 	/**
 	 * Creates a miner module with id <code>id</code>
@@ -70,69 +67,11 @@ public class MinerModule {
 		this.moduleName = moduleName;
 	}
 
-	/**
-	 * Has the module code files?
-	 * 
-	 * @return codeFiles
-	 */
-	public boolean hasCodeFiles() {
-		return codeFiles;
-	}
-
-	/**
-	 * Sets code files
-	 * 
-	 * @param codeFiles
-	 *            has the module code files?
-	 */
-	public void setCodeFiles(boolean codeFiles) {
-		this.codeFiles = codeFiles;
-	}
-
-	/**
-	 * Has the module renamed files?
-	 * 
-	 * @return renamedFiles
-	 */
-	public boolean hasRenamedFiles() {
-		return renamedFiles;
-	}
-
-	/**
-	 * Sets renamed files
-	 * 
-	 * @param renamedFiles
-	 *            has the module renamed files?
-	 */
-	public void setRenamedFiles(boolean renamedFiles) {
-		this.renamedFiles = renamedFiles;
-	}
-
-	/**
-	 * Has the module renamed code files?
-	 * 
-	 * @return renamed code files
-	 */
-	public boolean hasRenamedCodeFiles() {
-		return renamedCodeFiles;
-	}
-
-	/**
-	 * Sets renamed code files
-	 * 
-	 * @param renamedCodeFiles
-	 *            has the module renamed code files?
-	 */
-	public void setRenamedCodeFiles(boolean renamedCodeFiles) {
-		this.renamedCodeFiles = renamedCodeFiles;
-	}
-
 	@Override
 	public String toString() {
 		String result = "";
 		result += "ID:\t\t" + getId() + "\n";
 		result += "Module name:\t" + getModuleName() + "\n";
-		result += "Renamed files:\t" + hasRenamedFiles();
 		return result;
 	}
 }

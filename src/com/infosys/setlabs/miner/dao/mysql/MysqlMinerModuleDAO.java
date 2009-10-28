@@ -33,7 +33,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
 				+ "module_name MEDIUMTEXT NOT NULL, "
-				+ "has_renamed_files BOOLEAN, " + "UNIQUE(module_name(255))"
+				+ "UNIQUE(module_name(255))"
 				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
 				// MyISAM too, we can't use InnoDB here
 				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", name);
@@ -44,24 +44,21 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	}
 
 	protected String selectSQL() {
-		return String.format("SELECT id, module_name, has_renamed_files "
-				+ "FROM %s WHERE id=?", name);
+		return String.format("SELECT id, module_name FROM %s WHERE id=?", name);
 	}
 
 	protected String selectByNameSQL() {
-		return String.format("SELECT id, module_name, has_renamed_files "
+		return String.format("SELECT id, module_name "
 				+ "FROM %s WHERE module_name=?", name);
 	}
 
 	protected String selectAllSQL() {
-		return String.format("SELECT id, module_name, has_renamed_files "
-				+ "FROM %s", name);
+		return String.format("SELECT id, module_name FROM %s", name);
 	}
 
 	protected String createSQL() {
-		return String.format(
-				"INSERT INTO %s (id, module_name, has_renamed_files) "
-						+ "VALUES (?,?,?)", name);
+		return String.format("INSERT INTO %s (id, module_name) "
+				+ "VALUES (?,?)", name);
 	}
 
 	protected String deleteSQL() {
@@ -69,18 +66,12 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	}
 
 	protected String updateSQL() {
-		return String.format("UPDATE miner_modules "
-				+ "SET module_name=?, has_renamed_files=? " + "WHERE id=?",
-				name);
+		return String.format("UPDATE miner_modules SET module_name=? "
+				+ "WHERE id=?", name);
 	}
 
-	protected String countSQL(boolean allModules) {
-		if (allModules) {
-			return String.format("SELECT COUNT(id) AS count FROM %s", name);
-		} else {
-			return String.format("SELECT COUNT(id) AS COUNT "
-					+ "FROM %s WHERE has_renamed_files", name);
-		}
+	protected String countSQL() {
+		return String.format("SELECT COUNT(id) AS count FROM %s", name);
 	}
 
 	@Override
@@ -95,7 +86,6 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 			while (rs.next()) {
 				result = new MinerModule(rs.getInt("id"));
 				result.setModuleName(rs.getString("module_name"));
-				result.setRenamedFiles(rs.getBoolean("has_renamed_files"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -118,7 +108,6 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 			while (rs.next()) {
 				result = new MinerModule(rs.getInt("id"));
 				result.setModuleName(rs.getString("module_name"));
-				result.setRenamedFiles(rs.getBoolean("has_renamed_files"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -140,7 +129,6 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 			while (rs.next()) {
 				MinerModule minerModule = new MinerModule(rs.getInt("id"));
 				minerModule.setModuleName(rs.getString("module_name"));
-				minerModule.setRenamedFiles(rs.getBoolean("has_renamed_files"));
 				result.add(minerModule);
 			}
 		} catch (SQLException e) {
@@ -164,7 +152,6 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 					Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, minerModule.getId());
 			ps.setString(2, minerModule.getModuleName());
-			ps.setBoolean(3, minerModule.hasRenamedFiles());
 			ps.execute();
 
 			rs = ps.getGeneratedKeys();
@@ -199,8 +186,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 		try {
 			ps = this.getConnection().prepareStatement(updateSQL());
 			ps.setString(1, minerModule.getModuleName());
-			ps.setBoolean(2, minerModule.hasRenamedFiles());
-			ps.setInt(3, minerModule.getId());
+			ps.setInt(2, minerModule.getId());
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -210,12 +196,12 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	}
 
 	@Override
-	public int count(boolean allModules) {
+	public int count() {
 		int result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(countSQL(allModules));
+			ps = this.getConnection().prepareStatement(countSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = rs.getInt("count");
