@@ -26,7 +26,7 @@ public class FISInfoApp {
 
 	// Database connection arguments
 	private HashMap<String, String> connectionArgs;
-	
+
 	private boolean randomized;
 
 	/**
@@ -60,6 +60,8 @@ public class FISInfoApp {
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
+		connectionArgs.put("server", values.getServer());
+		connectionArgs.put("port", values.getPort());
 
 		// Set database engine
 		Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
@@ -67,7 +69,7 @@ public class FISInfoApp {
 		// Get miner info
 		MinerInfoManager minerInfoManager = new MinerInfoManager(connectionArgs);
 		MinerInfo minerInfo = minerInfoManager.find(values.getName());
-		minerInfoManager.close();		
+		minerInfoManager.close();
 
 		// Check prerequisites
 		if (minerInfo == null
@@ -78,7 +80,7 @@ public class FISInfoApp {
 									+ values.getName()
 									+ "' found. The data must be mined before running fis-info."));
 		}
-		
+
 		// Set randomized
 		randomized = minerInfo.hasRandomizedModules();
 	}
@@ -95,12 +97,12 @@ public class FISInfoApp {
 		try {
 			// Connect to the database
 			frequentItemSetManager = new FrequentItemSetManager(connectionArgs);
-			
+
 			// Set name
 			frequentItemSetManager.setName(values.getName());
-			
+
 			// Set randomized modules
-			frequentItemSetManager.setRandomizedModules(randomized);			
+			frequentItemSetManager.setRandomizedModules(randomized);
 
 			// Get frequent item set
 			fis = frequentItemSetManager.find(values.getId());
@@ -118,7 +120,7 @@ public class FISInfoApp {
 			}
 		}
 	}
-	
+
 	/**
 	 * Starts frequent item set info
 	 * 
@@ -145,6 +147,12 @@ public class FISInfoApp {
 
 		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
+
+		@Option(name = "-S", aliases = {"--server"}, usage = "name of the host where database server is running (default: localhost)", metaVar = "HOSTNAME")
+		private String server = "localhost";
+
+		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
+		private String port = "3306";
 
 		@Argument(index = 1, usage = "ID of the file", metaVar = "ID", required = true)
 		private int id;
@@ -177,6 +185,24 @@ public class FISInfoApp {
 		 */
 		public String getPw() {
 			return pw;
+		}
+
+		/**
+		 * Returns server
+		 * 
+		 * @return server
+		 */
+		public String getServer() {
+			return server;
+		}
+
+		/**
+		 * Returns port
+		 * 
+		 * @return port
+		 */
+		public String getPort() {
+			return port;
 		}
 
 		/**

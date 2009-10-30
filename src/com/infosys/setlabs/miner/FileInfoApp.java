@@ -57,6 +57,8 @@ public class FileInfoApp {
 		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
+		connectionArgs.put("server", values.getServer());
+		connectionArgs.put("port", values.getPort());
 
 		// Set database engine
 		Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
@@ -76,7 +78,7 @@ public class FileInfoApp {
 			// Connect to the database
 			minerFileManager = new MinerFileManager(connectionArgs);
 			minerFileManager.setRandomizedModules(values.isRandomize());
-			
+
 			// Get file path
 			file = minerFileManager.find(values.getId());
 
@@ -128,6 +130,12 @@ public class FileInfoApp {
 		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
+		@Option(name = "-S", aliases = {"--server"}, usage = "name of the host where database server is running (default: localhost)", metaVar = "HOSTNAME")
+		private String server = "localhost";
+
+		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
+		private String port = "3306";
+
 		@Argument(index = 1, usage = "ID of the file", metaVar = "ID", required = true)
 		private int id;
 
@@ -159,6 +167,24 @@ public class FileInfoApp {
 		 */
 		public String getPw() {
 			return pw;
+		}
+
+		/**
+		 * Returns server
+		 * 
+		 * @return server
+		 */
+		public String getServer() {
+			return server;
+		}
+
+		/**
+		 * Returns port
+		 * 
+		 * @return port
+		 */
+		public String getPort() {
+			return port;
 		}
 
 		/**
