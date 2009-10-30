@@ -2,6 +2,7 @@ package com.infosys.setlabs.miner.common;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 /**
  * Wraps executions of external commands
@@ -9,10 +10,13 @@ import java.io.IOException;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class ExecWrapper extends Thread {
-	private boolean decorate;
 	private String[] cmd;
 	private String[] envp;
 	private File dir;
+	private int exitVal;
+	private PrintStream stdOut;
+	private PrintStream errOut;
+	private boolean debug;
 
 	/**
 	 * Creates a new execution wrapper
@@ -20,18 +24,10 @@ public class ExecWrapper extends Thread {
 	 * @param cmd
 	 *            command to execute
 	 */
-	public ExecWrapper(String[] cmd) {
+	public ExecWrapper(String[] cmd, PrintStream stdOut, PrintStream errOut) {
 		this.cmd = cmd;
-	}
-
-	/**
-	 * Sets decorate
-	 * 
-	 * @param decorate
-	 *            should the output be decorated?
-	 */
-	public void setDecorate(boolean decorate) {
-		this.decorate = decorate;
+		this.stdOut = stdOut;
+		this.errOut = errOut;
 	}
 
 	/**
@@ -55,40 +51,62 @@ public class ExecWrapper extends Thread {
 	}
 
 	/**
+	 * Sets debug
+	 * 
+	 * @param debug
+	 *            do you want to print debug output?
+	 */
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
+	/**
+	 * Returns the command as a string
+	 * 
+	 * @return command
+	 */
+	public String getCmd() {
+		String result = "";
+		for (String str : cmd) {
+			result += str + " ";
+		}
+		return result;
+	}
+
+	/**
+	 * Returns the exit value
+	 * 
+	 * @return exitVal
+	 */
+	public int getExitVal() {
+		return exitVal;
+	}
+
+	/**
 	 * Executes the program
 	 */
 	public void run() {
-		if (decorate) {
-			System.out.print("EXEC  > ");
-			for (String str : cmd) {
-				System.out.print(str + " ");
-			}
-			System.out.println();
-		}
-
 		try {
+			if (debug) {
+				System.out.println("Running " + getCmd());
+			}			
+			
 			Process p = Runtime.getRuntime().exec(cmd, envp, dir);
 
 			// Any error message?
 			StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(),
-					decorate ? "OUTPUT" : null);
+					errOut);
 
 			// Any output?
 			StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(),
-					decorate ? "OUTPUT" : null);
+					stdOut);
 
 			// Kick them off
 			errorGobbler.start();
 			outputGobbler.start();
 
 			// Any error?
-			int exitVal = p.waitFor();
-			if (decorate) {
-				System.out
-						.println("DONE  > " + cmd[0] + " (" + exitVal + ")\n");
-			} else {
-				System.out.println();
-			}
+			this.exitVal = p.waitFor();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {

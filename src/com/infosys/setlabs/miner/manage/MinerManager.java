@@ -62,8 +62,8 @@ public class MinerManager extends Manager {
 		String[] cmd = {exec, "-s" + minSupport, "-m" + minItems, "-v:%a %4S",
 				transactions.getAbsolutePath(),
 				frequentItemSets.getAbsolutePath()};
-		ExecWrapper apriori = new ExecWrapper(cmd);
-		apriori.setDecorate(true);
+		ExecWrapper apriori = new ExecWrapper(cmd, System.out, System.out);
+		apriori.setDebug(true);
 		apriori.run();
 	}
 
@@ -80,7 +80,7 @@ public class MinerManager extends Manager {
 			// Connect to MySQL database
 			frequentItemSetManager = new FrequentItemSetManager(connectionArgs);
 			frequentItemSetManager.setName(name);
-			frequentItemSetManager.setRandomizedModules(randomizedModules);			
+			frequentItemSetManager.setRandomizedModules(randomizedModules);
 
 			// Create tables
 			frequentItemSetManager.createTables();

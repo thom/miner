@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 
 /**
  * Gobbles streams
@@ -11,20 +12,20 @@ import java.io.InputStreamReader;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class StreamGobbler extends Thread {
-	InputStream is;
-	String type;
+	InputStream in;
+	PrintStream out;
 
 	/**
 	 * Creates a new stream gobbler
 	 * 
-	 * @param is
+	 * @param in
 	 *            input stream
-	 * @param type
-	 *            type of input stream
+	 * @param out
+	 *            output stream
 	 */
-	StreamGobbler(InputStream is, String type) {
-		this.is = is;
-		this.type = type;
+	StreamGobbler(InputStream in, PrintStream out) {
+		this.in = in;
+		this.out = out;
 	}
 
 	/**
@@ -32,15 +33,12 @@ public class StreamGobbler extends Thread {
 	 */
 	public void run() {
 		try {
-			InputStreamReader isr = new InputStreamReader(is);
+			InputStreamReader isr = new InputStreamReader(in);
 			BufferedReader br = new BufferedReader(isr);
 			String line = null;
 
 			while ((line = br.readLine()) != null) {
-				if (type != null) {
-					System.out.print(type + "> ");
-				}
-				System.out.println(line);
+				out.println(line);
 			}
 
 			isr.close();

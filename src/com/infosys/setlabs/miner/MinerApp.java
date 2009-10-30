@@ -203,8 +203,10 @@ public class MinerApp {
 		if (runApriori()) {
 			try {
 				frequentItemSets.createNewFile();
+				System.out.println("EXEC  > apriori");
 				minerManager.apriori(values.getExec(), values.getMinSupport(),
 						values.getMinItems(), transactions, frequentItemSets);
+				System.out.println("DONE  > apriori\n");
 			} catch (IOException e) {
 				throw new MinerException(e);
 			}

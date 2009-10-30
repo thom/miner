@@ -91,7 +91,8 @@ public class GitupApp {
 			if (values.isShowBranches()) {
 				gitupManager.showBranches(values.getRepository());
 			} else {
-				// TODO: cvsanaly2
+				generateLog();
+				cvsanaly();
 			}
 
 			System.out.println("DONE  > gitup");
@@ -107,6 +108,27 @@ public class GitupApp {
 				}
 			}
 		}
+	}
+
+	private void generateLog() throws MinerException {
+		if (runGenerateLog()) {
+			System.out.println("EXEC  > git log");			
+			gitupManager.generateLog(values.getRepository(),
+					values.getBranch(), log);
+			System.out.println("DONE  > git log\n");
+		} else {
+			System.out
+					.println("EXEC > git log: Nothing to do, reusing existing file "
+							+ log.getAbsolutePath() + "\n");
+		}
+	}
+
+	private boolean runGenerateLog() {
+		return !logExistedBefore || values.isOverwriteLog();
+	}
+
+	private void cvsanaly() {
+		// TODO: cvsanaly2
 	}
 
 	/**
@@ -167,8 +189,8 @@ public class GitupApp {
 		@Option(name = "-f", aliases = {"--config-file"}, usage = "use a custom configuration file", metaVar = "CONFIG")
 		private String conf;
 
-		@Option(name = "-d", aliases = {"--db", "--database"}, usage = "name of the database to use", metaVar = "DB")
-		private String db;
+		@Option(name = "-d", aliases = {"--db", "--database"}, usage = "name of the database to use (default: cvsanaly)", metaVar = "DB")
+		private String db = "cvsanaly";
 
 		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
 		private String user;
