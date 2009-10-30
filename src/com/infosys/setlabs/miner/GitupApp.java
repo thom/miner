@@ -12,6 +12,7 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
+import com.infosys.setlabs.miner.manage.GitupManager;
 import com.infosys.setlabs.miner.manage.Manager;
 
 /**
@@ -31,7 +32,7 @@ public class GitupApp {
 	private boolean logExistedBefore;
 
 	// Gitup Manager
-	// private GitupManager gitupManager;
+	private GitupManager gitupManager;
 
 	/**
 	 * Parses command line arguments, sets the database connection arguments and
@@ -83,21 +84,21 @@ public class GitupApp {
 	public void gitup() throws MinerException {
 		try {
 			// Connect to the database
-			// gitupManager = new GitupManager(connectionArgs);
+			gitupManager = new GitupManager(connectionArgs);
 
 			System.out.println("EXEC  > gitup\n");
 
 			if (values.isShowBranches()) {
-				// TODO: git branch -a
+				gitupManager.showBranches(values.getRepository());
 			} else {
 				// TODO: cvsanaly2
 			}
 
 			System.out.println("DONE  > gitup");
 		} finally {
-			// if (gitupManager != null) {
-			// gitupManager.close();
-			// }
+			if (gitupManager != null) {
+				gitupManager.close();
+			}
 
 			// Keep log file if user specifies so
 			if (!values.isKeepLog()) {
