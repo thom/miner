@@ -10,6 +10,11 @@ import java.util.HashMap;
 import com.infosys.setlabs.miner.common.ExecWrapper;
 import com.infosys.setlabs.miner.common.MinerException;
 
+/**
+ * Miner Manager
+ * 
+ * @author Thomas Weibel <thomas_401709@infosys.com>
+ */
 public class MinerManager extends Manager {
 	private HashMap<String, String> connectionArgs = null;
 
@@ -58,6 +63,7 @@ public class MinerManager extends Manager {
 				transactions.getAbsolutePath(),
 				frequentItemSets.getAbsolutePath()};
 		ExecWrapper apriori = new ExecWrapper(cmd);
+		apriori.setDecorate(true);
 		apriori.run();
 	}
 
