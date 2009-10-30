@@ -37,7 +37,10 @@ public class StreamGobbler extends Thread {
 			String line = null;
 
 			while ((line = br.readLine()) != null) {
-				System.out.println(type + "> " + line);
+				if (type != null) {
+					System.out.print(type + "> ");
+				}
+				System.out.println(line);
 			}
 
 			isr.close();

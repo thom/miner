@@ -1,5 +1,6 @@
 package com.infosys.setlabs.miner.common;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -8,7 +9,10 @@ import java.io.IOException;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class ExecWrapper extends Thread {
+	private boolean decorate;
 	private String[] cmd;
+	private String[] envp;
+	private File dir;
 
 	/**
 	 * Creates a new execution wrapper
@@ -21,25 +25,57 @@ public class ExecWrapper extends Thread {
 	}
 
 	/**
+	 * Sets decorate
+	 * 
+	 * @param decorate
+	 *            should the output be decorated?
+	 */
+	public void setDecorate(boolean decorate) {
+		this.decorate = decorate;
+	}
+
+	/**
+	 * Sets envp
+	 * 
+	 * @param envp
+	 *            environment to set
+	 */
+	public void setEnvp(String[] envp) {
+		this.envp = envp;
+	}
+
+	/**
+	 * Sets dir
+	 * 
+	 * @param dir
+	 *            directory to set
+	 */
+	public void setDir(File dir) {
+		this.dir = dir;
+	}
+
+	/**
 	 * Executes the program
 	 */
 	public void run() {
-		System.out.print("EXEC  > ");
-		for (String str : cmd) {
-			System.out.print(str + " ");
+		if (decorate) {
+			System.out.print("EXEC  > ");
+			for (String str : cmd) {
+				System.out.print(str + " ");
+			}
+			System.out.println();
 		}
-		System.out.println();
 
 		try {
-			Process p = Runtime.getRuntime().exec(cmd);
+			Process p = Runtime.getRuntime().exec(cmd, envp, dir);
 
 			// Any error message?
 			StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(),
-					"OUTPUT");
+					decorate ? "OUTPUT" : null);
 
 			// Any output?
 			StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(),
-					"OUTPUT");
+					decorate ? "OUTPUT" : null);
 
 			// Kick them off
 			errorGobbler.start();
@@ -47,7 +83,12 @@ public class ExecWrapper extends Thread {
 
 			// Any error?
 			int exitVal = p.waitFor();
-			System.out.println("DONE  > " + cmd[0] + " (" + exitVal + ")\n");
+			if (decorate) {
+				System.out
+						.println("DONE  > " + cmd[0] + " (" + exitVal + ")\n");
+			} else {
+				System.out.println();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
