@@ -133,4 +133,14 @@ public abstract class DAOFactory {
 	 */
 	public abstract MetricsDAO getMetricsDAO(DAOSession session)
 			throws DataAccessException;
+
+	/**
+	 * Abstract method for gitup data access object
+	 * 
+	 * @param session
+	 * @return MetricsDAO
+	 * @throws DataAccessException
+	 */
+	public abstract GitupDAO getGitupDAO(DAOSession session)
+			throws DataAccessException;
 }

@@ -130,4 +130,10 @@ public class MysqlDAOFactory extends DAOFactory {
 			throws DataAccessException {
 		return new MysqlMetricsDAO(((JdbcDAOSession) session).getConnection());
 	}
+
+	@Override
+	public MysqlGitupDAO getGitupDAO(DAOSession session)
+			throws DataAccessException {
+		return new MysqlGitupDAO(((JdbcDAOSession) session).getConnection());
+	}
 }

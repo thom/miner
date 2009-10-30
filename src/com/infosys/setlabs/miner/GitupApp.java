@@ -92,6 +92,7 @@ public class GitupApp {
 				gitupManager.showBranches(values.getRepository());
 			} else {
 				generateLog();
+				createDatabase();
 				cvsanaly();
 			}
 
@@ -112,9 +113,9 @@ public class GitupApp {
 
 	private void generateLog() throws MinerException {
 		if (runGenerateLog()) {
-			System.out.println("EXEC  > git log");			
+			System.out.println("EXEC  > git log");
 			gitupManager.generateLog(values.getRepository(),
-					values.getBranch(), log);
+					values.getBranch(), log, false);
 			System.out.println("DONE  > git log\n");
 		} else {
 			System.out
@@ -127,8 +128,16 @@ public class GitupApp {
 		return !logExistedBefore || values.isOverwriteLog();
 	}
 
-	private void cvsanaly() {
-		// TODO: cvsanaly2
+	private void createDatabase() throws MinerException {
+		System.out.println("EXEC  > creating database " + values.getDb());
+		gitupManager.createDatabase(values.getDb());
+		System.out.println("DONE  > creating database\n");
+	}
+
+	private void cvsanaly() throws MinerException {
+		System.out.println("EXEC  > cvsanaly");
+		gitupManager.cvsanaly(values.getExec(), values.getDb(), log, values.getConf());
+		System.out.println("DONE  > cvsanaly\n");
 	}
 
 	/**
@@ -177,15 +186,6 @@ public class GitupApp {
 		@Option(name = "-b", aliases = {"--branch"}, usage = "branch to use (default: master)", metaVar = "BRANCH")
 		private String branch = "master";
 
-		@Option(name = "-g", aliases = {"--debug"}, usage = "enable debug mode")
-		private boolean debug;
-
-		@Option(name = "-q", aliases = {"--quiet"}, usage = "run silently, only print error messages")
-		private boolean quiet;
-
-		@Option(name = "--profile", usage = "enable profiling mode")
-		private boolean profile;
-
 		@Option(name = "-f", aliases = {"--config-file"}, usage = "use a custom configuration file", metaVar = "CONFIG")
 		private String conf;
 
@@ -198,20 +198,14 @@ public class GitupApp {
 		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
-		@Option(name = "-S", aliases = {"--server"}, usage = "name of the host where database server is running (default: localhost)", metaVar = "HOSTNAME")
-		private String server = "localhost";
+		@Option(name = "-S", aliases = {"--server"}, usage = "name of the host where database server is running", metaVar = "HOSTNAME")
+		private String server;
 
-		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
-		private String port = "3306";
-
-		@Option(name = "--driver", usage = "Output database driver (default: mysql)", metaVar = "mysql|sqlite")
-		private String driver = "mysql";
+		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server", metaVar = "HOSTNAME")
+		private String port;
 
 		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of apriori frequent item set miner, can also be configured in conf/setup.properties")
 		private String exec = "cvsanaly2";
-
-		@Option(name = "--extensions", usage = "list of extensions to run", metaVar = "ext1,ext2")
-		private String extensions;
 
 		@Option(name = "-k", aliases = {"--keep", "--keep-log"}, usage = "keep generated log")
 		private boolean keepLog = true;
@@ -260,33 +254,6 @@ public class GitupApp {
 		 */
 		public String getBranch() {
 			return branch;
-		}
-
-		/**
-		 * Returns debug
-		 * 
-		 * @return debug
-		 */
-		public boolean isDebug() {
-			return debug;
-		}
-
-		/**
-		 * Returns quiet
-		 * 
-		 * @return quiet
-		 */
-		public boolean isQuiet() {
-			return quiet;
-		}
-
-		/**
-		 * Returns profile
-		 * 
-		 * @return profile
-		 */
-		public boolean isProfile() {
-			return profile;
 		}
 
 		/**
@@ -344,30 +311,12 @@ public class GitupApp {
 		}
 
 		/**
-		 * Returns driver
-		 * 
-		 * @return driver
-		 */
-		public String getDriver() {
-			return driver;
-		}
-
-		/**
 		 * Returns name of the executable
 		 * 
 		 * @return exec
 		 */
 		public String getExec() {
 			return exec;
-		}
-
-		/**
-		 * Returns extensions
-		 * 
-		 * @return extensions
-		 */
-		public String getExtensions() {
-			return extensions;
 		}
 
 		/**
