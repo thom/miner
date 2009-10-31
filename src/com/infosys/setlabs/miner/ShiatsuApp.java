@@ -120,8 +120,8 @@ public class ShiatsuApp {
 		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
 
-		@Option(name = "-m", aliases = {"--max-depth", "--max-module-depth"}, usage = "sets the maximum depth of modules")
-		private int maxModuleDepth = 2;
+		@Option(name = "-m", aliases = {"--max-depth", "--max-module-depth"}, usage = "sets the maximum depth of modules (-1 (default, no maxium depth), 0, 1, 2, 3)")
+		private int maxModuleDepth = -1;
 
 		/**
 		 * Returns database name

@@ -52,8 +52,7 @@ public class ShiatsuManager extends Manager {
 	 * 
 	 * @throws MinerException
 	 */
-	public void massage(int maxModuleDepth)
-			throws MinerException {
+	public void massage(int maxModuleDepth) throws MinerException {
 		this.maxModuleDepth = maxModuleDepth;
 
 		DAOTransaction trans = null;
@@ -121,15 +120,21 @@ public class ShiatsuManager extends Manager {
 					minerFile.setPath(repositoryFile.getPath());
 					minerFile.setType(repositoryFile.getType());
 
-					if (maxModuleDepth > maxModuleDepthPattern.length) {
-						throw new MinerException(new Exception("Size: "
-								+ maxModuleDepthPattern.length));
+					if (!(-1 <= maxModuleDepth && maxModuleDepth < maxModuleDepthPattern.length)) {
+						throw new MinerException(new Exception(
+								"Module depth must be between -1 and "
+										+ (maxModuleDepthPattern.length - 1)));
 					}
 
-					Pattern p = maxModuleDepthPattern[maxModuleDepth];
-					Matcher m = p.matcher(minerFile.getDirectory());
-					m.find();
-					String moduleName = m.group(1);
+					String moduleName = null;
+					if (maxModuleDepth == -1) {
+						moduleName = minerFile.getDirectory();
+					} else {
+						Pattern p = maxModuleDepthPattern[maxModuleDepth];
+						Matcher m = p.matcher(minerFile.getDirectory());
+						m.find();
+						moduleName = m.group(1);
+					}
 
 					minerModule = minerModuleDAO.find(moduleName);
 					if (minerModule == null) {
@@ -171,7 +176,7 @@ public class ShiatsuManager extends Manager {
 			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
 					this.getSession());
 			Collection<MinerFile> minerFiles = minerFileDAO.findAll();
-			
+
 			minerFileDAO.setRandomizedModules(true);
 			minerFileDAO.createTables();
 
