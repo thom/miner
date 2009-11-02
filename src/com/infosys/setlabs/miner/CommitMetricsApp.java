@@ -9,7 +9,11 @@ import org.kohsuke.args4j.Option;
 
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
+import com.infosys.setlabs.miner.domain.Commit;
+import com.infosys.setlabs.miner.domain.CommitMetrics;
 import com.infosys.setlabs.miner.domain.MinerInfo;
+import com.infosys.setlabs.miner.manage.CommitManager;
+import com.infosys.setlabs.miner.manage.CommitMetricsManager;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
 
@@ -80,7 +84,37 @@ public class CommitMetricsApp {
 	 * @throws MinerException
 	 */
 	public void print() throws MinerException {
-		// TODO: finish commit metrics app
+		CommitMetricsManager commitMetricsManager = null;
+		CommitMetrics commitMetrics = null;
+
+		try {
+			// Connect to the database
+			commitMetricsManager = new CommitMetricsManager(connectionArgs);
+
+			// Get metrics
+			switch (values.getIdType()) {
+				case ID :
+					commitMetrics = commitMetricsManager.commitMetrics(Integer
+							.parseInt(values.getStart()), Integer
+							.parseInt(values.getStop()));
+					break;
+				case REV :
+					// TODO: revisions
+					break;
+				case TAG :
+					// TODO: tags
+					break;
+			}
+
+			// Print metrics
+			System.out.println(commitMetrics);
+		} catch (NumberFormatException e) {
+			throw new MinerException(e);
+		} finally {
+			if (commitMetricsManager != null) {
+				commitMetricsManager.close();
+			}
+		}
 	}
 	/**
 	 * Starts frequent item set info
@@ -121,15 +155,15 @@ public class CommitMetricsApp {
 
 		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
-		
+
 		@Option(name = "-t", aliases = {"--type", "--id-type"}, usage = "type of the IDs (id: commit IDs (default), rev: revisions, tag: tags", metaVar = "id|rev|tag")
 		private IdType idType = IdType.ID;
 
-		@Argument(index = 1, usage = "ID of the first commit", metaVar = "ID1", required = true)
-		private String id1;
+		@Argument(index = 1, usage = "ID of the commit to start with", metaVar = "START", required = true)
+		private String start;
 
-		@Argument(index = 2, usage = "ID of the second commit", metaVar = "ID2", required = true)
-		private String id2;
+		@Argument(index = 2, usage = "ID of the commit to stop with", metaVar = "STOP", required = true)
+		private String stop;
 
 		/**
 		 * Returns database name
@@ -175,32 +209,32 @@ public class CommitMetricsApp {
 		public String getPort() {
 			return port;
 		}
-		
+
 		/**
 		 * Returns the ID type
 		 * 
 		 * @return idType
 		 */
-		public IdType idType() {
+		public IdType getIdType() {
 			return idType;
 		}
 
 		/**
-		 * Returns commit ID 1
+		 * Returns commit ID to start with
 		 * 
-		 * @return id
+		 * @return start
 		 */
-		public String getId1() {
-			return id1;
+		public String getStart() {
+			return start;
 		}
 
 		/**
-		 * Returns commit ID 1
+		 * Returns commit ID to stop with
 		 * 
-		 * @return id
+		 * @return stop
 		 */
-		public String getId2() {
-			return id2;
+		public String getStop() {
+			return stop;
 		}
 	}
 }

@@ -36,16 +36,24 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 	}
 
 	@Override
-	public double modularization(int begin, int end) throws DataAccessException {
+	public double modularization(int start, int stop) throws DataAccessException {
 		double result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		
+		// Switch begin and end if they are reversed
+		if (start > stop) {
+			int tmp = start;
+			start = stop;
+			stop = tmp;
+		}
+		
 		try {
 			ps = this.getConnection().prepareStatement(modularizationSQL());
-			ps.setInt(1, begin);
-			ps.setInt(2, end);
-			ps.setInt(3, begin);
-			ps.setInt(4, end);
+			ps.setInt(1, start);
+			ps.setInt(2, stop);
+			ps.setInt(3, start);
+			ps.setInt(4, stop);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = rs.getDouble("modularization");
@@ -58,5 +66,10 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 		}
 		return result;
 	}
-
+	
+	// TODO: modularizationRevs(String startRev, String stopRev)
+	// Get commit ID for revs -> call modularization(start, stop)
+	
+	// TODO: modularizationTags(String startRev, String stopRev)
+	// Get commit ID for tags -> call modularization(start, stop)	
 }

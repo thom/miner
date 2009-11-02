@@ -125,14 +125,14 @@ public abstract class DAOFactory {
 			throws DataAccessException;
 
 	/**
-	 * Abstract method for metrics data access object
+	 * Abstract method for frequent item set metrics data access object
 	 * 
 	 * @param session
 	 * @return FrequentItemSetMetricsDAO
 	 * @throws DataAccessException
 	 */
-	public abstract FrequentItemSetMetricsDAO getMetricsDAO(DAOSession session)
-			throws DataAccessException;
+	public abstract FrequentItemSetMetricsDAO getFrequentItemSetMetricsDAO(
+			DAOSession session) throws DataAccessException;
 
 	/**
 	 * Abstract method for gitup data access object
@@ -144,6 +144,23 @@ public abstract class DAOFactory {
 	public abstract GitupDAO getGitupDAO(DAOSession session)
 			throws DataAccessException;
 
+	/**
+	 * Abstract method for commit data access object
+	 * 
+	 * @param session
+	 * @return FrequentItemSetMetricsDAO
+	 * @throws DataAccessException
+	 */
 	public abstract CommitDAO getCommitDAO(DAOSession session)
+			throws DataAccessException;
+
+	/**
+	 * Abstract method for commit metrics data access object
+	 * 
+	 * @param session
+	 * @return FrequentItemSetMetricsDAO
+	 * @throws DataAccessException
+	 */
+	public abstract CommitMetricsDAO getCommitMetricsDAO(DAOSession session)
 			throws DataAccessException;
 }

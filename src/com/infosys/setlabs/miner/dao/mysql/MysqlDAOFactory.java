@@ -13,6 +13,7 @@ import com.infosys.setlabs.dao.jdbc.JdbcDAOSession;
 import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.dao.BasketFormatDAO;
 import com.infosys.setlabs.miner.dao.CommitDAO;
+import com.infosys.setlabs.miner.dao.CommitMetricsDAO;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
 import com.infosys.setlabs.miner.dao.FrequentItemSetMetricsDAO;
@@ -103,8 +104,7 @@ public class MysqlDAOFactory extends DAOFactory {
 	@Override
 	public ModuleDAO getMinerModuleDAO(DAOSession session)
 			throws DataAccessException {
-		return new MysqlModuleDAO(((JdbcDAOSession) session)
-				.getConnection());
+		return new MysqlModuleDAO(((JdbcDAOSession) session).getConnection());
 	}
 
 	@Override
@@ -127,9 +127,10 @@ public class MysqlDAOFactory extends DAOFactory {
 	}
 
 	@Override
-	public FrequentItemSetMetricsDAO getMetricsDAO(DAOSession session)
-			throws DataAccessException {
-		return new MysqlFrequentItemSetMetricsDAO(((JdbcDAOSession) session).getConnection());
+	public FrequentItemSetMetricsDAO getFrequentItemSetMetricsDAO(
+			DAOSession session) throws DataAccessException {
+		return new MysqlFrequentItemSetMetricsDAO(((JdbcDAOSession) session)
+				.getConnection());
 	}
 
 	@Override
@@ -143,4 +144,10 @@ public class MysqlDAOFactory extends DAOFactory {
 			throws DataAccessException {
 		return new MysqlCommitDAO(((JdbcDAOSession) session).getConnection());
 	}
+	
+	@Override
+	public CommitMetricsDAO getCommitMetricsDAO(DAOSession session)
+			throws DataAccessException {
+		return new MysqlCommitMetricsDAO(((JdbcDAOSession) session).getConnection());
+	}	
 }
