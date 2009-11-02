@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.CommitMetricsDAO;
 
@@ -35,7 +36,7 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 	}
 
 	@Override
-	public double modularization(int begin, int end) {
+	public double modularization(int begin, int end) throws DataAccessException {
 		double result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;

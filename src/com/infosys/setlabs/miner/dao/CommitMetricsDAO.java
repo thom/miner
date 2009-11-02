@@ -1,5 +1,7 @@
 package com.infosys.setlabs.miner.dao;
 
+import com.infosys.setlabs.dao.DataAccessException;
+
 /**
  * CommitMetrics DAO
  * 
@@ -14,6 +16,7 @@ public interface CommitMetricsDAO {
 	 * @param end
 	 *            commit ID to end with
 	 * @return modularization
+	 * @throws DataAccessException
 	 */
-	public double modularization(int begin, int end);
+	public double modularization(int begin, int end) throws DataAccessException;
 }
