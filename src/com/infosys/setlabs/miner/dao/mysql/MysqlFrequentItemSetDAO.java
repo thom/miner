@@ -103,8 +103,9 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				+ "relative_item_set_support, modules_touched FROM %s",
 				frequentItemSetsTableName());
 	}
+
 	protected String selectItemSQL() {
-		return String.format("SELECT id, miner_frequent_item_set_id, file_id "
+		return String.format("SELECT file_id "
 				+ "FROM %s WHERE miner_frequent_item_set_id=?",
 				frequentItemsTableName());
 	}
