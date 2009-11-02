@@ -71,7 +71,7 @@ public class Module {
 	public String toString() {
 		String result = "";
 		result += "ID:\t\t" + getId() + "\n";
-		result += "Module name:\t" + getModuleName() + "\n";
+		result += "Module name:\t" + getModuleName();
 		return result;
 	}
 }
