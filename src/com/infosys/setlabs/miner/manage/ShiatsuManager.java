@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
+import com.infosys.setlabs.miner.dao.CommitDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.dao.MinerInfoDAO;
 import com.infosys.setlabs.miner.dao.MinerModuleDAO;
@@ -71,6 +72,10 @@ public class ShiatsuManager extends Manager {
 
 			// Fill separate miner files table with randomized modules
 			randomizeModules();
+			
+			// Create commits table
+			CommitDAO commitDAO = this.getFactory().getCommitDAO(this.getSession());
+			commitDAO.createTables();
 
 			// Create miner info table
 			MinerInfoDAO minerInfoDAO = this.getFactory().getMinerInfoDAO(
