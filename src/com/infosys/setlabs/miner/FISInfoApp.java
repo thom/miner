@@ -154,7 +154,7 @@ public class FISInfoApp {
 		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
 
-		@Argument(index = 1, usage = "ID of the file", metaVar = "ID", required = true)
+		@Argument(index = 1, usage = "ID of the frequent item set", metaVar = "ID", required = true)
 		private int id;
 
 		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
