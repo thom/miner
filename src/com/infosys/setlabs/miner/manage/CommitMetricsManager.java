@@ -29,12 +29,14 @@ public class CommitMetricsManager extends Manager {
 	/**
 	 * Returns metrics for a given range of commits
 	 * 
-	 * @param begin
-	 *            commit ID to begin with
-	 * @param end
-	 *            commit ID to end with
+	 * @param range
+	 *            range of commit IDs
+	 * @param idType
+	 *            type of the IDs in the range
 	 * @return metrics
 	 */
+	// TODO: replace with commitMetrics(String range, IdType idType)
+	// Call methods in CommitMetricsDAO depending on idType
 	public CommitMetrics commitMetrics(int begin, int end)
 			throws MinerException {
 		CommitMetrics result = null;

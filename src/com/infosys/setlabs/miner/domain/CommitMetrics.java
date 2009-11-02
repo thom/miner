@@ -1,7 +1,11 @@
 package com.infosys.setlabs.miner.domain;
 
 public class CommitMetrics {
+	private int id;
+	// TODO: private String start;
+	// TODO: private String stop;
 	private double modularization;
+	// TODO: private boolean human = true;
 
 	/**
 	 * Returns the modularization
@@ -10,6 +14,25 @@ public class CommitMetrics {
 	 */
 	public double getModularization() {
 		return modularization;
+	}
+
+	/**
+	 * Sets ID
+	 * 
+	 * @param id
+	 *            ID to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * Returns ID
+	 * 
+	 * @return id
+	 */
+	public int getId() {
+		return id;
 	}
 
 	/**
@@ -25,6 +48,7 @@ public class CommitMetrics {
 	@Override
 	public String toString() {
 		String result = "";
+		result += "ID:\t\t" + getId() + "\n";
 		result += "Modularization:\t" + getModularization();
 		return result;
 	}

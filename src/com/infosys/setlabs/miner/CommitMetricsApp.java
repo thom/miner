@@ -1,5 +1,6 @@
 package com.infosys.setlabs.miner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.kohsuke.args4j.Argument;
@@ -9,10 +10,8 @@ import org.kohsuke.args4j.Option;
 
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
-import com.infosys.setlabs.miner.domain.Commit;
 import com.infosys.setlabs.miner.domain.CommitMetrics;
 import com.infosys.setlabs.miner.domain.MinerInfo;
-import com.infosys.setlabs.miner.manage.CommitManager;
 import com.infosys.setlabs.miner.manage.CommitMetricsManager;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
@@ -91,25 +90,45 @@ public class CommitMetricsApp {
 			// Connect to the database
 			commitMetricsManager = new CommitMetricsManager(connectionArgs);
 
-			// Get metrics
-			switch (values.getIdType()) {
-				case ID :
-					commitMetrics = commitMetricsManager.commitMetrics(Integer
-							.parseInt(values.getStart()), Integer
-							.parseInt(values.getStop()));
-					break;
-				case REV :
-					// TODO: revisions
-					break;
-				case TAG :
-					// TODO: tags
-					break;
-			}
+			// TODO: Support for several commit IDs
+			int count = 1;
+			for (String range : values.getIds()) {
+				// Get metrics
+				// TODO: commitMetrics =
+				// commitMetricsManager.commitMetrics(range, values
+				// .getIdType());
 
-			// Print metrics
-			System.out.println(commitMetrics);
-		} catch (NumberFormatException e) {
-			throw new MinerException(e);
+				// TODO: move to commit metrics manager
+				String[] ids = range.split(":");
+				if (ids.length < 2) {
+					throw new MinerException(new Exception("'" + range
+							+ "' is not a valid range of IDs"));
+				}
+				String start = ids[0];
+				String stop = ids[1];
+
+				switch (values.getIdType()) {
+					case ID :
+						commitMetrics = commitMetricsManager
+								.commitMetrics(Integer.parseInt(start), Integer
+										.parseInt(stop));
+						commitMetrics.setId(count);
+						break;
+					case REV :
+						// TODO: revisions
+						break;
+					case TAG :
+						// TODO: tags
+						break;
+				}
+
+				// TODO: commitMetrics.setCSV(values.isCSV());
+				System.out.println(commitMetrics);
+				// if (!values.isCSV()) {
+				System.out
+						.println("-------------------------------------------------------------------------------");
+				// }
+			}
 		} finally {
 			if (commitMetricsManager != null) {
 				commitMetricsManager.close();
@@ -159,11 +178,8 @@ public class CommitMetricsApp {
 		@Option(name = "-t", aliases = {"--type", "--id-type"}, usage = "type of the IDs (id: commit IDs (default), rev: revisions, tag: tags", metaVar = "id|rev|tag")
 		private IdType idType = IdType.ID;
 
-		@Argument(index = 1, usage = "ID of the commit to start with", metaVar = "START", required = true)
-		private String start;
-
-		@Argument(index = 2, usage = "ID of the commit to stop with", metaVar = "STOP", required = true)
-		private String stop;
+		@Argument(index = 1, usage = "IDs of the commits to get metrics for", metaVar = "START1:STOP1 [START2:STOP2 ...]", required = true)
+		private ArrayList<String> ids;
 
 		/**
 		 * Returns database name
@@ -220,21 +236,12 @@ public class CommitMetricsApp {
 		}
 
 		/**
-		 * Returns commit ID to start with
+		 * Returns commit IDs
 		 * 
-		 * @return start
+		 * @return ids
 		 */
-		public String getStart() {
-			return start;
-		}
-
-		/**
-		 * Returns commit ID to stop with
-		 * 
-		 * @return stop
-		 */
-		public String getStop() {
-			return stop;
+		public ArrayList<String> getIds() {
+			return ids;
 		}
 	}
 }
