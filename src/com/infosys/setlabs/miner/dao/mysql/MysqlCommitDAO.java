@@ -11,6 +11,7 @@ import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.CommitDAO;
 import com.infosys.setlabs.miner.domain.Commit;
+import com.infosys.setlabs.miner.domain.MinerFile;
 
 /**
  * MySQL Commit DAO
@@ -49,17 +50,23 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 	}
 
 	protected String selectSQL() {
-		return String.format("SELECT id, rev, miner_files_touched, "
+		return String.format("SELECT id, rev, message, miner_files_touched, "
 				+ "modules_touched FROM %s WHERE id=?", tableName);
 	}
 
-	protected String selectByRev() {
-		return String.format("SELECT id, rev, miner_files_touched, "
-				+ "modules_touched FROM %s WHERE rev LIKE \"%?%\"", tableName);
+	protected String selectByRev(String rev) {
+		return String.format("SELECT id, rev, message, miner_files_touched, "
+				+ "modules_touched FROM %s WHERE rev LIKE \"%s\"", tableName,
+				rev + "%");
 	}
 	protected String selectAllSQL() {
-		return String.format("SELECT id, rev, miner_files_touched, "
+		return String.format("SELECT id, rev, message, miner_files_touched, "
 				+ "modules_touched FROM %s", tableName);
+	}
+
+	protected String selectItemSQL() {
+		return String.format("SELECT file_id "
+				+ "FROM actions WHERE commit_id=?");
 	}
 
 	@Override
@@ -77,6 +84,7 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 				result.setComment(rs.getString("message"));
 				result.setFilesTouched(rs.getInt("miner_files_touched"));
 				result.setModulesTouched(rs.getInt("modules_touched"));
+				addFiles(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -92,8 +100,7 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(selectSQL());
-			ps.setString(1, rev);
+			ps = this.getConnection().prepareStatement(selectByRev(rev));
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = new Commit(rs.getInt("id"));
@@ -101,6 +108,7 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 				result.setComment(rs.getString("message"));
 				result.setFilesTouched(rs.getInt("miner_files_touched"));
 				result.setModulesTouched(rs.getInt("modules_touched"));
+				addFiles(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -125,6 +133,7 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 				commit.setComment(rs.getString("message"));
 				commit.setFilesTouched(rs.getInt("miner_files_touched"));
 				commit.setModulesTouched(rs.getInt("modules_touched"));
+				addFiles(commit);
 				result.add(commit);
 			}
 		} catch (SQLException e) {
@@ -146,6 +155,31 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
+			this.closeStatement(ps);
+		}
+	}
+
+	private void addFiles(Commit commit) throws DataAccessException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = this.getConnection().prepareStatement(selectItemSQL());
+			ps.setInt(1, commit.getId());
+			rs = ps.executeQuery();
+
+			MysqlMinerFileDAO minerFileDAO = new MysqlMinerFileDAO(this
+					.getConnection());
+			MinerFile file = null;
+			while (rs.next()) {
+				file = minerFileDAO.find(rs.getInt("file_id"));
+				if (file != null) {
+					commit.addFile(file);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
 			this.closeStatement(ps);
 		}
 	}

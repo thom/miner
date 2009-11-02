@@ -1,5 +1,8 @@
 package com.infosys.setlabs.miner.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a commit
  * 
@@ -19,6 +22,9 @@ public class Commit {
 
 	// Number of modules touched by commit
 	int modulesTouched;
+
+	// Files
+	private List<MinerFile> files = new ArrayList<MinerFile>();
 
 	/**
 	 * Creates a new empty log
@@ -129,5 +135,43 @@ public class Commit {
 	 */
 	public void setModulesTouched(int modulesTouched) {
 		this.modulesTouched = modulesTouched;
+	}
+
+	/**
+	 * Returns the files belonging to the commit
+	 * 
+	 * @return files
+	 */
+	public List<MinerFile> getFiles() {
+		return files;
+	}
+
+	/**
+	 * Adds a new file to the commit
+	 * 
+	 * @param file
+	 *            file to add
+	 */
+	public void addFile(MinerFile file) {
+		this.files.add(file);
+	}
+
+	@Override
+	public String toString() {
+		String result = "";
+		result += "ID:\t\t\t" + getId() + "\n";
+		result += "Revision:\t\t" + getRev() + "\n";
+		result += "Files touched:\t\t" + getFilesTouched() + "\n";
+		result += "Modules touched:\t" + getModulesTouched() + "\n";
+		result += "\n" + getComment() + "\n";
+
+		result += "Files:\n-------------------------------------------------------------------------------";
+		for (MinerFile file : getFiles()) {
+			result += "\n"
+					+ file
+					+ "\n-------------------------------------------------------------------------------";
+		}
+
+		return result;
 	}
 }
