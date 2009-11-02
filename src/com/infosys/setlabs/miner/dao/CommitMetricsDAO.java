@@ -9,7 +9,11 @@ public interface CommitMetricsDAO {
 	/**
 	 * Returns modularization metrics
 	 * 
+	 * @param begin
+	 *            commit ID to begin with
+	 * @param end
+	 *            commit ID to end with
 	 * @return modularization
 	 */
-	public double modularization();
+	public double modularization(int begin, int end);
 }
