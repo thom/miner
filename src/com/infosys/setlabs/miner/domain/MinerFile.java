@@ -6,7 +6,7 @@ package com.infosys.setlabs.miner.domain;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MinerFile extends RepositoryFile {
-	private MinerModule module;
+	private Module module;
 
 	/**
 	 * Creates a new miner file
@@ -30,7 +30,7 @@ public class MinerFile extends RepositoryFile {
 	 * 
 	 * @return module
 	 */
-	public MinerModule getModule() {
+	public Module getModule() {
 		return module;
 	}
 
@@ -40,7 +40,7 @@ public class MinerFile extends RepositoryFile {
 	 * @param module
 	 *            module to set
 	 */
-	public void setModule(MinerModule module) {
+	public void setModule(Module module) {
 		this.module = module;
 	}
 

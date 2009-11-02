@@ -85,10 +85,10 @@ public abstract class DAOFactory {
 	 * 
 	 * @param session
 	 *            session to connect to
-	 * @return MinerModuleDAO
+	 * @return ModuleDAO
 	 * @throws DataAccessException
 	 */
-	public abstract MinerModuleDAO getMinerModuleDAO(DAOSession session)
+	public abstract ModuleDAO getMinerModuleDAO(DAOSession session)
 			throws DataAccessException;
 
 	/**

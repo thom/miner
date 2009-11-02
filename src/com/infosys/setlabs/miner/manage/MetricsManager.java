@@ -8,7 +8,7 @@ import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
 import com.infosys.setlabs.miner.dao.MetricsDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
-import com.infosys.setlabs.miner.dao.MinerModuleDAO;
+import com.infosys.setlabs.miner.dao.ModuleDAO;
 import com.infosys.setlabs.miner.domain.Metrics;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 
@@ -86,9 +86,9 @@ public class MetricsManager extends Manager {
 			result.setFiles(minerFileDAO.count(true));
 
 			// Set miner modules
-			MinerModuleDAO minerModuleDAO = this.getFactory()
+			ModuleDAO moduleDAO = this.getFactory()
 					.getMinerModuleDAO(this.getSession());
-			result.setModules(minerModuleDAO.count());
+			result.setModules(moduleDAO.count());
 
 			// Set modularization
 			MetricsDAO metricsDAO = this.getFactory().getMetricsDAO(

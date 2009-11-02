@@ -10,15 +10,15 @@ import java.util.Collection;
 
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
-import com.infosys.setlabs.miner.dao.MinerModuleDAO;
-import com.infosys.setlabs.miner.domain.MinerModule;
+import com.infosys.setlabs.miner.dao.ModuleDAO;
+import com.infosys.setlabs.miner.domain.Module;
 
 /**
- * MySQL Miner Module DAO
+ * MySQL Module DAO
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
+public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 	public static String tableName = "miner_modules";	
 	
 	/**
@@ -27,7 +27,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	 * @param conn
 	 *            connection to connect to
 	 */
-	public MysqlMinerModuleDAO(Connection conn) {
+	public MysqlModuleDAO(Connection conn) {
 		super(conn);
 	}
 
@@ -77,8 +77,8 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	}
 
 	@Override
-	public MinerModule find(int id) throws DataAccessException {
-		MinerModule result = null;
+	public Module find(int id) throws DataAccessException {
+		Module result = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -86,7 +86,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				result = new MinerModule(rs.getInt("id"));
+				result = new Module(rs.getInt("id"));
 				result.setModuleName(rs.getString("module_name"));
 			}
 		} catch (SQLException e) {
@@ -99,8 +99,8 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	}
 
 	@Override
-	public MinerModule find(String moduleName) throws DataAccessException {
-		MinerModule result = null;
+	public Module find(String moduleName) throws DataAccessException {
+		Module result = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -108,7 +108,7 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 			ps.setString(1, moduleName);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				result = new MinerModule(rs.getInt("id"));
+				result = new Module(rs.getInt("id"));
 				result.setModuleName(rs.getString("module_name"));
 			}
 		} catch (SQLException e) {
@@ -121,17 +121,17 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	}
 
 	@Override
-	public Collection<MinerModule> findAll() throws DataAccessException {
-		ArrayList<MinerModule> result = new ArrayList<MinerModule>();
+	public Collection<Module> findAll() throws DataAccessException {
+		ArrayList<Module> result = new ArrayList<Module>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			ps = this.getConnection().prepareStatement(selectAllSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				MinerModule minerModule = new MinerModule(rs.getInt("id"));
-				minerModule.setModuleName(rs.getString("module_name"));
-				result.add(minerModule);
+				Module module = new Module(rs.getInt("id"));
+				module.setModuleName(rs.getString("module_name"));
+				result.add(module);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -143,17 +143,17 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	}
 
 	@Override
-	public MinerModule create(MinerModule minerModule)
+	public Module create(Module module)
 			throws DataAccessException {
-		MinerModule result = minerModule;
+		Module result = module;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		try {
 			ps = this.getConnection().prepareStatement(createSQL(),
 					Statement.RETURN_GENERATED_KEYS);
-			ps.setInt(1, minerModule.getId());
-			ps.setString(2, minerModule.getModuleName());
+			ps.setInt(1, module.getId());
+			ps.setString(2, module.getModuleName());
 			ps.execute();
 
 			rs = ps.getGeneratedKeys();
@@ -169,11 +169,11 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	}
 
 	@Override
-	public void delete(MinerModule minerModule) throws DataAccessException {
+	public void delete(Module module) throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
 			ps = this.getConnection().prepareStatement(deleteSQL());
-			ps.setInt(1, minerModule.getId());
+			ps.setInt(1, module.getId());
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -183,12 +183,12 @@ public class MysqlMinerModuleDAO extends JdbcDAO implements MinerModuleDAO {
 	}
 
 	@Override
-	public void update(MinerModule minerModule) throws DataAccessException {
+	public void update(Module module) throws DataAccessException {
 		PreparedStatement ps = null;
 		try {
 			ps = this.getConnection().prepareStatement(updateSQL());
-			ps.setString(1, minerModule.getModuleName());
-			ps.setInt(2, minerModule.getId());
+			ps.setString(1, module.getModuleName());
+			ps.setInt(2, module.getId());
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();

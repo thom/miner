@@ -3,14 +3,14 @@ package com.infosys.setlabs.miner.dao;
 import com.infosys.setlabs.dao.CreateTablesDAO;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.ObjectDAO;
-import com.infosys.setlabs.miner.domain.MinerModule;
+import com.infosys.setlabs.miner.domain.Module;
 
 /**
- * Miner Module DAO
+ * Module DAO
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public interface MinerModuleDAO extends ObjectDAO<MinerModule>, CreateTablesDAO {
+public interface ModuleDAO extends ObjectDAO<Module>, CreateTablesDAO {
 	/**
 	 * Finds a module by name.
 	 * 
@@ -19,7 +19,7 @@ public interface MinerModuleDAO extends ObjectDAO<MinerModule>, CreateTablesDAO 
 	 * @return miner module
 	 * @throws DataAccessException
 	 */
-	public MinerModule find(String moduleName) throws DataAccessException;
+	public Module find(String moduleName) throws DataAccessException;
 
 	/**
 	 * Returns the number of modules

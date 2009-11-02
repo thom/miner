@@ -1,31 +1,31 @@
 package com.infosys.setlabs.miner.domain;
 
 /**
- * Represents a miner module
+ * Represents a module
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class MinerModule {
+public class Module {
 	private int id;
 	private String moduleName;
 
 	/**
-	 * Creates a miner module with id <code>id</code>
+	 * Creates a module with id <code>id</code>
 	 * 
 	 * @param id
 	 *            ID to create
 	 */
-	public MinerModule(int id) {
+	public Module(int id) {
 		setId(id);
 	}
 
 	/**
-	 * Creates a new miner module with module name <code>moduleName</code>
+	 * Creates a new module with module name <code>moduleName</code>
 	 * 
 	 * @param moduleName
 	 *            module name to create
 	 */
-	public MinerModule(String moduleName) {
+	public Module(String moduleName) {
 		setModuleName(moduleName);
 	}
 

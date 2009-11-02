@@ -12,11 +12,11 @@ import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.CommitDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.dao.MinerInfoDAO;
-import com.infosys.setlabs.miner.dao.MinerModuleDAO;
+import com.infosys.setlabs.miner.dao.ModuleDAO;
 import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.domain.MinerInfo;
-import com.infosys.setlabs.miner.domain.MinerModule;
+import com.infosys.setlabs.miner.domain.Module;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
 
 /**
@@ -111,10 +111,10 @@ public class ShiatsuManager extends Manager {
 					this.getSession());
 			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
 					this.getSession());
-			MinerModuleDAO minerModuleDAO = this.getFactory()
+			ModuleDAO moduleDAO = this.getFactory()
 					.getMinerModuleDAO(this.getSession());
 			MinerFile minerFile = null;
-			MinerModule minerModule = null;
+			Module module = null;
 
 			for (RepositoryFile repositoryFile : repositoryFileDAO.findAll()) {
 				// Only save code files in miner file table
@@ -141,12 +141,12 @@ public class ShiatsuManager extends Manager {
 						moduleName = m.group(1);
 					}
 
-					minerModule = minerModuleDAO.find(moduleName);
-					if (minerModule == null) {
-						minerModule = new MinerModule(moduleName);
-						minerFile.setModule(minerModuleDAO.create(minerModule));
+					module = moduleDAO.find(moduleName);
+					if (module == null) {
+						module = new Module(moduleName);
+						minerFile.setModule(moduleDAO.create(module));
 					} else {
-						minerFile.setModule(minerModule);
+						minerFile.setModule(module);
 					}
 
 					minerFileDAO.create(minerFile);

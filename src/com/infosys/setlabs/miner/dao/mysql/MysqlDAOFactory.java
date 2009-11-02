@@ -18,7 +18,7 @@ import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
 import com.infosys.setlabs.miner.dao.MetricsDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.dao.MinerInfoDAO;
-import com.infosys.setlabs.miner.dao.MinerModuleDAO;
+import com.infosys.setlabs.miner.dao.ModuleDAO;
 import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
@@ -101,9 +101,9 @@ public class MysqlDAOFactory extends DAOFactory {
 	}
 
 	@Override
-	public MinerModuleDAO getMinerModuleDAO(DAOSession session)
+	public ModuleDAO getMinerModuleDAO(DAOSession session)
 			throws DataAccessException {
-		return new MysqlMinerModuleDAO(((JdbcDAOSession) session)
+		return new MysqlModuleDAO(((JdbcDAOSession) session)
 				.getConnection());
 	}
 

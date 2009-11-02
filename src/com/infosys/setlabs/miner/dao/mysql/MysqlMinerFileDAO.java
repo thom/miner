@@ -65,7 +65,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
 				// MyISAM too, we can't use InnoDB here
 				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", getName(),
-				MysqlMinerModuleDAO.tableName);
+				MysqlModuleDAO.tableName);
 	}
 
 	protected String dropTableSQL() {
@@ -114,7 +114,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				result.setFileName(rs.getString("file_name"));
 				result.setPath(rs.getString("path"));
 				result.setType(rs.getString("type"));
-				result.setModule(new MysqlMinerModuleDAO(this.getConnection())
+				result.setModule(new MysqlModuleDAO(this.getConnection())
 						.find(rs.getInt("miner_module_id")));
 			}
 		} catch (SQLException e) {
@@ -139,7 +139,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				minerFile.setFileName(rs.getString("file_name"));
 				minerFile.setPath(rs.getString("path"));
 				minerFile.setType(rs.getString("type"));
-				minerFile.setModule(new MysqlMinerModuleDAO(this
+				minerFile.setModule(new MysqlModuleDAO(this
 						.getConnection()).find(rs.getInt("miner_module_id")));
 				result.add(minerFile);
 			}

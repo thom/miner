@@ -6,28 +6,28 @@ import java.util.HashMap;
 import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
-import com.infosys.setlabs.miner.domain.MinerModule;
+import com.infosys.setlabs.miner.domain.Module;
 
 /**
- * Miner Module Manager
+ * Module Manager
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class MinerModuleManager extends Manager {
+public class ModuleManager extends Manager {
 	/**
-	 * Creates a new miner module manager
+	 * Creates a new module manager
 	 * 
 	 * @param connectionArgs
 	 *            arguments to use for connection
 	 * @throws MinerException
 	 */
-	public MinerModuleManager(HashMap<String, String> connectionArgs)
+	public ModuleManager(HashMap<String, String> connectionArgs)
 			throws MinerException {
 		super(connectionArgs);
 	}
 
 	/**
-	 * Creates table for miner modules
+	 * Creates table for modules
 	 * 
 	 * @throws MinerException
 	 */
@@ -56,16 +56,16 @@ public class MinerModuleManager extends Manager {
 	}
 
 	/**
-	 * Finds existing persistent miner module by its ID
+	 * Finds existing persistent module by its ID
 	 * 
 	 * @param id
 	 *            ID to find
-	 * @return MinerModule
+	 * @return Module
 	 * @throws MinerException
 	 */
-	public MinerModule find(int id) throws MinerException {
+	public Module find(int id) throws MinerException {
 		DAOTransaction trans = null;
-		MinerModule result = null;
+		Module result = null;
 		try {
 			// Start new transaction
 			trans = this.getSession().getTransaction();
@@ -90,14 +90,14 @@ public class MinerModuleManager extends Manager {
 	}
 
 	/**
-	 * Finds all existing persistent miner modules
+	 * Finds all existing persistent modules
 	 * 
-	 * @return Collection<MinerModule>
+	 * @return Collection<Module>
 	 * @throws MinerException
 	 */
-	public Collection<MinerModule> findAll() throws MinerException {
+	public Collection<Module> findAll() throws MinerException {
 		DAOTransaction trans = null;
-		Collection<MinerModule> result = null;
+		Collection<Module> result = null;
 		try {
 			// Start new transaction
 			trans = this.getSession().getTransaction();
@@ -122,13 +122,13 @@ public class MinerModuleManager extends Manager {
 	}
 
 	/**
-	 * Creates a new persistent miner module
+	 * Creates a new persistent module
 	 * 
-	 * @param minerModule
+	 * @param module
 	 *            miner module to create
 	 * @throws MinerException
 	 */
-	public void create(MinerModule minerModule) throws MinerException {
+	public void create(Module module) throws MinerException {
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
@@ -136,7 +136,7 @@ public class MinerModuleManager extends Manager {
 			trans.begin();
 
 			this.getFactory().getMinerModuleDAO(this.getSession()).create(
-					minerModule);
+					module);
 
 			// Commit transaction
 			trans.commit();
@@ -153,13 +153,13 @@ public class MinerModuleManager extends Manager {
 	}
 
 	/**
-	 * Deletes an existing persistent miner module
+	 * Deletes an existing persistent module
 	 * 
-	 * @param minerModule
+	 * @param module
 	 *            miner module to delete
 	 * @throws MinerException
 	 */
-	public void delete(MinerModule minerModule) throws MinerException {
+	public void delete(Module module) throws MinerException {
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
@@ -167,7 +167,7 @@ public class MinerModuleManager extends Manager {
 			trans.begin();
 
 			this.getFactory().getMinerModuleDAO(this.getSession()).delete(
-					minerModule);
+					module);
 
 			// Commit transaction
 			trans.commit();
@@ -184,13 +184,13 @@ public class MinerModuleManager extends Manager {
 	}
 
 	/**
-	 * Updates an existing persistent miner module
+	 * Updates an existing persistent module
 	 * 
-	 * @param minerModule
+	 * @param module
 	 *            miner module to update
 	 * @throws MinerException
 	 */
-	public void update(MinerModule minerModule) throws MinerException {
+	public void update(Module module) throws MinerException {
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
@@ -198,7 +198,7 @@ public class MinerModuleManager extends Manager {
 			trans.begin();
 
 			this.getFactory().getMinerModuleDAO(this.getSession()).update(
-					minerModule);
+					module);
 
 			// Commit transaction
 			trans.commit();
