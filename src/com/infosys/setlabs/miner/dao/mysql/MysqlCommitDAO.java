@@ -42,7 +42,7 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 				+ "(SELECT COUNT(DISTINCT f.miner_module_id) "
 				+ "FROM actions a, miner_files f "
 				+ "WHERE a.commit_id = l.id AND f.id = a.file_id) "
-				+ "as modules_touched from scmlog l", tableName);
+				+ "AS modules_touched FROM scmlog l", tableName);
 	}
 
 	protected String dropTableSQL() {
