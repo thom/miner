@@ -12,6 +12,7 @@ import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAOSession;
 import com.infosys.setlabs.miner.common.Configuration;
 import com.infosys.setlabs.miner.dao.BasketFormatDAO;
+import com.infosys.setlabs.miner.dao.CommitDAO;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
 import com.infosys.setlabs.miner.dao.MetricsDAO;
@@ -135,5 +136,11 @@ public class MysqlDAOFactory extends DAOFactory {
 	public MysqlGitupDAO getGitupDAO(DAOSession session)
 			throws DataAccessException {
 		return new MysqlGitupDAO(((JdbcDAOSession) session).getConnection());
+	}
+
+	@Override
+	public CommitDAO getCommitDAO(DAOSession session)
+			throws DataAccessException {
+		return new MysqlCommitDAO(((JdbcDAOSession) session).getConnection());
 	}
 }

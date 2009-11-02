@@ -143,4 +143,7 @@ public abstract class DAOFactory {
 	 */
 	public abstract GitupDAO getGitupDAO(DAOSession session)
 			throws DataAccessException;
+
+	public abstract CommitDAO getCommitDAO(DAOSession session)
+			throws DataAccessException;
 }
