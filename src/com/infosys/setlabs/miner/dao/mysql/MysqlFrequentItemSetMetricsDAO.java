@@ -6,15 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
-import com.infosys.setlabs.miner.dao.MetricsDAO;
+import com.infosys.setlabs.miner.dao.FrequentItemSetMetricsDAO;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 
 /**
- * MySQL Metrics DAO
+ * MySQL FrequentItemSetMetrics DAO
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class MysqlMetricsDAO extends JdbcDAO implements MetricsDAO {
+public class MysqlFrequentItemSetMetricsDAO extends JdbcDAO implements FrequentItemSetMetricsDAO {
 	private String name = MinerInfo.defaultName;
 
 	/**
@@ -23,7 +23,7 @@ public class MysqlMetricsDAO extends JdbcDAO implements MetricsDAO {
 	 * @param conn
 	 *            connection to connect to
 	 */
-	public MysqlMetricsDAO(Connection conn) {
+	public MysqlFrequentItemSetMetricsDAO(Connection conn) {
 		super(conn);
 	}
 

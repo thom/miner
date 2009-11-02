@@ -128,17 +128,17 @@ public abstract class DAOFactory {
 	 * Abstract method for metrics data access object
 	 * 
 	 * @param session
-	 * @return MetricsDAO
+	 * @return FrequentItemSetMetricsDAO
 	 * @throws DataAccessException
 	 */
-	public abstract MetricsDAO getMetricsDAO(DAOSession session)
+	public abstract FrequentItemSetMetricsDAO getMetricsDAO(DAOSession session)
 			throws DataAccessException;
 
 	/**
 	 * Abstract method for gitup data access object
 	 * 
 	 * @param session
-	 * @return MetricsDAO
+	 * @return FrequentItemSetMetricsDAO
 	 * @throws DataAccessException
 	 */
 	public abstract GitupDAO getGitupDAO(DAOSession session)

@@ -1,11 +1,11 @@
 package com.infosys.setlabs.miner.domain;
 
 /**
- * Metrics
+ * FrequentItemSetMetrics
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class Metrics {
+public class FrequentItemSetMetrics {
 	private int filesInFrequentItemSet;
 	private int files;
 	private int modules;
@@ -18,7 +18,7 @@ public class Metrics {
 	 * @param minerInfo
 	 *            miner info
 	 */
-	public Metrics(MinerInfo minerInfo) {
+	public FrequentItemSetMetrics(MinerInfo minerInfo) {
 		this.minerInfo = minerInfo;
 	}
 

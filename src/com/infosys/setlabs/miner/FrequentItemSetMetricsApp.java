@@ -12,7 +12,7 @@ import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.manage.Manager;
-import com.infosys.setlabs.miner.manage.MetricsManager;
+import com.infosys.setlabs.miner.manage.FrequentItemSetMetricsManager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
 
 /**
@@ -20,7 +20,7 @@ import com.infosys.setlabs.miner.manage.MinerInfoManager;
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class MetricsApp {
+public class FrequentItemSetMetricsApp {
 	// Command line values
 	private CommandLineValues values;
 
@@ -34,7 +34,7 @@ public class MetricsApp {
 	 *            arguments
 	 * @throws MinerException
 	 */
-	public MetricsApp(String[] args) throws MinerException {
+	public FrequentItemSetMetricsApp(String[] args) throws MinerException {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -71,12 +71,12 @@ public class MetricsApp {
 	 * @throws MinerException
 	 */
 	public void print() throws MinerException {
-		MetricsManager metricsManager = null;
+		FrequentItemSetMetricsManager frequentItemSetMetricsManager = null;
 		MinerInfoManager minerInfoManager = null;
 
 		try {
 			// Connect to the database
-			metricsManager = new MetricsManager(connectionArgs);
+			frequentItemSetMetricsManager = new FrequentItemSetMetricsManager(connectionArgs);
 			minerInfoManager = new MinerInfoManager(connectionArgs);
 
 			if (values.isAll()) {
@@ -89,8 +89,8 @@ public class MetricsApp {
 				}
 
 				for (MinerInfo minerInfo : minerInfos) {
-					metricsManager.setName(minerInfo.getName());
-					System.out.println(metricsManager.metrics());
+					frequentItemSetMetricsManager.setName(minerInfo.getName());
+					System.out.println(frequentItemSetMetricsManager.frequentItemSetMetrics());
 					System.out
 							.println("-------------------------------------------------------------------------------");
 				}
@@ -107,12 +107,12 @@ public class MetricsApp {
 											+ "' found. The data must be mined before running metrics."));
 				}
 
-				metricsManager.setName(values.getName());
-				System.out.println(metricsManager.metrics());
+				frequentItemSetMetricsManager.setName(values.getName());
+				System.out.println(frequentItemSetMetricsManager.frequentItemSetMetrics());
 			}
 		} finally {
-			if (metricsManager != null) {
-				metricsManager.close();
+			if (frequentItemSetMetricsManager != null) {
+				frequentItemSetMetricsManager.close();
 			}
 			if (minerInfoManager != null) {
 				minerInfoManager.close();
@@ -128,7 +128,7 @@ public class MetricsApp {
 	 * @throws MinerException
 	 */
 	public static void main(String[] args) throws MinerException {
-		MetricsApp metrics = new MetricsApp(args);
+		FrequentItemSetMetricsApp metrics = new FrequentItemSetMetricsApp(args);
 		metrics.print();
 	}
 

@@ -6,18 +6,18 @@ import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.FrequentItemSetDAO;
-import com.infosys.setlabs.miner.dao.MetricsDAO;
+import com.infosys.setlabs.miner.dao.FrequentItemSetMetricsDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.dao.ModuleDAO;
-import com.infosys.setlabs.miner.domain.Metrics;
+import com.infosys.setlabs.miner.domain.FrequentItemSetMetrics;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 
 /**
- * Metrics Manager
+ * FrequentItemSetMetrics Manager
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class MetricsManager extends Manager {
+public class FrequentItemSetMetricsManager extends Manager {
 	private String name = MinerInfo.defaultName;
 
 	/**
@@ -27,7 +27,7 @@ public class MetricsManager extends Manager {
 	 *            arguments to use for connection
 	 * @throws MinerException
 	 */
-	public MetricsManager(HashMap<String, String> connectionArgs)
+	public FrequentItemSetMetricsManager(HashMap<String, String> connectionArgs)
 			throws MinerException {
 		super(connectionArgs);
 	}
@@ -58,8 +58,8 @@ public class MetricsManager extends Manager {
 	 *            mining to get metrics for
 	 * @return metrics
 	 */
-	public Metrics metrics() throws MinerException {
-		Metrics result = null;
+	public FrequentItemSetMetrics frequentItemSetMetrics() throws MinerException {
+		FrequentItemSetMetrics result = null;
 		DAOTransaction trans = null;
 		MinerInfo minerInfo = null;
 		try {
@@ -72,7 +72,7 @@ public class MetricsManager extends Manager {
 					.find(getName());
 
 			// Create new metrics
-			result = new Metrics(minerInfo);
+			result = new FrequentItemSetMetrics(minerInfo);
 
 			// Set frequent item set files
 			FrequentItemSetDAO frequentItemSetDAO = this.getFactory()
@@ -91,10 +91,10 @@ public class MetricsManager extends Manager {
 			result.setModules(moduleDAO.count());
 
 			// Set modularization
-			MetricsDAO metricsDAO = this.getFactory().getMetricsDAO(
+			FrequentItemSetMetricsDAO frequentItemSetMetricsDAO = this.getFactory().getMetricsDAO(
 					this.getSession());
-			metricsDAO.setName(getName());
-			result.setModularization(metricsDAO.modularization());
+			frequentItemSetMetricsDAO.setName(getName());
+			result.setModularization(frequentItemSetMetricsDAO.modularization());
 
 			// Commit transaction
 			trans.commit();

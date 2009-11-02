@@ -2,11 +2,11 @@ package com.infosys.setlabs.miner.dao;
 
 
 /**
- * Metrics DAO
+ * FrequentItemSetMetrics DAO
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public interface MetricsDAO {
+public interface FrequentItemSetMetricsDAO {
 	/**
 	 * Returns the name
 	 * 
