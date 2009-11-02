@@ -20,7 +20,7 @@ import com.infosys.setlabs.miner.manage.MinerInfoManager;
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class FISInfoApp {
+public class FrequentItemSetInfoApp {
 	// Command line values
 	private CommandLineValues values;
 
@@ -36,7 +36,7 @@ public class FISInfoApp {
 	 *            arguments
 	 * @throws MinerException
 	 */
-	public FISInfoApp(String[] args) throws MinerException {
+	public FrequentItemSetInfoApp(String[] args) throws MinerException {
 		// Parse the command line arguments and options
 		values = new CommandLineValues();
 		CmdLineParser parser = new CmdLineParser(values);
@@ -129,7 +129,7 @@ public class FISInfoApp {
 	 * @throws MinerException
 	 */
 	public static void main(String[] args) throws MinerException {
-		FISInfoApp fisInfo = new FISInfoApp(args);
+		FrequentItemSetInfoApp fisInfo = new FrequentItemSetInfoApp(args);
 		fisInfo.print();
 	}
 
