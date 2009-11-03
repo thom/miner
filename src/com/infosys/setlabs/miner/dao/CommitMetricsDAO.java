@@ -12,18 +12,38 @@ public interface CommitMetricsDAO {
 	 * Returns modularization metrics
 	 * 
 	 * @param start
-	 *            commit ID to begin with
+	 *            commit ID to start with
 	 * @param stop
-	 *            commit ID to end with
+	 *            commit ID to stop with
 	 * @return modularization
 	 * @throws DataAccessException
 	 */
 	public double modularization(int start, int stop)
 			throws DataAccessException;
 
-	// TODO: modularizationRevs(String beginRev, String endRev) throws
-	// DataAccessException;
+	/**
+	 * Returns modularization metrics
+	 * 
+	 * @param startRev
+	 *            commit revision to start with
+	 * @param stopRev
+	 *            commit revision to stop with
+	 * @return modularization
+	 * @throws DataAccessException
+	 */
+	public double modularizationRevs(String startRev, String stopRev)
+			throws DataAccessException;
 
-	// TODO: modularizationTags(String beginTag, String endTag) throws
-	// DataAccessException;
+	/**
+	 * Returns modularization metrics
+	 * 
+	 * @param startTag
+	 *            commit tag to start with
+	 * @param stopTag
+	 *            commit tag to stop with
+	 * @return modularization
+	 * @throws DataAccessException
+	 */
+	public double modularizationTags(String startTag, String stopTag)
+			throws DataAccessException;
 }

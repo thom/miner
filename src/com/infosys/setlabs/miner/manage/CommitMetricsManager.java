@@ -91,13 +91,15 @@ public class CommitMetricsManager extends Manager {
 							Integer.parseInt(start), Integer.parseInt(stop)));
 					break;
 				case REV :
-					// TODO: revisions
+					result.setModularization(commitMetricsDAO
+							.modularizationRevs(start, stop));
 					break;
 				case TAG :
-					// TODO: tags
+					result.setModularization(commitMetricsDAO
+							.modularizationTags(start, stop));
 					break;
 			}
-			
+
 			result.setStart(start);
 			result.setStop(stop);
 			result.setIdType(idType);
