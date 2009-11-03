@@ -12,10 +12,10 @@ import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.CommitMetrics;
 import com.infosys.setlabs.miner.domain.MinerInfo;
+import com.infosys.setlabs.miner.domain.CommitMetrics.IdType;
 import com.infosys.setlabs.miner.manage.CommitMetricsManager;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
-import com.infosys.setlabs.miner.manage.CommitMetricsManager.IdType;
 
 /**
  * Gives information about frequent item sets
@@ -93,12 +93,12 @@ public class CommitMetricsApp {
 			// Get commit metrics for all ranges
 			for (CommitMetrics cm : commitMetricsManager.commitMetrics(values
 					.getRanges(), values.getIdType())) {
-				// TODO: cm.setCSV(values.isCSV());
+				cm.setCSV(values.isCSV());
 				System.out.println(cm);
-				// if (!values.isCSV()) {
-				System.out
-						.println("-------------------------------------------------------------------------------");
-				// }
+				if (!values.isCSV()) {
+					System.out
+							.println("-------------------------------------------------------------------------------");
+				}
 			}
 		} finally {
 			if (commitMetricsManager != null) {
@@ -138,6 +138,9 @@ public class CommitMetricsApp {
 
 		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
+
+		@Option(name = "-c", aliases = {"--csv"}, usage = "should the output be comma separated values?")
+		private boolean csv = false;
 
 		@Option(name = "-t", aliases = {"--type", "--id-type"}, usage = "type of the IDs (id: commit IDs (default), rev: revisions, tag: tags", metaVar = "id|rev|tag")
 		private IdType idType = IdType.ID;
@@ -188,6 +191,15 @@ public class CommitMetricsApp {
 		 */
 		public String getPort() {
 			return port;
+		}
+
+		/**
+		 * Does the user want comma separated values as output?
+		 * 
+		 * @return csv
+		 */
+		public boolean isCSV() {
+			return csv;
 		}
 
 		/**

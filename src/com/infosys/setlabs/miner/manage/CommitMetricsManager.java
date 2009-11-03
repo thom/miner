@@ -9,6 +9,7 @@ import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.CommitMetricsDAO;
 import com.infosys.setlabs.miner.domain.CommitMetrics;
+import com.infosys.setlabs.miner.domain.CommitMetrics.IdType;
 
 /**
  * CommitMetrics Manager
@@ -16,13 +17,6 @@ import com.infosys.setlabs.miner.domain.CommitMetrics;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class CommitMetricsManager extends Manager {
-	/**
-	 * ID types
-	 */
-	public enum IdType {
-		ID, REV, TAG
-	}
-
 	/**
 	 * Creates a new metrics manager
 	 * 
@@ -103,6 +97,10 @@ public class CommitMetricsManager extends Manager {
 					// TODO: tags
 					break;
 			}
+			
+			result.setStart(start);
+			result.setStop(stop);
+			result.setIdType(idType);
 
 			// Commit transaction
 			trans.commit();
