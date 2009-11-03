@@ -11,6 +11,7 @@ import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.Commit;
 import com.infosys.setlabs.miner.domain.MinerInfo;
+import com.infosys.setlabs.miner.domain.CommitMetrics.IdType;
 import com.infosys.setlabs.miner.manage.CommitManager;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
@@ -89,16 +90,13 @@ public class CommitInfoApp {
 			// Connect to the database
 			commitManager = new CommitManager(connectionArgs);
 
-			// Get frequent item set
-			try {
-				commit = commitManager.find(Integer.parseInt(values.getId()));
-			} catch (NumberFormatException e) {
-				commit = commitManager.findByRev(values.getId());
-			}
+			// Get commit
+			commit = commitManager.find(values.getId(), values.getIdType());
 
 			if (commit == null) {
-				System.out.println("Error: Couldn't find commit with ID '"
-						+ values.getId() + "' in the database.");
+				System.out.println("Error: Couldn't find commit with "
+						+ values.getIdType() + " '" + values.getId()
+						+ "' in the database.");
 			} else {
 				System.out.println(commit);
 			}
@@ -141,7 +139,10 @@ public class CommitInfoApp {
 		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
 
-		@Argument(index = 1, usage = "ID or revision of the commit", metaVar = "ID", required = true)
+		@Option(name = "-t", aliases = {"--type", "--id-type"}, usage = "type of the IDs (id: commit IDs (default), rev: revisions, tag: tags", metaVar = "id|rev|tag")
+		private IdType idType = IdType.ID;
+
+		@Argument(index = 1, usage = "ID of the commit", metaVar = "ID", required = true)
 		private String id;
 
 		/**
@@ -187,6 +188,15 @@ public class CommitInfoApp {
 		 */
 		public String getPort() {
 			return port;
+		}
+
+		/**
+		 * Returns the ID type
+		 * 
+		 * @return idType
+		 */
+		public IdType getIdType() {
+			return idType;
 		}
 
 		/**

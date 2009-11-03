@@ -19,4 +19,13 @@ public interface CommitDAO extends ReadObjectDAO<Commit>, CreateTablesDAO {
 	 * @throws DataAccessException
 	 */
 	public Commit findByRev(String rev) throws DataAccessException;
+
+	/**
+	 * Finds a commit by tag name
+	 * 
+	 * @param tag
+	 * @return commit
+	 * @throws DataAccessException
+	 */
+	public Commit findByTag(String tag) throws DataAccessException;
 }

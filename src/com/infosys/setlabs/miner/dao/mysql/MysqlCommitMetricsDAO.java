@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.CommitMetricsDAO;
+import com.infosys.setlabs.miner.domain.Commit;
 
 /**
  * MySQL Commit Metrics DAO
@@ -71,14 +72,36 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 	@Override
 	public double modularizationRevs(String startRev, String stopRev)
 			throws DataAccessException {
-		// TODO: Get commit ID for revs -> call modularization(start, stop)
-		return 0.0;
+		MysqlCommitDAO commitDAO = new MysqlCommitDAO(this.getConnection());
+
+		Commit startCommit = commitDAO.findByRev(startRev);
+		if (startCommit == null) {
+			throw new DataAccessException("No such revision '" + startRev + "'");
+		}
+
+		Commit stopCommit = commitDAO.findByRev(stopRev);
+		if (stopCommit == null) {
+			throw new DataAccessException("No such revision '" + stopRev + "'");
+		}
+
+		return modularization(startCommit.getId(), stopCommit.getId());
 	}
 
 	@Override
-	public double modularizationTags(String startRev, String stopRev)
+	public double modularizationTags(String startTag, String stopTag)
 			throws DataAccessException {
-		// TODO: Get commit ID for tags -> call modularization(start, stop)
-		return 0.0;
+		MysqlCommitDAO commitDAO = new MysqlCommitDAO(this.getConnection());
+
+		Commit startCommit = commitDAO.findByTag(startTag);
+		if (startCommit == null) {
+			throw new DataAccessException("No such tag '" + startTag + "'");
+		}
+
+		Commit stopCommit = commitDAO.findByTag(stopTag);
+		if (stopCommit == null) {
+			throw new DataAccessException("No such tag '" + stopTag + "'");
+		}
+
+		return modularization(startCommit.getId(), stopCommit.getId());
 	}
 }

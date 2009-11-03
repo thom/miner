@@ -59,6 +59,15 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 				+ "modules_touched FROM %s WHERE rev LIKE \"%s\"", tableName,
 				rev + "%");
 	}
+
+	protected String selectByTag(String tag) {
+		return String.format("SELECT id, rev, message, miner_files_touched, "
+				+ "modules_touched FROM %s WHERE "
+				+ "id=(SELECT tr.commit_id FROM tags t, "
+				+ "tag_revisions tr WHERE t.id = tr.tag_id "
+				+ "AND t.name = \"%s\")", tableName, tag);
+	}
+	
 	protected String selectAllSQL() {
 		return String.format("SELECT id, rev, message, miner_files_touched, "
 				+ "modules_touched FROM %s", tableName);
@@ -94,6 +103,7 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 		}
 		return result;
 	}
+
 	@Override
 	public Commit findByRev(String rev) throws DataAccessException {
 		Commit result = null;
@@ -101,6 +111,31 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 		ResultSet rs = null;
 		try {
 			ps = this.getConnection().prepareStatement(selectByRev(rev));
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				result = new Commit(rs.getInt("id"));
+				result.setRev(rs.getString("rev"));
+				result.setComment(rs.getString("message"));
+				result.setFilesTouched(rs.getInt("miner_files_touched"));
+				result.setModulesTouched(rs.getInt("modules_touched"));
+				addFiles(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
+		return result;
+	}
+
+	@Override
+	public Commit findByTag(String tag) throws DataAccessException {
+		Commit result = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = this.getConnection().prepareStatement(selectByTag(tag));
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = new Commit(rs.getInt("id"));
