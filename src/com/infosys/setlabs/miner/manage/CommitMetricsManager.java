@@ -87,8 +87,14 @@ public class CommitMetricsManager extends Manager {
 
 			switch (idType) {
 				case ID :
-					result.setModularization(commitMetricsDAO.modularization(
-							Integer.parseInt(start), Integer.parseInt(stop)));
+					try {
+						result.setModularization(commitMetricsDAO
+								.modularization(Integer.parseInt(start),
+										Integer.parseInt(stop)));
+					} catch (NumberFormatException e) {
+						throw new MinerException(new Exception("'" + start
+								+ "' and/or '" + stop + "' are not valid IDs"));
+					}
 					break;
 				case REV :
 					result.setModularization(commitMetricsDAO
