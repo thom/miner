@@ -53,26 +53,33 @@ public class GitupManager extends Manager {
 	 */
 	public void generateLog(String repository, String branch, File log,
 			boolean all) throws MinerException {
+		// Java arrays really suck!
+		String[] cmdAll = {"git", "log", "--all", "--topo-order",
+				"--pretty=fuller", "--parents", "--name-status", "-M", "-C",
+				"--decorate", branch};
 		String[] cmd = {"git", "log", "--topo-order", "--pretty=fuller",
 				"--parents", "--name-status", "-M", "-C", "--decorate", branch};
 		try {
-			ExecWrapper git = new ExecWrapper(cmd, new PrintStream(log),
-					System.out);
+			ExecWrapper git = null;
+			if (all) {
+				git = new ExecWrapper(cmdAll, new PrintStream(log), System.out);
+			} else {
+				git = new ExecWrapper(cmd, new PrintStream(log), System.out);
+			}
 			git.setDir(new File(repository));
 			git.setDebug(true);
 			git.run();
 			if (git.getExitVal() != 0) {
-				System.out.print("\nError while executing ");
+				String error = "Error while executing ";
 				for (String str : cmd) {
-					System.out.print(str + " ");
+					error += str + " ";
 				}
-				System.out.println("\n");
+				throw new MinerException(new Exception(error));
 			}
 		} catch (FileNotFoundException e) {
 			throw new MinerException(e);
 		}
 	}
-
 	/**
 	 * Creates database
 	 * 
@@ -125,12 +132,11 @@ public class GitupManager extends Manager {
 		cvsanaly.setDebug(true);
 		cvsanaly.run();
 		if (cvsanaly.getExitVal() != 0) {
-			System.out.print("\nError while executing ");
+			String error = "Error while executing ";
 			for (String str : cmd) {
-				System.out.print(str + " ");
+				error += str + " ";
 			}
-			System.out.println("\n");
+			throw new MinerException(new Exception(error));
 		}
-
 	}
 }

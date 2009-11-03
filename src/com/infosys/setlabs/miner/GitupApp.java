@@ -115,7 +115,7 @@ public class GitupApp {
 		if (runGenerateLog()) {
 			System.out.println("EXEC  > git log");
 			gitupManager.generateLog(values.getRepository(),
-					values.getBranch(), log, false);
+					values.getBranch(), log, values.isAll());
 			System.out.println("DONE  > git log\n");
 		} else {
 			System.out
@@ -136,7 +136,8 @@ public class GitupApp {
 
 	private void cvsanaly() throws MinerException {
 		System.out.println("EXEC  > cvsanaly");
-		gitupManager.cvsanaly(values.getExec(), values.getDb(), log, values.getConf());
+		gitupManager.cvsanaly(values.getExec(), values.getDb(), log, values
+				.getConf());
 		System.out.println("DONE  > cvsanaly\n");
 	}
 
@@ -215,6 +216,9 @@ public class GitupApp {
 
 		@Option(name = "-l", aliases = {"--log", "--log-file"}, usage = "file containing git log messages (if the file doesn't already exist, the gitup tool creates it and commit messages to it)")
 		private String log;
+
+		@Option(name = "-a", aliases = {"--all"}, usage = "use commits of all branches")
+		private boolean all = false;
 
 		/**
 		 * Sets default values for some of the command line arguments
@@ -344,6 +348,15 @@ public class GitupApp {
 		 */
 		public String getLog() {
 			return log;
+		}
+
+		/**
+		 * Does the user want all commits?
+		 * 
+		 * @return all
+		 */
+		public boolean isAll() {
+			return all;
 		}
 	}
 }
