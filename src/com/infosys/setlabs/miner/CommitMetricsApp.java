@@ -15,6 +15,7 @@ import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.manage.CommitMetricsManager;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
+import com.infosys.setlabs.miner.manage.CommitMetricsManager.IdType;
 
 /**
  * Gives information about frequent item sets
@@ -84,46 +85,16 @@ public class CommitMetricsApp {
 	 */
 	public void print() throws MinerException {
 		CommitMetricsManager commitMetricsManager = null;
-		CommitMetrics commitMetrics = null;
 
 		try {
 			// Connect to the database
 			commitMetricsManager = new CommitMetricsManager(connectionArgs);
 
-			// TODO: Support for several commit IDs
-			int count = 1;
-			for (String range : values.getIds()) {
-				// Get metrics
-				// TODO: commitMetrics =
-				// commitMetricsManager.commitMetrics(range, values
-				// .getIdType());
-
-				// TODO: move to commit metrics manager
-				String[] ids = range.split(":");
-				if (ids.length < 2) {
-					throw new MinerException(new Exception("'" + range
-							+ "' is not a valid range of IDs"));
-				}
-				String start = ids[0];
-				String stop = ids[1];
-
-				switch (values.getIdType()) {
-					case ID :
-						commitMetrics = commitMetricsManager
-								.commitMetrics(Integer.parseInt(start), Integer
-										.parseInt(stop));
-						commitMetrics.setId(count);
-						break;
-					case REV :
-						// TODO: revisions
-						break;
-					case TAG :
-						// TODO: tags
-						break;
-				}
-
-				// TODO: commitMetrics.setCSV(values.isCSV());
-				System.out.println(commitMetrics);
+			// Get commit metrics for all ranges
+			for (CommitMetrics cm : commitMetricsManager.commitMetrics(values
+					.getRanges(), values.getIdType())) {
+				// TODO: cm.setCSV(values.isCSV());
+				System.out.println(cm);
 				// if (!values.isCSV()) {
 				System.out
 						.println("-------------------------------------------------------------------------------");
@@ -153,13 +124,6 @@ public class CommitMetricsApp {
 	 * @author Thomas Weibel <thomas_401709@infosys.com>
 	 */
 	private static class CommandLineValues {
-		/**
-		 * ID types
-		 */
-		public enum IdType {
-			ID, REV, TAG
-		}
-
 		@Argument(index = 0, usage = "name of the database to connect to", metaVar = "DATABASE", required = true)
 		private String db;
 
@@ -178,8 +142,8 @@ public class CommitMetricsApp {
 		@Option(name = "-t", aliases = {"--type", "--id-type"}, usage = "type of the IDs (id: commit IDs (default), rev: revisions, tag: tags", metaVar = "id|rev|tag")
 		private IdType idType = IdType.ID;
 
-		@Argument(index = 1, usage = "IDs of the commits to get metrics for", metaVar = "START1:STOP1 [START2:STOP2 ...]", required = true)
-		private ArrayList<String> ids;
+		@Argument(index = 1, usage = "Ranges of IDs of the commits to get metrics for", metaVar = "START1:STOP1 [START2:STOP2 ...]", required = true)
+		private ArrayList<String> ranges;
 
 		/**
 		 * Returns database name
@@ -236,12 +200,12 @@ public class CommitMetricsApp {
 		}
 
 		/**
-		 * Returns commit IDs
+		 * Returns commit ID ranges
 		 * 
-		 * @return ids
+		 * @return ranges
 		 */
-		public ArrayList<String> getIds() {
-			return ids;
+		public ArrayList<String> getRanges() {
+			return ranges;
 		}
 	}
 }

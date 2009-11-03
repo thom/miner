@@ -1,6 +1,8 @@
 package com.infosys.setlabs.miner.manage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
@@ -15,6 +17,13 @@ import com.infosys.setlabs.miner.domain.CommitMetrics;
  */
 public class CommitMetricsManager extends Manager {
 	/**
+	 * ID types
+	 */
+	public enum IdType {
+		ID, REV, TAG
+	}
+
+	/**
 	 * Creates a new metrics manager
 	 * 
 	 * @param connectionArgs
@@ -27,6 +36,28 @@ public class CommitMetricsManager extends Manager {
 	}
 
 	/**
+	 * Returns commit metrics for a list of ranges
+	 * 
+	 * @param ranges
+	 *            list of ranges
+	 * @param idType
+	 *            ID type
+	 * @return LinkedList<CommitMetrics>
+	 * @throws MinerException
+	 */
+	public LinkedList<CommitMetrics> commitMetrics(ArrayList<String> ranges,
+			IdType idType) throws MinerException {
+		LinkedList<CommitMetrics> result = new LinkedList<CommitMetrics>();
+		int id = 1;
+		for (String range : ranges) {
+			result.add(commitMetrics(range, idType));
+			result.getLast().setId(id);
+			id++;
+		}
+		return result;
+	}
+
+	/**
 	 * Returns metrics for a given range of commits
 	 * 
 	 * @param range
@@ -35,12 +66,19 @@ public class CommitMetricsManager extends Manager {
 	 *            type of the IDs in the range
 	 * @return metrics
 	 */
-	// TODO: replace with commitMetrics(String range, IdType idType)
-	// Call methods in CommitMetricsDAO depending on idType
-	public CommitMetrics commitMetrics(int begin, int end)
+	public CommitMetrics commitMetrics(String range, IdType idType)
 			throws MinerException {
 		CommitMetrics result = null;
 		DAOTransaction trans = null;
+
+		String[] ids = range.split(":");
+		if (ids.length < 2) {
+			throw new MinerException(new Exception("'" + range
+					+ "' is not a valid range of IDs"));
+		}
+		String start = ids[0];
+		String stop = ids[1];
+
 		try {
 			// Start new transaction
 			trans = this.getSession().getTransaction();
@@ -52,8 +90,19 @@ public class CommitMetricsManager extends Manager {
 			// Set modularization
 			CommitMetricsDAO commitMetricsDAO = this.getFactory()
 					.getCommitMetricsDAO(this.getSession());
-			result.setModularization(commitMetricsDAO
-					.modularization(begin, end));
+
+			switch (idType) {
+				case ID :
+					result.setModularization(commitMetricsDAO.modularization(
+							Integer.parseInt(start), Integer.parseInt(stop)));
+					break;
+				case REV :
+					// TODO: revisions
+					break;
+				case TAG :
+					// TODO: tags
+					break;
+			}
 
 			// Commit transaction
 			trans.commit();
