@@ -14,7 +14,9 @@ import com.infosys.setlabs.miner.domain.MinerInfo;
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class MysqlFrequentItemSetMetricsDAO extends JdbcDAO implements FrequentItemSetMetricsDAO {
+public class MysqlFrequentItemSetMetricsDAO extends JdbcDAO
+		implements
+			FrequentItemSetMetricsDAO {
 	private String name = MinerInfo.defaultName;
 
 	/**
@@ -31,9 +33,10 @@ public class MysqlFrequentItemSetMetricsDAO extends JdbcDAO implements FrequentI
 		String tableName = MysqlFrequentItemSetDAO.frequentItemSetsPrefix
 				+ getName();
 
-		return String.format("SELECT (SUM(1 - (modules_touched - 1) / "
-				+ "(size - 1)) / (SELECT COUNT(id) FROM %s)) "
-				+ "AS modularization FROM %s", tableName, tableName);
+		return String.format("SELECT (SUM(1 - IF(modules_touched = 1,"
+				+ "0,(modules_touched) / (size))) / "
+				+ "(SELECT COUNT(id) FROM %s)) AS modularization FROM %s",
+				tableName, tableName);
 	}
 
 	@Override
