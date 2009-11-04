@@ -1,4 +1,5 @@
 bin/com
 *.fis
 *.tra
+*.cm
 doc/
