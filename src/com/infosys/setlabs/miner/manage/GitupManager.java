@@ -53,19 +53,10 @@ public class GitupManager extends Manager {
 	 */
 	public void generateLog(String repository, String branch, File log,
 			boolean all) throws MinerException {
-		// Java arrays really suck!
-		String[] cmdAll = {"git", "log", "--all", "--topo-order",
-				"--pretty=fuller", "--parents", "--name-status", "-M", "-C",
-				"--decorate", branch};
-		String[] cmd = {"git", "log", "--topo-order", "--pretty=fuller",
-				"--parents", "--name-status", "-M", "-C", "--decorate", branch};
+		String[] cmd = getCmd(branch, all);
 		try {
-			ExecWrapper git = null;
-			if (all) {
-				git = new ExecWrapper(cmdAll, new PrintStream(log), System.out);
-			} else {
-				git = new ExecWrapper(cmd, new PrintStream(log), System.out);
-			}
+			ExecWrapper git = new ExecWrapper(cmd, new PrintStream(log),
+					System.out);
 			git.setDir(new File(repository));
 			git.setDebug(true);
 			git.run();
@@ -80,6 +71,22 @@ public class GitupManager extends Manager {
 			throw new MinerException(e);
 		}
 	}
+
+	// Java arrays really suck!
+	private String[] getCmd(String branch, boolean all) {
+		if (all) {
+			String[] result = {"git", "log", "--all", "--topo-order",
+					"--pretty=fuller", "--parents", "--name-status", "-M",
+					"-C", "--decorate", branch};
+			return result;
+		} else {
+			String[] result = {"git", "log", "--topo-order", "--pretty=fuller",
+					"--parents", "--name-status", "-M", "-C", "--decorate",
+					branch};
+			return result;
+		}
+	}
+
 	/**
 	 * Creates database
 	 * 
