@@ -12,6 +12,7 @@ public class RepositoryFile {
 	private String fileName;
 	private String path;
 	private Type type;
+	private int modifications;
 
 	/**
 	 * File types
@@ -101,7 +102,7 @@ public class RepositoryFile {
 	public String getDirectory() {
 		return this.path.substring(0, path.length() - fileName.length());
 	}
-	
+
 	/**
 	 * Is the file of type code?
 	 * 
@@ -138,8 +139,27 @@ public class RepositoryFile {
 	 */
 	public void setType(String typeName) {
 		type = Type.valueOf(typeName.toUpperCase().replace("-", "_"));
-	}	
-	
+	}
+
+	/**
+	 * Returns how many modifications a file had
+	 * 
+	 * @return modifications
+	 */
+	public int getModifications() {
+		return modifications;
+	}
+
+	/**
+	 * Sets how many modifications a file had
+	 * 
+	 * @param modifications
+	 *            number of modifications of this file
+	 */
+	public void setModifications(int modifications) {
+		this.modifications = modifications;
+	}
+
 	@Override
 	public String toString() {
 		String result = "";
@@ -147,7 +167,8 @@ public class RepositoryFile {
 		result += "File name:\t" + getFileName() + "\n";
 		result += "Path:\t\t" + getPath() + "\n";
 		result += "Directory:\t" + getDirectory() + "\n";
-		result += "Type:\t\t" + getType().toString().toLowerCase();
+		result += "Type:\t\t" + getType().toString() + "\n";
+		result += "Modifications:\t" + getModifications();
 		return result;
 	}
 }
