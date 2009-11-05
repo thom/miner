@@ -101,6 +101,10 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		return String.format("SELECT COUNT(id) AS count FROM %s", getName());
 	}
 
+	protected String countModifiedSQL() {
+		return countSQL() + " WHERE modifications >= ?";
+	}
+
 	@Override
 	public MinerFile find(int id) throws DataAccessException {
 		MinerFile result = null;
@@ -219,12 +223,33 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	}
 
 	@Override
-	public int count(boolean allFiles) throws DataAccessException {
+	public int count() throws DataAccessException {
 		int result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			ps = this.getConnection().prepareStatement(countSQL());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				result = rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
+		return result;
+	}
+
+	@Override
+	public int count(int minimumModifications) throws DataAccessException {
+		int result = 0;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = this.getConnection().prepareStatement(countModifiedSQL());
+			ps.setInt(1, minimumModifications);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = rs.getInt("count");

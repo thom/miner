@@ -14,6 +14,9 @@ public class MinerInfo {
 	// Name
 	private String name;
 
+	// Minimum modifications
+	private int minimumModifications;
+
 	// Did the data already get a massage?
 	private boolean shiatsu;
 
@@ -68,6 +71,25 @@ public class MinerInfo {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Returns minimum modifications of code files
+	 * 
+	 * @return minimumModifications
+	 */
+	public int getMinimumModifications() {
+		return minimumModifications;
+	}
+
+	/**
+	 * Sets minimum modifications of code files
+	 * 
+	 * @param minimumModifications
+	 *            minimum modifications of code files
+	 */
+	public void setMinimumModifications(int minimumModifications) {
+		this.minimumModifications = minimumModifications;
 	}
 
 	/**
@@ -190,6 +212,8 @@ public class MinerInfo {
 		result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
 		result += "Maximum module depth:\t\t\t" + getMaximumModuleDepth()
 				+ "\n";
+		result += "Minimum modifications (commits):\t"
+				+ getMinimumModifications() + "\n";
 		result += "Miner run?\t\t\t\t" + isMiner();
 		if (isMiner()) {
 			result += "\nRandomized?\t\t\t\t" + hasRandomizedModules() + "\n";

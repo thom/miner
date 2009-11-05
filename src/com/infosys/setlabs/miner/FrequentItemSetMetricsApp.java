@@ -76,7 +76,8 @@ public class FrequentItemSetMetricsApp {
 
 		try {
 			// Connect to the database
-			frequentItemSetMetricsManager = new FrequentItemSetMetricsManager(connectionArgs);
+			frequentItemSetMetricsManager = new FrequentItemSetMetricsManager(
+					connectionArgs);
 			minerInfoManager = new MinerInfoManager(connectionArgs);
 
 			if (values.isAll()) {
@@ -90,7 +91,11 @@ public class FrequentItemSetMetricsApp {
 
 				for (MinerInfo minerInfo : minerInfos) {
 					frequentItemSetMetricsManager.setName(minerInfo.getName());
-					System.out.println(frequentItemSetMetricsManager.frequentItemSetMetrics());
+					frequentItemSetMetricsManager
+							.setMinimumModifications(minerInfo
+									.getMinimumModifications());
+					System.out.println(frequentItemSetMetricsManager
+							.frequentItemSetMetrics());
 					System.out
 							.println("-------------------------------------------------------------------------------");
 				}
@@ -108,7 +113,10 @@ public class FrequentItemSetMetricsApp {
 				}
 
 				frequentItemSetMetricsManager.setName(values.getName());
-				System.out.println(frequentItemSetMetricsManager.frequentItemSetMetrics());
+				frequentItemSetMetricsManager.setMinimumModifications(minerInfo
+						.getMinimumModifications());
+				System.out.println(frequentItemSetMetricsManager
+						.frequentItemSetMetrics());
 			}
 		} finally {
 			if (frequentItemSetMetricsManager != null) {

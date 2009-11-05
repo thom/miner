@@ -24,13 +24,23 @@ public interface MinerFileDAO extends ObjectDAO<MinerFile>, CreateTablesDAO {
 	 * @param randomizedModules
 	 *            are the modules randomized?
 	 */
-	public void setRandomizedModules(boolean randomizedModules);	
-	
+	public void setRandomizedModules(boolean randomizedModules);
+
 	/**
 	 * Returns the number of files
 	 * 
 	 * @return number of files
 	 * @throws DataAccessException
 	 */
-	public int count(boolean allFiles) throws DataAccessException;
+	public int count() throws DataAccessException;
+
+	/**
+	 * Returns the number of files with a minimum of modifications
+	 * 
+	 * @param minimumModifications
+	 *            minimum of modifications required
+	 * @return number of files
+	 * @throws DataAccessException
+	 */
+	public int count(int minimumModifications) throws DataAccessException;
 }

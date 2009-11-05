@@ -245,6 +245,7 @@ public class MinerApp {
 		if (runApriori() || !minerInfo.isMiner()
 				|| minerInfo.hasRandomizedModules() != values.isRandomize()) {
 			minerInfo.setName(values.getName());
+			minerInfo.setMinimumModifications(values.getModifications());
 			minerInfo.setShiatsu(true);
 			minerInfo.setMaximumModuleDepth(maximumModuleDepth);
 			minerInfo.setMiner(true);

@@ -19,6 +19,7 @@ import com.infosys.setlabs.miner.domain.MinerInfo;
  */
 public class FrequentItemSetMetricsManager extends Manager {
 	private String name = MinerInfo.defaultName;
+	private int minimumModifications;
 
 	/**
 	 * Creates a new metrics manager
@@ -49,6 +50,25 @@ public class FrequentItemSetMetricsManager extends Manager {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Returns minimum modifications for code files
+	 * 
+	 * @return minimumModifications
+	 */
+	public int getMinimumModifications() {
+		return minimumModifications;
+	}
+
+	/**
+	 * Sets minimum modifications for code files
+	 * 
+	 * @param minimumModifications
+	 *            minimum modifications for code files
+	 */
+	public void setMinimumModifications(int minimumModifications) {
+		this.minimumModifications = minimumModifications;
 	}
 
 	/**
@@ -84,7 +104,9 @@ public class FrequentItemSetMetricsManager extends Manager {
 			// Set miner files
 			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
 					this.getSession());
-			result.setFiles(minerFileDAO.count(true));
+			result.setFiles(minerFileDAO.count());
+			result.setFilesModified(minerFileDAO
+					.count(getMinimumModifications()));
 
 			// Set miner modules
 			ModuleDAO moduleDAO = this.getFactory().getMinerModuleDAO(

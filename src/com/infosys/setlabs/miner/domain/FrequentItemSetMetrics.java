@@ -8,6 +8,7 @@ package com.infosys.setlabs.miner.domain;
 public class FrequentItemSetMetrics {
 	private int filesInFrequentItemSet;
 	private int files;
+	private int filesModified;
 	private int modules;
 	private double modularization;
 	private MinerInfo minerInfo;
@@ -26,7 +27,7 @@ public class FrequentItemSetMetrics {
 	 * Returns the percentage of the included files in the frequent item set
 	 */
 	public double includedFilesInFrequentItemSet() {
-		return 100 * (double) filesInFrequentItemSet / (double) files;
+		return 100 * (double) filesInFrequentItemSet / (double) filesModified;
 	}
 
 	/**
@@ -65,6 +66,25 @@ public class FrequentItemSetMetrics {
 	 */
 	public void setFiles(int files) {
 		this.files = files;
+	}
+
+	/**
+	 * Returns the number of code files that have been modified at least n times
+	 * 
+	 * @return files
+	 */
+	public int getFilesModified() {
+		return filesModified;
+	}
+
+	/**
+	 * Sets the number of code files that have been modified at least n times
+	 * 
+	 * @param files
+	 *            number of code files modified at least n times
+	 */
+	public void setFilesModified(int filesModified) {
+		this.filesModified = filesModified;
 	}
 
 	/**
@@ -127,12 +147,15 @@ public class FrequentItemSetMetrics {
 	@Override
 	public String toString() {
 		String result = "";
-		result += "Code files:\t\t\t\t" + getFiles() + "\n";
-		result += "Modules:\t\t\t\t" + getModules() + "\n";		
+		result += "Code files\t\t\t\t" + getFiles() + "\n";
+		result += "Code files with >= " + minerInfo.getMinimumModifications()
+				+ " commits:\t\t" + getFilesModified() + "\n";
 		result += "Files in frequent item set:\t\t"
 				+ getFilesInFrequentItemSet() + "\n";
-		result += "Percentage of files in FIS:\t\t"
-				+ includedFilesInFrequentItemSet() + "%\n";
+		result += "Code files with >= " + minerInfo.getMinimumModifications()
+				+ " commits in FIS:\t" + includedFilesInFrequentItemSet()
+				+ "%\n";
+		result += "Modules:\t\t\t\t" + getModules() + "\n";
 		result += "Modularization:\t\t\t\t" + getModularization() + "\n\n";
 		result += "Miner information\n";
 		result += minerInfo;
