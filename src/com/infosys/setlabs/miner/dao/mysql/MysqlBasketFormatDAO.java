@@ -58,7 +58,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				String modifiedFiles = rs.getString("modified_files");
-				// TODO: Don't save commits |files| > n
+				// TODO: Don't save commits with |files| > n
 				if (modifiedFiles.split(" ").length > 1) {
 					if (revs) {
 						out.write("# " + rs.getString("rev") + "\n");

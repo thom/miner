@@ -60,8 +60,9 @@ public class MinerManager extends Manager {
 	 */
 	public void apriori(String exec, double minSupport, int minItems,
 			File transactions, File frequentItemSets) throws MinerException {
-		String[] cmd = {exec, "-s" + minSupport, "-m" + minItems, "-n5",
-				"-v:%a %4S", transactions.getAbsolutePath(),
+		// TODO: add support for "-n"
+		String[] cmd = {exec, "-s" + minSupport, "-m" + minItems, "-v:%a %4S",
+				transactions.getAbsolutePath(),
 				frequentItemSets.getAbsolutePath()};
 		ExecWrapper apriori = new ExecWrapper(cmd, System.out, System.out);
 		apriori.setDebug(true);
