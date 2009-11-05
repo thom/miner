@@ -23,8 +23,8 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 	/**
 	 * Table name
 	 */
-	public static String tableName = "files";	
-	
+	public static String tableName = "files";
+
 	/**
 	 * Creates a new DAO
 	 * 
@@ -49,6 +49,12 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		return "SELECT file_id, type FROM file_types WHERE file_id = ?";
 	}
 
+	protected String selectModifications() {
+		return "SELECT f.id, COUNT(f.id) as modifications "
+				+ "FROM files f, actions a "
+				+ "WHERE a.file_id = f.id AND f.id = ? GROUP BY f.id";
+	}
+
 	protected String selectPathSQL() {
 		return String.format("SELECT f.id, f.file_name, fl.parent_id "
 				+ "FROM %s f, file_links fl "
@@ -56,7 +62,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 	}
 
 	protected String selectNewestFileNameSQL() {
-		return "SELECT * FROM file_copies "
+		return "SELECT new_file_name FROM file_copies "
 				+ "WHERE new_file_name <> '' AND from_id = to_id AND from_id = ? "
 				+ "ORDER BY to_id, from_commit_id";
 	}
@@ -84,6 +90,9 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 
 				// Set type
 				result.setType(getFileType(id));
+
+				// Set number of modifications
+				result.setModifications(getModifications(id));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -119,6 +128,9 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 
 				// Set type
 				repositoryFile.setType(getFileType(id));
+
+				// Set number of modifications
+				repositoryFile.setModifications(getModifications(id));
 
 				result.add(repositoryFile);
 			}
@@ -157,8 +169,29 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		return result;
 	}
 
-	@Override
-	public String getPath(int id) throws DataAccessException {
+	private int getModifications(int id) throws DataAccessException {
+		int result = 0;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = this.getConnection().prepareStatement(selectModifications());
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				result = rs.getInt("modifications");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
+
+		return result;
+	}
+
+	private String getPath(int id) throws DataAccessException {
 		return getPathRecursive(id);
 	}
 
