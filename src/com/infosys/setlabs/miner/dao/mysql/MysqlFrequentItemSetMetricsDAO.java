@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.FrequentItemSetMetricsDAO;
+import com.infosys.setlabs.miner.domain.FrequentItemSetMetrics;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 
 /**
@@ -50,16 +51,16 @@ public class MysqlFrequentItemSetMetricsDAO extends JdbcDAO
 	}
 
 	@Override
-	public double modularization() {
-		// TODO: return FrequentItemSetMetrics object and set FIS size
-		double result = 0;
+	public FrequentItemSetMetrics metrics() {
+		FrequentItemSetMetrics result = new FrequentItemSetMetrics();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			ps = this.getConnection().prepareStatement(modularizationSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				result = rs.getDouble("modularization");
+				 result.setModularization(rs.getDouble("modularization"));
+				 result.setFrequentItemSets(rs.getInt("fis_count"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

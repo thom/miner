@@ -1,5 +1,6 @@
 package com.infosys.setlabs.miner.dao;
 
+import com.infosys.setlabs.miner.domain.FrequentItemSetMetrics;
 
 /**
  * FrequentItemSetMetrics DAO
@@ -23,9 +24,9 @@ public interface FrequentItemSetMetricsDAO {
 	public void setName(String name);
 
 	/**
-	 * Returns modularization metrics
+	 * Returns metrics
 	 * 
-	 * @return modularization
+	 * @return FrequentItemSetMetrics
 	 */
-	public double modularization();
+	public FrequentItemSetMetrics metrics();
 }

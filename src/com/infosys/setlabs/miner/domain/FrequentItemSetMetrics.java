@@ -10,18 +10,9 @@ public class FrequentItemSetMetrics {
 	private int files;
 	private int filesModified;
 	private int modules;
+	private int frequentItemSets;
 	private double modularization;
 	private MinerInfo minerInfo;
-
-	/**
-	 * Creates a new metrics object
-	 * 
-	 * @param minerInfo
-	 *            miner info
-	 */
-	public FrequentItemSetMetrics(MinerInfo minerInfo) {
-		this.minerInfo = minerInfo;
-	}
 
 	/**
 	 * Returns the percentage of the included files in the frequent item set
@@ -107,6 +98,25 @@ public class FrequentItemSetMetrics {
 	}
 
 	/**
+	 * Returns number of frequent item sets
+	 * 
+	 * @return frequentItemSets
+	 */
+	public int getFrequentItemSets() {
+		return frequentItemSets;
+	}
+
+	/**
+	 * Sets number of frequent item sets
+	 * 
+	 * @param frequentItemSets
+	 *            number of frequent item sets to set
+	 */
+	public void setFrequentItemSets(int frequentItemSets) {
+		this.frequentItemSets = frequentItemSets;
+	}
+
+	/**
 	 * Returns the modularization metrics
 	 * 
 	 * @return modularization
@@ -156,6 +166,7 @@ public class FrequentItemSetMetrics {
 				+ " commits in FIS:\t" + includedFilesInFrequentItemSet()
 				+ "%\n";
 		result += "Modules:\t\t\t\t" + getModules() + "\n";
+		result += "Frequent item sets:\t\t\t" + getFrequentItemSets() + "\n";
 		result += "Modularization:\t\t\t\t" + getModularization() + "\n\n";
 		result += "Miner information\n";
 		result += minerInfo;

@@ -82,18 +82,17 @@ public class FrequentItemSetMetricsManager extends Manager {
 			throws MinerException {
 		FrequentItemSetMetrics result = null;
 		DAOTransaction trans = null;
-		MinerInfo minerInfo = null;
 		try {
 			// Start new transaction
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			// Get miner info
-			minerInfo = this.getFactory().getMinerInfoDAO(this.getSession())
-					.find(getName());
-
-			// Create new metrics
-			result = new FrequentItemSetMetrics(minerInfo);
+			// Get metrics
+			FrequentItemSetMetricsDAO frequentItemSetMetricsDAO = this
+					.getFactory().getFrequentItemSetMetricsDAO(
+							this.getSession());
+			frequentItemSetMetricsDAO.setName(getName());
+			result = frequentItemSetMetricsDAO.metrics();
 
 			// Set frequent item set files
 			FrequentItemSetDAO frequentItemSetDAO = this.getFactory()
@@ -113,14 +112,9 @@ public class FrequentItemSetMetricsManager extends Manager {
 					this.getSession());
 			result.setModules(moduleDAO.count());
 
-			// Set modularization
-			FrequentItemSetMetricsDAO frequentItemSetMetricsDAO = this
-					.getFactory().getFrequentItemSetMetricsDAO(
-							this.getSession());
-			frequentItemSetMetricsDAO.setName(getName());
-			result
-					.setModularization(frequentItemSetMetricsDAO
-							.modularization());
+			// Set miner info
+			result.setMinerInfo(this.getFactory().getMinerInfoDAO(
+					this.getSession()).find(getName()));
 
 			// Commit transaction
 			trans.commit();
