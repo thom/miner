@@ -36,7 +36,8 @@ public class MinerManager extends Manager {
 	 * 
 	 * @throws MinerException
 	 */
-	public void format(File transactions, boolean revs) throws MinerException {
+	public void format(File transactions, boolean revs, int modifications)
+			throws MinerException {
 		BasketFormatManager basketFormatManager = null;
 
 		try {
@@ -44,7 +45,7 @@ public class MinerManager extends Manager {
 			basketFormatManager = new BasketFormatManager(connectionArgs);
 
 			// Format and write transactions to a file
-			basketFormatManager.format(transactions, revs);
+			basketFormatManager.format(transactions, revs, modifications);
 		} finally {
 			if (basketFormatManager != null) {
 				basketFormatManager.close();

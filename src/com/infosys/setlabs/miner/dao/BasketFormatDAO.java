@@ -15,7 +15,10 @@ public interface BasketFormatDAO {
 	 *            file to write the output to
 	 * @param revs
 	 *            should revisions be written in comments?
+	 * @param modifications
+	 *            minimum number of commits (modifications) a code file has to
+	 *            have to be added to the transactions file (default: >= 4)
 	 * @return transactions in basket format
 	 */
-	public void format(File output, boolean revs);
+	public void format(File output, boolean revs, int modifications);
 }

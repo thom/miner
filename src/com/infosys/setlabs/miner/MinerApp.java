@@ -185,7 +185,10 @@ public class MinerApp {
 	private void format() throws MinerException {
 		if (!transactionsExistedBefore || values.isOverwriteFiles()) {
 			System.out.println("EXEC  > format");
-			minerManager.format(transactions, values.isRevs());
+			System.out.println("Minimum number of commits for a file is "
+					+ values.getModifications());
+			minerManager.format(transactions, values.isRevs(), values
+					.getModifications());
 			System.out.println("DONE  > format\n");
 		} else {
 			System.out
@@ -193,7 +196,6 @@ public class MinerApp {
 							+ transactions.getAbsolutePath() + "\n");
 		}
 	}
-
 	/**
 	 * Call apriori with the specified parameters
 	 * 
@@ -346,6 +348,9 @@ public class MinerApp {
 
 		@Option(name = "-v", aliases = {"--revs", "--revisions"}, usage = "add revision IDs as comments above transactions in the transactions file")
 		private boolean revs = false;
+
+		@Option(name = "-c", aliases = {"--commits", "--min-commits"}, usage = "minimum number of commits (modifications) a code file has to have to be added to the transactions file (default: >= 4)")
+		private int modifications = 4;
 
 		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
 		private Mode mode = Mode.ALL;
@@ -500,6 +505,16 @@ public class MinerApp {
 		 */
 		public boolean isRevs() {
 			return revs;
+		}
+
+		/**
+		 * Returns the minimum number of commits (modifications, >=) a code file
+		 * has to have to be added to the transactions file
+		 * 
+		 * @return modifications
+		 */
+		public int getModifications() {
+			return modifications;
 		}
 
 		/**

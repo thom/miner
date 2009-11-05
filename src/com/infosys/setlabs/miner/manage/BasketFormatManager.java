@@ -28,12 +28,15 @@ public class BasketFormatManager extends Manager {
 	/**
 	 * Formats transactions to basket format
 	 * 
+	 * @param output
 	 * @param revs
 	 *            should revisions be written in comments?
+	 * @param modifications
 	 * @return transactions in basket format
 	 * @throws MinerException
 	 */
-	public void format(File output, boolean revs) throws MinerException {
+	public void format(File output, boolean revs, int modifications)
+			throws MinerException {
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
@@ -41,7 +44,7 @@ public class BasketFormatManager extends Manager {
 			trans.begin();
 
 			this.getFactory().getBasketFormatDAO(this.getSession()).format(
-					output, revs);
+					output, revs, modifications);
 
 			// Commit transaction
 			trans.commit();

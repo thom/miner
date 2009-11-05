@@ -33,7 +33,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 				+ "GROUP_CONCAT(m.id ORDER BY m.id ASC SEPARATOR \" \") "
 				+ "AS modified_files "
 				+ "FROM actions a, miner_files m, scmlog s "
-				+ "WHERE m.id = a.file_id AND a.commit_id = s.id "
+				+ "WHERE m.id = a.file_id AND a.commit_id = s.id AND m.modifications >= ? "
 				+ "GROUP BY a.commit_id ORDER BY a.commit_id ASC";
 	}
 
@@ -42,7 +42,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 	}
 
 	@Override
-	public void format(File output, boolean revs) {
+	public void format(File output, boolean revs, int modifications) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
@@ -54,6 +54,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 					setGroupConcatMaxLenSQL());
 			ps.execute();
 			ps = this.getConnection().prepareStatement(selectSQL());
+			ps.setInt(1, modifications);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				String modifiedFiles = rs.getString("modified_files");
