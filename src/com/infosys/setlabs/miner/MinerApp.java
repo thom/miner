@@ -207,7 +207,8 @@ public class MinerApp {
 				frequentItemSets.createNewFile();
 				System.out.println("EXEC  > apriori");
 				minerManager.apriori(values.getExec(), values.getMinSupport(),
-						values.getMinItems(), transactions, frequentItemSets);
+						values.getMinItems(), values.getMaxItems(),
+						transactions, frequentItemSets);
 				System.out.println("DONE  > apriori\n");
 			} catch (IOException e) {
 				throw new MinerException(e);
@@ -338,6 +339,9 @@ public class MinerApp {
 		@Option(name = "-i", aliases = {"--items", "--minimum-items"}, usage = "minimum number of items per set, can also be configured in conf/setup.properties")
 		private int minItems;
 
+		@Option(name = "-mi", aliases = {"--maximum-items"}, usage = "maximum number of items per set, can also be configured in conf/setup.properties (-1: no limit)")
+		private int maxItems;
+
 		@Option(name = "-s", aliases = {"--support", "--minimum-support"}, usage = "minimum support of a set (positive: percentage, negative: absolute number), can also be configured in conf/setup.properties")
 		private float minSupport;
 
@@ -385,6 +389,15 @@ public class MinerApp {
 				throw new MinerException(
 						new Exception(
 								"Wrong value for 'apriori.minItems' in 'setup.properties'"));
+			}
+
+			try {
+				maxItems = Integer.parseInt(setup
+						.getProperty("apriori.maxItems"));
+			} catch (NumberFormatException e) {
+				throw new MinerException(
+						new Exception(
+								"Wrong value for 'apriori.maxItems' in 'setup.properties'"));
 			}
 
 			try {
@@ -467,6 +480,15 @@ public class MinerApp {
 		 */
 		public int getMinItems() {
 			return minItems;
+		}
+
+		/**
+		 * Returns value of maximum number of items per set
+		 * 
+		 * @return maxItems
+		 */
+		public int getMaxItems() {
+			return maxItems;
 		}
 
 		/**

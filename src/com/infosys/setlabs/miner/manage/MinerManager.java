@@ -59,11 +59,11 @@ public class MinerManager extends Manager {
 	 * @throws MinerException
 	 */
 	public void apriori(String exec, double minSupport, int minItems,
-			File transactions, File frequentItemSets) throws MinerException {
-		// TODO: add support for "-n"
-		String[] cmd = {exec, "-s" + minSupport, "-m" + minItems, "-v:%a %4S",
-				transactions.getAbsolutePath(),
-				frequentItemSets.getAbsolutePath()};
+			int maxItems, File transactions, File frequentItemSets)
+			throws MinerException {
+		String[] cmd = getCmd(exec, minSupport, minItems, maxItems,
+				transactions.getAbsolutePath(), frequentItemSets
+						.getAbsolutePath());
 		ExecWrapper apriori = new ExecWrapper(cmd, System.out, System.out);
 		apriori.setDebug(true);
 		apriori.run();
@@ -73,6 +73,21 @@ public class MinerManager extends Manager {
 				error += str + " ";
 			}
 			throw new MinerException(new Exception(error));
+		}
+	}
+
+	// Java arrays really suck!
+	private String[] getCmd(String exec, double minSupport, int minItems,
+			int maxItems, String transactions, String frequentItemSets) {
+		if (maxItems > -1) {
+			String[] result = {exec, "-s" + minSupport, "-m" + minItems,
+					"-n" + maxItems, "-v:%a %4S", transactions,
+					frequentItemSets};
+			return result;
+		} else {
+			String[] result = {exec, "-s" + minSupport, "-m" + minItems,
+					"-v:%a %4S", transactions, frequentItemSets};
+			return result;
 		}
 	}
 
