@@ -17,5 +17,5 @@ public interface BasketFormatDAO {
 	 *            should revisions be written in comments?
 	 * @return transactions in basket format
 	 */
-	public String format(File output, boolean revs);
+	public void format(File output, boolean revs);
 }

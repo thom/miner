@@ -29,44 +29,40 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 	}
 
 	protected String selectSQL() {
-		return "SELECT a.commit_id, s.rev, m.id AS modified_files "
+		return "SELECT a.commit_id, s.rev, "
+				+ "GROUP_CONCAT(m.id ORDER BY m.id ASC SEPARATOR \" \") "
+				+ "AS modified_files "
 				+ "FROM actions a, miner_files m, scmlog s "
 				+ "WHERE m.id = a.file_id AND a.commit_id = s.id "
-				+ "ORDER BY a.commit_id ASC, modified_files ASC";
+				+ "GROUP BY a.commit_id ORDER BY a.commit_id ASC";
+	}
+
+	protected String setGroupConcatMaxLenSQL() {
+		return "SET GLOBAL group_concat_max_len = 1000000000";
 	}
 
 	@Override
-	public String format(File output, boolean revs) {
-		String result = "";
+	public void format(File output, boolean revs) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-
-		int counter = -1;
 
 		try {
 			// Open output file
 			BufferedWriter out = new BufferedWriter(new FileWriter(output));
 
+			ps = this.getConnection().prepareStatement(
+					setGroupConcatMaxLenSQL());
+			ps.execute();
 			ps = this.getConnection().prepareStatement(selectSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				int commitId = rs.getInt("commit_id");
-
-				if (counter < commitId) {
-					if (counter > -1) {
-						out.write("\n");
-					}
-
-					counter = commitId;
-
+				String modifiedFiles = rs.getString("modified_files");
+				if (modifiedFiles.split(" ").length > 1) {
 					if (revs) {
 						out.write("# " + rs.getString("rev") + "\n");
 					}
-				} else {
-					out.write(" ");
+					out.write(modifiedFiles + "\n");
 				}
-
-				out.write(rs.getString("modified_files"));
 			}
 
 			// Close output file
@@ -79,6 +75,5 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);
 		}
-		return result;
 	}
 }
