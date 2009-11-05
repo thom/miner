@@ -7,7 +7,9 @@ import java.util.LinkedList;
 import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
+import com.infosys.setlabs.miner.dao.CommitDAO;
 import com.infosys.setlabs.miner.dao.CommitMetricsDAO;
+import com.infosys.setlabs.miner.domain.Commit;
 import com.infosys.setlabs.miner.domain.CommitMetrics;
 import com.infosys.setlabs.miner.domain.CommitMetrics.IdType;
 
@@ -63,6 +65,8 @@ public class CommitMetricsManager extends Manager {
 	public CommitMetrics commitMetrics(String range, IdType idType)
 			throws MinerException {
 		CommitMetrics result = null;
+		Commit startCommit = null;
+		Commit stopCommit = null;
 		DAOTransaction trans = null;
 
 		String[] ids = range.split(":");
@@ -78,34 +82,18 @@ public class CommitMetricsManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			// Create new metrics
-			result = new CommitMetrics();
-
-			// Set modularization
 			CommitMetricsDAO commitMetricsDAO = this.getFactory()
 					.getCommitMetricsDAO(this.getSession());
 
-			switch (idType) {
-				case ID :
-					try {
-						result.setModularization(commitMetricsDAO
-								.modularization(Integer.parseInt(start),
-										Integer.parseInt(stop)));
-					} catch (NumberFormatException e) {
-						throw new MinerException(new Exception("'" + start
-								+ "' and/or '" + stop + "' are not valid IDs"));
-					}
-					break;
-				case REV :
-					result.setModularization(commitMetricsDAO
-							.modularizationRevs(start, stop));
-					break;
-				case TAG :
-					result.setModularization(commitMetricsDAO
-							.modularizationTags(start, stop));
-					break;
-			}
+			// Get commits
+			startCommit = getCommit(start, idType);
+			stopCommit = getCommit(stop, idType);
 
+			// Get metrics
+			result = commitMetricsDAO.metrics(startCommit.getId(), stopCommit
+					.getId());
+
+			// Set information about commits
 			result.setStart(start);
 			result.setStop(stop);
 			result.setIdType(idType);
@@ -122,6 +110,36 @@ public class CommitMetricsManager extends Manager {
 			}
 			throw new MinerException(de);
 		}
+		return result;
+	}
+
+	private Commit getCommit(String id, IdType idType) throws MinerException,
+			DataAccessException {
+		Commit result = null;
+		CommitDAO commitDAO = this.getFactory().getCommitDAO(this.getSession());
+
+		switch (idType) {
+			case ID :
+				try {
+					result = commitDAO.find(Integer.parseInt(id));
+				} catch (NumberFormatException e) {
+					throw new MinerException(new Exception("'" + id
+							+ "' is not a valid ID"));
+				}
+				break;
+			case REV :
+				result = commitDAO.findByRev(id);
+				break;
+			case TAG :
+				result = commitDAO.findByTag(id);
+				break;
+		}
+
+		if (result == null) {
+			throw new MinerException(new Exception("No such "
+					+ idType.toString() + " '" + id + "'"));
+		}
+
 		return result;
 	}
 }

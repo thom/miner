@@ -6,13 +6,31 @@ public class CommitMetrics {
 	private String stop;
 	private IdType idType;
 	private double modularization;
+	private int commits;
+
 	private boolean csv;
 
 	/**
 	 * ID types
 	 */
 	public enum IdType {
-		ID, REV, TAG
+		ID {
+			public String toString() {
+				return "commit ID";
+			}
+		},
+
+		REV {
+			public String toString() {
+				return "revision";
+			}
+		},
+
+		TAG {
+			public String toString() {
+				return "tag";
+			}
+		}
 	}
 
 	/**
@@ -111,6 +129,25 @@ public class CommitMetrics {
 	}
 
 	/**
+	 * Returns the number of commits with more than one code file
+	 * 
+	 * @return commits
+	 */
+	public int getCommits() {
+		return commits;
+	}
+
+	/**
+	 * Set the number of commits with more than one code file
+	 * 
+	 * @param commits
+	 *            number of commits with more than one code file to set
+	 */
+	public void setCommits(int commits) {
+		this.commits = commits;
+	}
+
+	/**
 	 * Should the output be comma separated values?
 	 * 
 	 * @return csv
@@ -133,15 +170,16 @@ public class CommitMetrics {
 	public String toString() {
 		String result = "";
 		if (isCSV()) {
-			result += getId() + "," + getModularization() + "," + "From "
-					+ getStart() + " to " + getStop() + " (" + getIdType()
-					+ "s)";
+			result += getId() + "," + getModularization() + "," + getCommits()
+					+ "," + "From " + getStart() + " to " + getStop() + " ("
+					+ getIdType() + "s)";
 		} else {
 			result += "ID:\t\t" + getId() + "\n";
 			result += "Start ID:\t" + getStart() + "\n";
 			result += "Stop ID:\t" + getStop() + "\n";
 			result += "ID types:\t" + getIdType() + "s\n";
-			result += "Modularization:\t" + getModularization();
+			result += "Modularization:\t" + getModularization() + "\n";
+			result += "Commits:\t" + getCommits();
 		}
 		return result;
 	}

@@ -1,6 +1,7 @@
 package com.infosys.setlabs.miner.dao;
 
 import com.infosys.setlabs.dao.DataAccessException;
+import com.infosys.setlabs.miner.domain.CommitMetrics;
 
 /**
  * CommitMetrics DAO
@@ -9,41 +10,15 @@ import com.infosys.setlabs.dao.DataAccessException;
  */
 public interface CommitMetricsDAO {
 	/**
-	 * Returns modularization metrics
+	 * Returns commit metrics
 	 * 
 	 * @param start
-	 *            commit ID to start with
+	 *            ID to start with
 	 * @param stop
-	 *            commit ID to stop with
-	 * @return modularization
+	 *            ID to stop with
+	 * @return CommitMetrics
 	 * @throws DataAccessException
 	 */
-	public double modularization(int start, int stop)
-			throws DataAccessException;
-
-	/**
-	 * Returns modularization metrics
-	 * 
-	 * @param startRev
-	 *            commit revision to start with
-	 * @param stopRev
-	 *            commit revision to stop with
-	 * @return modularization
-	 * @throws DataAccessException
-	 */
-	public double modularizationRevs(String startRev, String stopRev)
-			throws DataAccessException;
-
-	/**
-	 * Returns modularization metrics
-	 * 
-	 * @param startTag
-	 *            commit tag to start with
-	 * @param stopTag
-	 *            commit tag to stop with
-	 * @return modularization
-	 * @throws DataAccessException
-	 */
-	public double modularizationTags(String startTag, String stopTag)
+	public CommitMetrics metrics(int start, int stop)
 			throws DataAccessException;
 }
