@@ -183,7 +183,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				addItems(result);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataAccessException(e);
 		} finally {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);
@@ -212,7 +212,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				result.add(frequentItemSet);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataAccessException(e);
 		} finally {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);
@@ -266,7 +266,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			}
 			psItem.executeBatch();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataAccessException(e);
 		} finally {
 			this.closeStatement(psItemSet);
 			this.closeStatement(psItem);
@@ -276,7 +276,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	}
 
 	@Override
-	public void setNumberOfModulesTouched(int id) {
+	public void setNumberOfModulesTouched(int id) throws DataAccessException {
 		PreparedStatement psUpdate = null;
 		PreparedStatement psModulesTouched = null;
 		ResultSet rs = null;
@@ -296,7 +296,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			psUpdate.setInt(2, id);
 			psUpdate.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataAccessException(e);
 		} finally {
 			this.closeStatement(psUpdate);
 			this.closeStatement(psModulesTouched);
@@ -315,7 +315,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 				result = rs.getInt("count");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataAccessException(e);
 		} finally {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);
@@ -334,7 +334,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 			ps.executeUpdate(createFrequentItemSetsTableSQL());
 			ps.executeUpdate(createFrequentItemsTableSQL());
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataAccessException(e);
 		} finally {
 			this.closeStatement(ps);
 		}
@@ -357,7 +357,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 						.addItem(minerFileDAO.find(rs.getInt("file_id")));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataAccessException(e);
 		} finally {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);

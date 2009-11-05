@@ -70,6 +70,7 @@ public interface FrequentItemSetDAO
 	 * @param id
 	 *            ID of frequent item set to set the number of modules touched
 	 *            for
+	 * @throws DataAccessException
 	 */
-	void setNumberOfModulesTouched(int id);
+	void setNumberOfModulesTouched(int id) throws DataAccessException;
 }
