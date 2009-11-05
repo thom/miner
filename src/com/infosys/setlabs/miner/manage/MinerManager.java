@@ -33,11 +33,12 @@ public class MinerManager extends Manager {
 
 	/**
 	 * Formats revision history into basket format
+	 * @param minSize 
 	 * 
 	 * @throws MinerException
 	 */
-	public void format(File transactions, boolean revs, int modifications)
-			throws MinerException {
+	public void format(File transactions, boolean revs, int modifications,
+			int minSize, int maxSize) throws MinerException {
 		BasketFormatManager basketFormatManager = null;
 
 		try {
@@ -45,7 +46,8 @@ public class MinerManager extends Manager {
 			basketFormatManager = new BasketFormatManager(connectionArgs);
 
 			// Format and write transactions to a file
-			basketFormatManager.format(transactions, revs, modifications);
+			basketFormatManager.format(transactions, revs, modifications,
+					minSize, maxSize);
 		} finally {
 			if (basketFormatManager != null) {
 				basketFormatManager.close();

@@ -188,7 +188,8 @@ public class MinerApp {
 			System.out.println("Minimum number of commits for a file is "
 					+ values.getModifications());
 			minerManager.format(transactions, values.isRevs(), values
-					.getModifications());
+					.getModifications(), values.getMinCommitSize(), values
+					.getMaxCommitSize());
 			System.out.println("DONE  > format\n");
 		} else {
 			System.out
@@ -333,29 +334,35 @@ public class MinerApp {
 		@Option(name = "-info", aliases = {"--info", "--information"}, usage = "show information about last mining")
 		private boolean info;
 
-		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of apriori frequent item set miner, can also be configured in conf/setup.properties")
+		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of apriori frequent item set miner")
 		private String exec;
 
-		@Option(name = "-i", aliases = {"--items", "--minimum-items"}, usage = "minimum number of items per set, can also be configured in conf/setup.properties")
+		@Option(name = "-i", aliases = {"--items", "--minimum-items"}, usage = "minimum number of items per set")
 		private int minItems;
 
-		@Option(name = "-mi", aliases = {"--maximum-items"}, usage = "maximum number of items per set, can also be configured in conf/setup.properties (-1: no limit)")
+		@Option(name = "-mi", aliases = {"--maximum-items"}, usage = "maximum number of items per set (-1: no limit)")
 		private int maxItems;
 
-		@Option(name = "-s", aliases = {"--support", "--minimum-support"}, usage = "minimum support of a set (positive: percentage, negative: absolute number), can also be configured in conf/setup.properties")
+		@Option(name = "-s", aliases = {"--support", "--minimum-support"}, usage = "minimum support of a set (positive: percentage, negative: absolute number)")
 		private float minSupport;
 
 		@Option(name = "-k", aliases = {"--keep", "--keep-files"}, usage = "keep all generated files")
-		private boolean keepFiles = true;
+		private boolean keepFiles;
 
 		@Option(name = "-o", aliases = {"--overwrite", "--overwrite-files"}, usage = "overwrite all generated files, even those given as input")
-		private boolean overwriteFiles = false;
+		private boolean overwriteFiles;
 
 		@Option(name = "-v", aliases = {"--revs", "--revisions"}, usage = "add revision IDs as comments above transactions in the transactions file")
-		private boolean revs = false;
+		private boolean revs;
 
-		@Option(name = "-c", aliases = {"--commits", "--min-commits"}, usage = "minimum number of commits (modifications) a code file has to have to be added to the transactions file (default: >= 4)")
+		@Option(name = "-c", aliases = {"--commits", "--min-modifications"}, usage = "minimum number of commits (modifications) a code file has to have to be added to the transactions file (default: >= 4)")
 		private int modifications = 4;
+
+		@Option(name = "-mic", aliases = {"--min-commit-size"}, usage = "minimum size of commits (number of code files) added to the transactions file (has to be >= 2, default: 2)")
+		private int minCommitSize = 2;
+
+		@Option(name = "-mc", aliases = {"--max-commit-size"}, usage = "maximum size of commits (number of code files) added to the transactions file (-1: no limit (default))")
+		private int maxCommitSize = -1;
 
 		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
 		private Mode mode = Mode.ALL;
@@ -538,6 +545,26 @@ public class MinerApp {
 		 */
 		public int getModifications() {
 			return modifications;
+		}
+
+		/**
+		 * Minimum size of commits (number of code files) added to the
+		 * transactions file (has to be >= 2)
+		 * 
+		 * @return minCommitSize
+		 */
+		public int getMinCommitSize() {
+			return minCommitSize;
+		}
+
+		/**
+		 * Maximum size of commits (number of code files) added to the
+		 * transactions file
+		 * 
+		 * @return maxCommitSize
+		 */
+		public int getMaxCommitSize() {
+			return maxCommitSize;
 		}
 
 		/**

@@ -18,7 +18,12 @@ public interface BasketFormatDAO {
 	 * @param modifications
 	 *            minimum number of commits (modifications) a code file has to
 	 *            have to be added to the transactions file (default: >= 4)
+	 * @param minSize
+	 *            minimum commit size
+	 * @param maxSize
+	 *            maximum commit size
 	 * @return transactions in basket format
 	 */
-	public void format(File output, boolean revs, int modifications);
+	public void format(File output, boolean revs, int modifications,
+			int minSize, int maxSize);
 }

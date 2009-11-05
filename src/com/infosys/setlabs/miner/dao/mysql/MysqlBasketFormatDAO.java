@@ -42,7 +42,13 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 	}
 
 	@Override
-	public void format(File output, boolean revs, int modifications) {
+	public void format(File output, boolean revs, int modifications,
+			int minSize, int maxSize) {
+		// Minimum size has to be at least 2
+		if (minSize < 2) {
+			minSize = 2;
+		}
+
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
@@ -58,11 +64,18 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				String modifiedFiles = rs.getString("modified_files");
-				// TODO: Don't save commits with |files| > n
-				if (modifiedFiles.split(" ").length > 1) {
+
+				int commitSize = modifiedFiles.split(" ").length;
+
+				// 'commitSize' needs to be bigger than 1.
+				// If 'maxSize' is smaller than 0, there's no maximum size
+				// If 'maxSize' is bigger than -1, the maximum size is 'maxSize'
+				if (commitSize >= minSize
+						&& (maxSize < 0 || (maxSize > -1 && commitSize <= maxSize))) {
 					if (revs) {
 						out.write("# " + rs.getString("rev") + "\n");
 					}
+
 					out.write(modifiedFiles + "\n");
 				}
 			}
