@@ -167,7 +167,7 @@ public class RepositoryFile {
 		result += "File name:\t" + getFileName() + "\n";
 		result += "Path:\t\t" + getPath() + "\n";
 		result += "Directory:\t" + getDirectory() + "\n";
-		result += "Type:\t\t" + getType().toString() + "\n";
+		result += "Type:\t\t" + getType().toString().toLowerCase() + "\n";
 		result += "Modifications:\t" + getModifications();
 		return result;
 	}
