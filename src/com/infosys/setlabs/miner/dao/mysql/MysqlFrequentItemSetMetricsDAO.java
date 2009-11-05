@@ -33,10 +33,10 @@ public class MysqlFrequentItemSetMetricsDAO extends JdbcDAO
 		String tableName = MysqlFrequentItemSetDAO.frequentItemSetsPrefix
 				+ getName();
 
-		return String.format("SELECT (SUM(1 - IF(modules_touched = 1,"
-				+ "0,(modules_touched) / (size))) / "
-				+ "(SELECT COUNT(id) FROM %s)) AS modularization FROM %s",
-				tableName, tableName);
+		return String.format("SELECT "
+				+ "@r := (SELECT COUNT(id) FROM %s) AS fis_count, "
+				+ "(SUM(1 - (modules_touched - 1) / (size - 1)) / @r) "
+				+ "AS modularization FROM %s", tableName, tableName);
 	}
 
 	@Override
@@ -51,6 +51,7 @@ public class MysqlFrequentItemSetMetricsDAO extends JdbcDAO
 
 	@Override
 	public double modularization() {
+		// TODO: return FrequentItemSetMetrics object and set FIS size
 		double result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;

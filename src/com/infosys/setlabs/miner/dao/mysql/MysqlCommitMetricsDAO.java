@@ -27,19 +27,18 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 	}
 
 	protected String modularizationSQL() {
-		String result = String.format("SELECT (SUM(1 - IF(modules_touched = 1,"
-				+ "0,(modules_touched) / (miner_files_touched))) / "
-				+ "(SELECT COUNT(id) FROM %s "
-				+ "WHERE miner_files_touched > 0 "
-				+ "AND id BETWEEN ? AND ?)) AS modularization FROM %s "
-				+ "WHERE miner_files_touched > 0 AND id BETWEEN ? AND ?",
-				MysqlCommitDAO.tableName, MysqlCommitDAO.tableName); 
-		//System.out.println(result);		
-		return result;
+		String filter = "WHERE miner_files_touched > 1 AND id BETWEEN ? AND ?";
+		return String.format("SELECT "
+				+ "@r := (SELECT COUNT(id) FROM %s %s) AS commit_count, "
+				+ "(SUM(1 - (modules_touched) / (miner_files_touched)) / @r) "
+				+ "AS modularization FROM %s %s", MysqlCommitDAO.tableName,
+				filter, MysqlCommitDAO.tableName, filter);
 	}
+	
 	@Override
 	public double modularization(int start, int stop)
 			throws DataAccessException {
+		// TODO: return CommitMetrics object and set number of commits
 		double result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
