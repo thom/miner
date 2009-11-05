@@ -130,7 +130,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 				repositoryFile.setType(getFileType(id));
 
 				// Set number of modifications
-				repositoryFile.setModifications(getModifications(id));
+				repositoryFile.setModifications(getModifications(id));				
 
 				result.add(repositoryFile);
 			}

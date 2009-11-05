@@ -12,17 +12,19 @@ public class MinerFile extends RepositoryFile {
 	 * Creates a new miner file
 	 */
 	public MinerFile() {
-		super();
 	}
 
 	/**
-	 * Creates a new miner file with id <code>id</code>
+	 * Creates a new miner file
 	 * 
-	 * @param id
-	 *            ID to create
+	 * @param repositoryFile
 	 */
-	public MinerFile(int id) {
-		super(id);
+	public MinerFile(RepositoryFile repositoryFile) {
+		setId(repositoryFile.getId());
+		setFileName(repositoryFile.getFileName());
+		setPath(repositoryFile.getPath());
+		setType(repositoryFile.getType());
+		setModifications(repositoryFile.getModifications());
 	}
 
 	/**

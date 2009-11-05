@@ -72,9 +72,10 @@ public class ShiatsuManager extends Manager {
 
 			// Fill separate miner files table with randomized modules
 			randomizeModules();
-			
+
 			// Create commits table
-			CommitDAO commitDAO = this.getFactory().getCommitDAO(this.getSession());
+			CommitDAO commitDAO = this.getFactory().getCommitDAO(
+					this.getSession());
 			commitDAO.createTables();
 
 			// Create miner info table
@@ -111,19 +112,15 @@ public class ShiatsuManager extends Manager {
 					this.getSession());
 			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
 					this.getSession());
-			ModuleDAO moduleDAO = this.getFactory()
-					.getMinerModuleDAO(this.getSession());
+			ModuleDAO moduleDAO = this.getFactory().getMinerModuleDAO(
+					this.getSession());
 			MinerFile minerFile = null;
 			Module module = null;
 
 			for (RepositoryFile repositoryFile : repositoryFileDAO.findAll()) {
 				// Only save code files in miner file table
 				if (repositoryFile.isCode()) {
-					minerFile = new MinerFile();
-					minerFile.setId(repositoryFile.getId());
-					minerFile.setFileName(repositoryFile.getFileName());
-					minerFile.setPath(repositoryFile.getPath());
-					minerFile.setType(repositoryFile.getType());
+					minerFile = new MinerFile(repositoryFile);
 
 					if (!(-1 <= maxModuleDepth && maxModuleDepth < maxModuleDepthPattern.length)) {
 						throw new MinerException(new Exception(
