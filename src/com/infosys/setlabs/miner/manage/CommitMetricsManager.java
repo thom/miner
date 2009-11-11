@@ -65,8 +65,8 @@ public class CommitMetricsManager extends Manager {
 	public CommitMetrics commitMetrics(String range, IdType idType)
 			throws MinerException {
 		CommitMetrics result = null;
-		Commit startCommit = null;
-		Commit stopCommit = null;
+		int startId = 0;
+		int stopId = 0;
 		DAOTransaction trans = null;
 
 		String[] ids = range.split(":");
@@ -86,12 +86,16 @@ public class CommitMetricsManager extends Manager {
 					.getCommitMetricsDAO(this.getSession());
 
 			// Get commits
-			startCommit = getCommit(start, idType);
-			stopCommit = getCommit(stop, idType);
+			startId = getCommit(start, idType).getId();
+			stopId = getCommit(stop, idType).getId();
+
+			// If ID type is TAG, we need to extract 1 from the stop ID
+			if (stopId > startId && idType == IdType.TAG) {
+				stopId -= 1;
+			}
 
 			// Get metrics
-			result = commitMetricsDAO.metrics(startCommit.getId(), stopCommit
-					.getId());
+			result = commitMetricsDAO.metrics(startId, stopId);
 
 			// Set information about commits
 			result.setStart(start);
