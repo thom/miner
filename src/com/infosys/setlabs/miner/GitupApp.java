@@ -89,14 +89,14 @@ public class GitupApp {
 			System.out.println("EXEC  > gitup\n");
 
 			if (values.isShowBranches()) {
-				gitupManager.showBranches(values.getRepository());
+				gitupManager.showBranchesAndTags(values.getRepository());
 			} else {
 				generateLog();
 				createDatabase();
 				cvsanaly();
 			}
 
-			System.out.println("DONE  > gitup");
+			System.out.println("\nDONE  > gitup");
 		} finally {
 			if (gitupManager != null) {
 				gitupManager.close();

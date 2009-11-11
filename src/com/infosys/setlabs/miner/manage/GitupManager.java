@@ -29,16 +29,24 @@ public class GitupManager extends Manager {
 	}
 
 	/**
-	 * Call "git branch -a" in the repository directory
+	 * Call "git branch -a" and "git tag" in the repository directory
 	 * 
 	 * @param repository
 	 *            repository directory
 	 */
-	public void showBranches(String repository) throws MinerException {
-		String[] cmd = {"git", "branch", "-a"};
-		ExecWrapper git = new ExecWrapper(cmd, System.out, System.out);
-		git.setDir(new File(repository));
-		git.run();
+	public void showBranchesAndTags(String repository) throws MinerException {
+		String[] branchCmd = {"git", "branch", "-a"};
+		ExecWrapper gitBranch = new ExecWrapper(branchCmd, System.out,
+				System.out);
+		gitBranch.setDir(new File(repository));
+		System.out.println("Branches:\n");
+		gitBranch.run();
+
+		String[] tagsCmd = {"git", "tag"};
+		ExecWrapper gitTags = new ExecWrapper(tagsCmd, System.out, System.out);
+		gitTags.setDir(new File(repository));
+		System.out.println("\nTags:\n");
+		gitTags.run();
 	}
 
 	/**
@@ -53,16 +61,31 @@ public class GitupManager extends Manager {
 	 */
 	public void generateLog(String repository, String branch, File log,
 			boolean all) throws MinerException {
-		String[] cmd = getCmd(branch, all);
+		String[] logCmd = getCmd(branch, all);
+		String[] replaceCmd = {"sed", "-i",
+				"1s@tag: refs/tags/@refs/remotes/origin/@",
+				log.getAbsolutePath()};
 		try {
-			ExecWrapper git = new ExecWrapper(cmd, new PrintStream(log),
+			ExecWrapper git = new ExecWrapper(logCmd, new PrintStream(log),
 					System.out);
 			git.setDir(new File(repository));
 			git.setDebug(true);
 			git.run();
 			if (git.getExitVal() != 0) {
 				String error = "Error while executing ";
-				for (String str : cmd) {
+				for (String str : logCmd) {
+					error += str + " ";
+				}
+				throw new MinerException(new Exception(error));
+			}
+
+			ExecWrapper sed = new ExecWrapper(replaceCmd, System.out,
+					System.out);
+			sed.setDebug(true);
+			sed.run();
+			if (sed.getExitVal() != 0) {
+				String error = "Error while executing ";
+				for (String str : replaceCmd) {
 					error += str + " ";
 				}
 				throw new MinerException(new Exception(error));
@@ -71,7 +94,6 @@ public class GitupManager extends Manager {
 			throw new MinerException(e);
 		}
 	}
-
 	// Java arrays really suck!
 	private String[] getCmd(String branch, boolean all) {
 		if (all) {
