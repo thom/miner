@@ -88,15 +88,16 @@ public class GitupApp {
 
 			System.out.println("EXEC  > gitup\n");
 
-			if (values.isShowBranches()) {
+			if (values.isShowBranchesAndTags()) {
 				gitupManager.showBranchesAndTags(values.getRepository());
+				System.out.println();
 			} else {
 				generateLog();
 				createDatabase();
 				cvsanaly();
 			}
 
-			System.out.println("\nDONE  > gitup");
+			System.out.println("DONE  > gitup");
 		} finally {
 			if (gitupManager != null) {
 				gitupManager.close();
@@ -181,8 +182,8 @@ public class GitupApp {
 		@Argument(index = 0, usage = "URI of the git repository", metaVar = "REPOSITORY", required = true)
 		private String repository;
 
-		@Option(name = "-s", aliases = {"--show, --show-branches"}, usage = "list the branches of the repository")
-		private boolean showBranches;
+		@Option(name = "-s", aliases = {"--show, --show-branches-tags"}, usage = "list the branches and tags of the repository")
+		private boolean showBranchesAndTags;
 
 		@Option(name = "-b", aliases = {"--branch"}, usage = "branch to use (default: master)", metaVar = "BRANCH")
 		private String branch = "master";
@@ -243,12 +244,12 @@ public class GitupApp {
 		}
 
 		/**
-		 * Returns showBranches
+		 * Returns showBranchesAndTags
 		 * 
-		 * @return showBranches
+		 * @return showBranchesAndTags
 		 */
-		public boolean isShowBranches() {
-			return showBranches;
+		public boolean isShowBranchesAndTags() {
+			return showBranchesAndTags;
 		}
 
 		/**
