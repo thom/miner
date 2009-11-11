@@ -33,10 +33,10 @@ public class MysqlFrequentItemSetMetricsDAO extends JdbcDAO
 	protected String modularizationSQL() {
 		String tableName = MysqlFrequentItemSetDAO.frequentItemSetsPrefix
 				+ getName();
-
 		return String.format("SELECT "
 				+ "@r := (SELECT COUNT(id) FROM %s) AS fis_count, "
-				+ "(SUM(1 - (modules_touched - 1) / (size - 1)) / @r) "
+				+ "(SUM(1 - (IF(modules_touched = 1, 0, "
+				+ "(modules_touched / size)))) / @r) "
 				+ "AS modularization FROM %s", tableName, tableName);
 	}
 
@@ -59,8 +59,8 @@ public class MysqlFrequentItemSetMetricsDAO extends JdbcDAO
 			ps = this.getConnection().prepareStatement(modularizationSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				 result.setModularization(rs.getDouble("modularization"));
-				 result.setFrequentItemSets(rs.getInt("fis_count"));
+				result.setModularization(rs.getDouble("modularization"));
+				result.setFrequentItemSets(rs.getInt("fis_count"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
