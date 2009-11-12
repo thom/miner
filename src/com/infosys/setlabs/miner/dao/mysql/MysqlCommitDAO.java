@@ -38,7 +38,7 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 				+ "(SELECT COUNT(DISTINCT file_id) "
 				+ "FROM actions a, miner_files f "
 				+ "WHERE a.commit_id = l.id AND a.file_id = f.id) "
-				+ "as miner_files_touched, "
+				+ "AS miner_files_touched, "
 				+ "(SELECT COUNT(DISTINCT f.miner_module_id) "
 				+ "FROM actions a, miner_files f "
 				+ "WHERE a.commit_id = l.id AND f.id = a.file_id) "
@@ -67,7 +67,7 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 				+ "tag_revisions tr WHERE t.id = tr.tag_id "
 				+ "AND t.name = \"%s\")", tableName, tag);
 	}
-	
+
 	protected String selectAllSQL() {
 		return String.format("SELECT id, rev, message, miner_files_touched, "
 				+ "modules_touched FROM %s", tableName);

@@ -50,7 +50,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 	}
 
 	protected String selectModifications() {
-		return "SELECT f.id, COUNT(f.id) as modifications "
+		return "SELECT f.id, COUNT(f.id) AS modifications "
 				+ "FROM files f, actions a "
 				+ "WHERE a.file_id = f.id AND f.id = ? GROUP BY f.id";
 	}
@@ -130,7 +130,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 				repositoryFile.setType(getFileType(id));
 
 				// Set number of modifications
-				repositoryFile.setModifications(getModifications(id));				
+				repositoryFile.setModifications(getModifications(id));
 
 				result.add(repositoryFile);
 			}

@@ -123,13 +123,13 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	}
 
 	protected String countFilesSQL() {
-		return String.format("SELECT COUNT(*) count "
-				+ "FROM (SELECT DISTINCT(file_id) FROM %s) as files",
+		return String.format("SELECT COUNT(*) AS count "
+				+ "FROM (SELECT DISTINCT(file_id) FROM %s) AS files",
 				frequentItemsTableName());
 	}
 
 	protected String getModulesTouchedSQL() {
-		return String.format("SELECT COUNT(*) count "
+		return String.format("SELECT COUNT(*) AS count "
 				+ "FROM (SELECT DISTINCT f.miner_module_id FROM %s fi, "
 				+ "%s f WHERE f.id = fi.file_id "
 				+ "AND fi.miner_frequent_item_set_id = ?) AS modules_count",
