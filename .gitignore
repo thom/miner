@@ -2,5 +2,6 @@ bin/com
 *.fis
 *.tra
 *.cm
+*.log
 doc/
 minings/
