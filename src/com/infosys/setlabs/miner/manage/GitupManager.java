@@ -62,8 +62,10 @@ public class GitupManager extends Manager {
 	public void generateLog(String repository, String branch, File log,
 			boolean all) throws MinerException {
 		String[] logCmd = getCmd(branch, all);
+		// TODO: replace also if there is no "tags: " and if there are several
+		// tags
 		String[] replaceCmd = {"sed", "-i",
-				"1s@tag: refs/tags/@refs/remotes/origin/@",
+				"1s|tags: refs/tags/|refs/remotes/origin/|",
 				log.getAbsolutePath()};
 		try {
 			ExecWrapper git = new ExecWrapper(logCmd, new PrintStream(log),
@@ -71,29 +73,18 @@ public class GitupManager extends Manager {
 			git.setDir(new File(repository));
 			git.setDebug(true);
 			git.run();
-			if (git.getExitVal() != 0) {
-				String error = "Error while executing ";
-				for (String str : logCmd) {
-					error += str + " ";
-				}
-				throw new MinerException(new Exception(error));
-			}
+			git.checkReturnValue(0);
 
 			ExecWrapper sed = new ExecWrapper(replaceCmd, System.out,
 					System.out);
 			sed.setDebug(true);
 			sed.run();
-			if (sed.getExitVal() != 0) {
-				String error = "Error while executing ";
-				for (String str : replaceCmd) {
-					error += str + " ";
-				}
-				throw new MinerException(new Exception(error));
-			}
+			sed.checkReturnValue(0);
 		} catch (FileNotFoundException e) {
 			throw new MinerException(e);
 		}
 	}
+
 	// Java arrays really suck!
 	private String[] getCmd(String branch, boolean all) {
 		if (all) {
@@ -160,12 +151,6 @@ public class GitupManager extends Manager {
 		ExecWrapper cvsanaly = new ExecWrapper(cmd, System.out, System.out);
 		cvsanaly.setDebug(true);
 		cvsanaly.run();
-		if (cvsanaly.getExitVal() != 0) {
-			String error = "Error while executing ";
-			for (String str : cmd) {
-				error += str + " ";
-			}
-			throw new MinerException(new Exception(error));
-		}
+		cvsanaly.checkReturnValue(0);
 	}
 }

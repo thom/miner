@@ -89,8 +89,8 @@ public class ExecWrapper extends Thread {
 		try {
 			if (debug) {
 				System.out.println("Running " + getCmd());
-			}			
-			
+			}
+
 			Process p = Runtime.getRuntime().exec(cmd, envp, dir);
 
 			// Any error message?
@@ -111,6 +111,16 @@ public class ExecWrapper extends Thread {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void checkReturnValue(int value) throws MinerException {
+		if (this.exitVal != value) {
+			String errorMsg = "Error while executing ";
+			for (String str : cmd) {
+				errorMsg += str + " ";
+			}
+			throw new MinerException(new Exception(errorMsg));
 		}
 	}
 }

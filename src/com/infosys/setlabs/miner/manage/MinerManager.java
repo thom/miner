@@ -69,13 +69,7 @@ public class MinerManager extends Manager {
 		ExecWrapper apriori = new ExecWrapper(cmd, System.out, System.out);
 		apriori.setDebug(true);
 		apriori.run();
-		if (apriori.getExitVal() != 0) {
-			String error = "Error while executing ";
-			for (String str : cmd) {
-				error += str + " ";
-			}
-			throw new MinerException(new Exception(error));
-		}
+		apriori.checkReturnValue(0);
 	}
 
 	// Java arrays really suck!
