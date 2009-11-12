@@ -27,6 +27,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 	}
 
 	protected String createTableSQL() {
+		// TODO: Add additional fields
 		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
 				+ "name VARCHAR(255) NOT NULL DEFAULT 'default', "
@@ -35,9 +36,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 				+ "minimum_items INT, minimum_support DOUBLE, "
 				+ "has_randomized_modules BOOLEAN, UNIQUE(name(255))"
 				// MyISAM doesn't support foreign keys, but as
-				// CVSAnaly2 uses
-				// MyISAM
-				// too, we can't use InnoDB here
+				// CVSAnaly2 uses MyISAM too, we can't use InnoDB here
 				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", tableName);
 	}
 

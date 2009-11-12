@@ -13,21 +13,27 @@ public class MinerInfo {
 
 	// Name
 	private String name;
-
-	// Minimum modifications
-	private int minimumModifications;
-
+	
 	// Did the data already get a massage?
-	private boolean shiatsu;
+	private boolean shiatsu;	
 
 	// Maximum module depth used
 	private int maximumModuleDepth;
+	
+	// Minimum modifications
+	private int minimumModifications;
+	
+	// TODO: Minimum commit size	
+	
+	// TODO: Maximum commit size	
 
 	// Was miner run already?
 	private boolean miner;
 
 	// Minimum number of items per frequent item set
 	private int minimumItems;
+	
+	// TODO: Maximum number of items per frequent item set	
 
 	// Minimum support
 	private double minimumSupport;
@@ -72,26 +78,7 @@ public class MinerInfo {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	/**
-	 * Returns minimum modifications of code files
-	 * 
-	 * @return minimumModifications
-	 */
-	public int getMinimumModifications() {
-		return minimumModifications;
-	}
-
-	/**
-	 * Sets minimum modifications of code files
-	 * 
-	 * @param minimumModifications
-	 *            minimum modifications of code files
-	 */
-	public void setMinimumModifications(int minimumModifications) {
-		this.minimumModifications = minimumModifications;
-	}
-
+	
 	/**
 	 * Did the data already get a massage?
 	 * 
@@ -128,6 +115,25 @@ public class MinerInfo {
 	 */
 	public void setMaximumModuleDepth(int maximumModuleDepth) {
 		this.maximumModuleDepth = maximumModuleDepth;
+	}	
+
+	/**
+	 * Returns minimum modifications of code files
+	 * 
+	 * @return minimumModifications
+	 */
+	public int getMinimumModifications() {
+		return minimumModifications;
+	}
+
+	/**
+	 * Sets minimum modifications of code files
+	 * 
+	 * @param minimumModifications
+	 *            minimum modifications of code files
+	 */
+	public void setMinimumModifications(int minimumModifications) {
+		this.minimumModifications = minimumModifications;
 	}
 
 	/**
@@ -207,6 +213,7 @@ public class MinerInfo {
 
 	@Override
 	public String toString() {
+		// TODO: print additional information
 		String result = "";
 		result += "Name\t\t\t\t\t" + getName() + "\n";
 		result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";

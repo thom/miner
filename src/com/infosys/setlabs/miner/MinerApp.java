@@ -248,10 +248,13 @@ public class MinerApp {
 				|| minerInfo.hasRandomizedModules() != values.isRandomize()) {
 			minerInfo.setName(values.getName());
 			minerInfo.setMinimumModifications(values.getModifications());
+			// TODO: set minimum commit size
+			// TODO: set maximum commit size
 			minerInfo.setShiatsu(true);
 			minerInfo.setMaximumModuleDepth(maximumModuleDepth);
 			minerInfo.setMiner(true);
 			minerInfo.setMinimumItems(values.getMinItems());
+			// TODO: set maximum items
 			minerInfo.setMinimumSupport(values.getMinSupport());
 			minerInfo.setRandomizedModules(values.isRandomize());
 
