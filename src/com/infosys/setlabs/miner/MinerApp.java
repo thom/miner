@@ -187,6 +187,10 @@ public class MinerApp {
 			System.out.println("EXEC  > format");
 			System.out.println("Minimum number of commits for a file is "
 					+ values.getModifications());
+			System.out.println("Minimum commits for a transaction is "
+					+ values.getMinCommitSize());
+			System.out.println("Maximum commits for a transaction is "
+					+ values.getMaxCommitSize());
 			minerManager.format(transactions, values.isRevs(), values
 					.getModifications(), values.getMinCommitSize(), values
 					.getMaxCommitSize());
@@ -248,13 +252,13 @@ public class MinerApp {
 				|| minerInfo.hasRandomizedModules() != values.isRandomize()) {
 			minerInfo.setName(values.getName());
 			minerInfo.setMinimumModifications(values.getModifications());
-			// TODO: set minimum commit size
-			// TODO: set maximum commit size
+			minerInfo.setMinimumCommitSize(values.getMinCommitSize());
+			minerInfo.setMaximumCommitSize(values.getMaxCommitSize());
 			minerInfo.setShiatsu(true);
 			minerInfo.setMaximumModuleDepth(maximumModuleDepth);
 			minerInfo.setMiner(true);
 			minerInfo.setMinimumItems(values.getMinItems());
-			// TODO: set maximum items
+			minerInfo.setMaximumItems(values.getMaxItems());
 			minerInfo.setMinimumSupport(values.getMinSupport());
 			minerInfo.setRandomizedModules(values.isRandomize());
 
@@ -365,7 +369,7 @@ public class MinerApp {
 		private int minCommitSize = 2;
 
 		@Option(name = "-mc", aliases = {"--max-commit-size"}, usage = "maximum size of commits (number of code files) added to the transactions file (-1: no limit (default))")
-		private int maxCommitSize = -1;
+		private int maxCommitSize = 50;
 
 		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
 		private Mode mode = Mode.ALL;

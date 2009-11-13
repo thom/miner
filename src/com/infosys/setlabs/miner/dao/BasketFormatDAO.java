@@ -2,6 +2,8 @@ package com.infosys.setlabs.miner.dao;
 
 import java.io.File;
 
+import com.infosys.setlabs.dao.DataAccessException;
+
 /**
  * Basket format DAO
  * 
@@ -23,7 +25,8 @@ public interface BasketFormatDAO {
 	 * @param maxSize
 	 *            maximum commit size
 	 * @return transactions in basket format
+	 * @throws DataAccessException 
 	 */
 	public void format(File output, boolean revs, int modifications,
-			int minSize, int maxSize);
+			int minSize, int maxSize) throws DataAccessException;
 }

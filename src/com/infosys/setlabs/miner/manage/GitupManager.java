@@ -62,10 +62,8 @@ public class GitupManager extends Manager {
 	public void generateLog(String repository, String branch, File log,
 			boolean all) throws MinerException {
 		String[] logCmd = getCmd(branch, all);
-		// TODO: replace also if there is no "tags: " and if there are several
-		// tags
 		String[] replaceCmd = {"sed", "-i",
-				"1s|tags: refs/tags/|refs/remotes/origin/|",
+				String.format("1s|[(].*[)]|(refs/remotes/origin/%s)|", branch),
 				log.getAbsolutePath()};
 		try {
 			ExecWrapper git = new ExecWrapper(logCmd, new PrintStream(log),

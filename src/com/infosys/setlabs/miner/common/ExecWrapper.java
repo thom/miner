@@ -9,7 +9,7 @@ import java.io.PrintStream;
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class ExecWrapper extends Thread {
+public class ExecWrapper {
 	private String[] cmd;
 	private String[] envp;
 	private File dir;
@@ -85,7 +85,7 @@ public class ExecWrapper extends Thread {
 	/**
 	 * Executes the program
 	 */
-	public void run() {
+	public void run() throws MinerException {
 		try {
 			if (debug) {
 				System.out.println("Running " + getCmd());
@@ -108,9 +108,9 @@ public class ExecWrapper extends Thread {
 			// Any error?
 			this.exitVal = p.waitFor();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new MinerException(e);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			throw new MinerException(e);
 		}
 	}
 

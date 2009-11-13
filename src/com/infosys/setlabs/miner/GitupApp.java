@@ -98,6 +98,8 @@ public class GitupApp {
 			}
 
 			System.out.println("DONE  > gitup");
+		} catch (MinerException e) {
+			throw e;
 		} finally {
 			if (gitupManager != null) {
 				gitupManager.close();

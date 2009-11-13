@@ -13,27 +13,30 @@ public class MinerInfo {
 
 	// Name
 	private String name;
-	
+
 	// Did the data already get a massage?
-	private boolean shiatsu;	
+	private boolean shiatsu;
 
 	// Maximum module depth used
 	private int maximumModuleDepth;
-	
+
 	// Minimum modifications
 	private int minimumModifications;
-	
-	// TODO: Minimum commit size	
-	
-	// TODO: Maximum commit size	
+
+	// Minimum commit size
+	private int minimumCommitSize;
+
+	// Maximum commit size
+	private int maximumCommitSize;
 
 	// Was miner run already?
 	private boolean miner;
 
 	// Minimum number of items per frequent item set
 	private int minimumItems;
-	
-	// TODO: Maximum number of items per frequent item set	
+
+	// Maximum number of items per frequent item set
+	private int maximumItems;
 
 	// Minimum support
 	private double minimumSupport;
@@ -78,7 +81,7 @@ public class MinerInfo {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Did the data already get a massage?
 	 * 
@@ -115,7 +118,7 @@ public class MinerInfo {
 	 */
 	public void setMaximumModuleDepth(int maximumModuleDepth) {
 		this.maximumModuleDepth = maximumModuleDepth;
-	}	
+	}
 
 	/**
 	 * Returns minimum modifications of code files
@@ -134,6 +137,42 @@ public class MinerInfo {
 	 */
 	public void setMinimumModifications(int minimumModifications) {
 		this.minimumModifications = minimumModifications;
+	}
+
+	/**
+	 * Returns the minimum commit size
+	 * 
+	 * @return minimumCommitSize
+	 */
+	public int getMinimumCommitSize() {
+		return minimumCommitSize;
+	}
+
+	/**
+	 * Sets minimum commit size
+	 * 
+	 * @param minimumCommitSize
+	 */
+	public void setMinimumCommitSize(int minimumCommitSize) {
+		this.minimumCommitSize = minimumCommitSize;
+	}
+
+	/**
+	 * Returns the maximum commit size
+	 * 
+	 * @return maximumCommitSize
+	 */
+	public int getMaximumCommitSize() {
+		return maximumCommitSize;
+	}
+
+	/**
+	 * Sets maximum commit size
+	 * 
+	 * @param maximumCommitSize
+	 */
+	public void setMaximumCommitSize(int maximumCommitSize) {
+		this.maximumCommitSize = maximumCommitSize;
 	}
 
 	/**
@@ -171,6 +210,24 @@ public class MinerInfo {
 	 */
 	public void setMinimumItems(int minimumItems) {
 		this.minimumItems = minimumItems;
+	}
+
+	/**
+	 * Returns the maximum items per frequent item set
+	 * 
+	 * @return maximumItems
+	 */
+	public int getMaximumItems() {
+		return maximumItems;
+	}
+
+	/**
+	 * Sets maximum items per frequent item set
+	 * 
+	 * @param maximumItems
+	 */
+	public void setMaximumItems(int maximumItems) {
+		this.maximumItems = maximumItems;
 	}
 
 	/**
@@ -213,14 +270,17 @@ public class MinerInfo {
 
 	@Override
 	public String toString() {
-		// TODO: print additional information
 		String result = "";
 		result += "Name\t\t\t\t\t" + getName() + "\n";
 		result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
-		result += "Maximum module depth:\t\t\t" + getMaximumModuleDepth()
+		result += "Maximum module depth:\t\t\t" + val(getMaximumModuleDepth())
 				+ "\n";
 		result += "Minimum modifications (commits):\t"
 				+ getMinimumModifications() + "\n";
+		result += "Minimum commit size:\t\t\t" + val(getMinimumCommitSize())
+				+ "\n";
+		result += "Maximum commit size:\t\t\t" + val(getMaximumCommitSize())
+				+ "\n";
 		result += "Miner run?\t\t\t\t" + isMiner();
 		if (isMiner()) {
 			result += "\nRandomized?\t\t\t\t" + hasRandomizedModules() + "\n";
@@ -231,8 +291,15 @@ public class MinerInfo {
 				result += getMinimumSupport() + "% (relative)\n";
 			}
 			result += "Minimum items per frequent item set:\t"
-					+ getMinimumItems();
+					+ val(getMinimumItems()) + "\n";
+			result += "Maximum items per frequent item set:\t"
+					+ val(getMaximumItems());
+
 		}
 		return result;
+	}
+
+	private String val(int value) {
+		return value == -1 ? "Not set" : Integer.toString(value);
 	}
 }

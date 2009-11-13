@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.BasketFormatDAO;
 
@@ -43,10 +44,11 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 
 	@Override
 	public void format(File output, boolean revs, int modifications,
-			int minSize, int maxSize) {
+			int minSize, int maxSize) throws DataAccessException {
 		// Minimum size has to be at least 2
 		if (minSize < 2) {
-			minSize = 2;
+			throw new DataAccessException(new Exception(
+					"Minimum commit size has to be at least 2"));
 		}
 
 		PreparedStatement ps = null;
