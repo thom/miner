@@ -1,6 +1,6 @@
 package com.infosys.setlabs.miner;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.kohsuke.args4j.Argument;
@@ -12,8 +12,8 @@ import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.FrequentItemSetMetrics;
 import com.infosys.setlabs.miner.domain.MinerInfo;
-import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.FrequentItemSetMetricsManager;
+import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerInfoManager;
 
 /**
@@ -56,7 +56,6 @@ public class FrequentItemSetMetricsApp {
 
 		// Set connection arguments
 		connectionArgs = new HashMap<String, String>();
-		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
 		connectionArgs.put("server", values.getServer());
@@ -76,29 +75,56 @@ public class FrequentItemSetMetricsApp {
 		MinerInfoManager minerInfoManager = null;
 
 		try {
-			// Connect to the database
-			frequentItemSetMetricsManager = new FrequentItemSetMetricsManager(
-					connectionArgs);
-			minerInfoManager = new MinerInfoManager(connectionArgs);
-			FrequentItemSetMetrics fim = null;
+			int id = 1;
+			for (String mining : values.getMinings()) {
+				// Set database and mining name
+				String[] minings = mining.split(":");
+				String database = minings[0];
+				String name = minings.length == 1
+						? MinerInfo.defaultName
+						: minings[1];
 
-			// TODO: Read name from command line
-			MinerInfo minerInfo = minerInfoManager.find("default");
+				// Configure database name
+				connectionArgs.put("database", database);
 
-			if (minerInfo == null
-					|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
+				// Connect to the database
+				frequentItemSetMetricsManager = new FrequentItemSetMetricsManager(
+						connectionArgs);
+				minerInfoManager = new MinerInfoManager(connectionArgs);
+
+				// Find miner info
+				MinerInfo minerInfo = minerInfoManager.find(name);
+
+				if (minerInfo == null
+						|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
+					minerInfoManager.close();
+					throw new MinerException(new Exception("No mining called '"
+							+ name + "' in database '" + database
+							+ "' found. The data must be mined before "
+							+ "running metrics."));
+				}
+
+				// Get frequent item set metrics
+				frequentItemSetMetricsManager.setName(name);
+				frequentItemSetMetricsManager.setMinimumModifications(minerInfo
+						.getMinimumModifications());
+				FrequentItemSetMetrics fim = frequentItemSetMetricsManager
+						.frequentItemSetMetrics();
+				fim.setCSV(values.isCSV());
+				fim.setId(id);
+				id++;
+				fim.setDatabase(database);
+
+				// Print frequent item set metrics
+				System.out.println(fim);
+				if (!values.isCSV()) {
+					System.out
+							.println("-------------------------------------------------------------------------------");
+				}
+
+				frequentItemSetMetricsManager.close();
 				minerInfoManager.close();
-				throw new MinerException(new Exception("No mining called '"
-						+ "default" + "' found. The data must be mined before "
-						+ "running metrics."));
 			}
-
-			frequentItemSetMetricsManager.setName("default");
-			frequentItemSetMetricsManager.setMinimumModifications(minerInfo
-					.getMinimumModifications());
-			fim = frequentItemSetMetricsManager.frequentItemSetMetrics();
-			fim.setCSV(values.isCSV());
-			System.out.println(fim);
 		} finally {
 			if (frequentItemSetMetricsManager != null) {
 				frequentItemSetMetricsManager.close();
@@ -108,7 +134,6 @@ public class FrequentItemSetMetricsApp {
 			}
 		}
 	}
-
 	/**
 	 * Starts frequent item set info
 	 * 
@@ -127,8 +152,8 @@ public class FrequentItemSetMetricsApp {
 	 * @author Thomas Weibel <thomas_401709@infosys.com>
 	 */
 	private static class CommandLineValues {
-		@Argument(index = 0, usage = "name of the database to connect to", metaVar = "DATABASE", required = true)
-		private String db;
+		@Argument(index = 0, usage = "minings to get metrics for", metaVar = "DATABASE1:MINING1 [DATABASE2:MINING2...]", required = true)
+		private ArrayList<String> minings;
 
 		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
 		private String user;
@@ -146,12 +171,12 @@ public class FrequentItemSetMetricsApp {
 		private boolean csv = false;
 
 		/**
-		 * Returns database name
+		 * Returns minings
 		 * 
-		 * @return db
+		 * @return minings
 		 */
-		public String getDb() {
-			return db;
+		public ArrayList<String> getMinings() {
+			return minings;
 		}
 
 		/**

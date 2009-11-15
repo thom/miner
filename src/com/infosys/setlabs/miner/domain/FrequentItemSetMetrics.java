@@ -7,6 +7,7 @@ package com.infosys.setlabs.miner.domain;
  */
 public class FrequentItemSetMetrics {
 	private int id;
+	private String database;
 	private int filesInFrequentItemSet;
 	private int files;
 	private int filesModified;
@@ -34,6 +35,25 @@ public class FrequentItemSetMetrics {
 	 */
 	public int getId() {
 		return id;
+	}
+
+	/**
+	 * Sets the database
+	 * 
+	 * @param database
+	 *            database to set
+	 */
+	public void setDatabase(String database) {
+		this.database = database;
+	}
+
+	/**
+	 * Returns the database
+	 * 
+	 * @return database
+	 */
+	public String getDatabase() {
+		return database;
 	}
 
 	/**
@@ -200,18 +220,18 @@ public class FrequentItemSetMetrics {
 		String result = "";
 		if (isCSV()) {
 			if (getId() == 1) {
-				result += "Code files,Code files with >= "
+				result += "ID,Database,Code files,Code files with >= "
 						+ minerInfo.getMinimumModifications()
 						+ " commits,Files in frequent item sets,Code files with >= "
 						+ minerInfo.getMinimumModifications()
-						+ "commits in FIS (%),Modules,Frequent item sets,"
+						+ " commits in FIS (%),Modules,Frequent item sets,"
 						+ "Modularization," + minerInfo.getCSVLabels() + "\n";
 			}
-			result += getFiles() + "," + getFilesModified() + ","
-					+ getFilesInFrequentItemSet() + ","
-					+ includedFilesInFrequentItemSet() + "," + getModules()
-					+ "," + getFrequentItemSets() + "," + getModularization()
-					+ ",";
+			result += getId() + "," + getDatabase() + "," + getFiles() + ","
+					+ getFilesModified() + "," + getFilesInFrequentItemSet()
+					+ "," + includedFilesInFrequentItemSet() + ","
+					+ getModules() + "," + getFrequentItemSets() + ","
+					+ getModularization() + ",";
 			minerInfo.setCSV(true);
 		} else {
 			result += "Code files\t\t\t\t" + getFiles() + "\n";

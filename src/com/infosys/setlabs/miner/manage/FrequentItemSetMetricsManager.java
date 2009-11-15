@@ -74,8 +74,6 @@ public class FrequentItemSetMetricsManager extends Manager {
 	/**
 	 * Returns metrics for a given mining
 	 * 
-	 * @param name
-	 *            mining to get metrics for
 	 * @return metrics
 	 */
 	public FrequentItemSetMetrics frequentItemSetMetrics()
