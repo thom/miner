@@ -82,49 +82,23 @@ public class FrequentItemSetMetricsApp {
 			minerInfoManager = new MinerInfoManager(connectionArgs);
 			FrequentItemSetMetrics fim = null;
 
-			if (values.isAll()) {
-				Collection<MinerInfo> minerInfos = minerInfoManager.findAll();
+			// TODO: Read name from command line
+			MinerInfo minerInfo = minerInfoManager.find("default");
 
-				if (minerInfos == null) {
-					throw new MinerException(new Exception(
-							"No minings found. The data must be mined before "
-									+ "running metrics."));
-				}
-
-				for (MinerInfo minerInfo : minerInfos) {
-					frequentItemSetMetricsManager.setName(minerInfo.getName());
-					frequentItemSetMetricsManager
-							.setMinimumModifications(minerInfo
-									.getMinimumModifications());
-					fim = frequentItemSetMetricsManager
-							.frequentItemSetMetrics();
-					fim.setCSV(values.isCSV());
-					System.out.println(fim);
-					if (!values.isCSV()) {
-						System.out
-								.println("-------------------------------------------------------------------------------");
-					}
-				}
-			} else {
-				MinerInfo minerInfo = minerInfoManager.find(values.getName());
-
-				if (minerInfo == null
-						|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
-					minerInfoManager.close();
-					throw new MinerException(
-							new Exception(
-									"No mining called '"
-											+ values.getName()
-											+ "' found. The data must be mined before running metrics."));
-				}
-
-				frequentItemSetMetricsManager.setName(values.getName());
-				frequentItemSetMetricsManager.setMinimumModifications(minerInfo
-						.getMinimumModifications());
-				fim = frequentItemSetMetricsManager.frequentItemSetMetrics();
-				fim.setCSV(values.isCSV());
-				System.out.println(fim);
+			if (minerInfo == null
+					|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
+				minerInfoManager.close();
+				throw new MinerException(new Exception("No mining called '"
+						+ "default" + "' found. The data must be mined before "
+						+ "running metrics."));
 			}
+
+			frequentItemSetMetricsManager.setName("default");
+			frequentItemSetMetricsManager.setMinimumModifications(minerInfo
+					.getMinimumModifications());
+			fim = frequentItemSetMetricsManager.frequentItemSetMetrics();
+			fim.setCSV(values.isCSV());
+			System.out.println(fim);
 		} finally {
 			if (frequentItemSetMetricsManager != null) {
 				frequentItemSetMetricsManager.close();
@@ -167,15 +141,9 @@ public class FrequentItemSetMetricsApp {
 
 		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
-		
+
 		@Option(name = "-c", aliases = {"--csv"}, usage = "should the output be comma separated values?")
-		private boolean csv = false;		
-
-		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
-		private String name = MinerInfo.defaultName;
-
-		@Option(name = "-a", aliases = {"--all"}, usage = "show all metrics")
-		private boolean all = false;
+		private boolean csv = false;
 
 		/**
 		 * Returns database name
@@ -229,24 +197,6 @@ public class FrequentItemSetMetricsApp {
 		 */
 		public boolean isCSV() {
 			return csv;
-		}		
-
-		/**
-		 * Returns the name
-		 * 
-		 * @return name
-		 */
-		public String getName() {
-			return name;
-		}
-
-		/**
-		 * Does the user want all metrics?
-		 * 
-		 * @return all
-		 */
-		public boolean isAll() {
-			return all;
 		}
 	}
 }
