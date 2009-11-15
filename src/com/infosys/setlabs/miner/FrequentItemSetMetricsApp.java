@@ -11,10 +11,8 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.FrequentItemSetMetrics;
-import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.manage.FrequentItemSetMetricsManager;
 import com.infosys.setlabs.miner.manage.Manager;
-import com.infosys.setlabs.miner.manage.MinerInfoManager;
 
 /**
  * Prints out metrics about a certain mining
@@ -72,65 +70,25 @@ public class FrequentItemSetMetricsApp {
 	 */
 	public void print() throws MinerException {
 		FrequentItemSetMetricsManager frequentItemSetMetricsManager = null;
-		MinerInfoManager minerInfoManager = null;
 
 		try {
-			int id = 1;
-			for (String mining : values.getMinings()) {
-				// Set database and mining name
-				String[] minings = mining.split(":");
-				String database = minings[0];
-				String name = minings.length == 1
-						? MinerInfo.defaultName
-						: minings[1];
+			// Get new frequent item set metrics manager
+			frequentItemSetMetricsManager = new FrequentItemSetMetricsManager(
+					connectionArgs);
 
-				// Configure database name
-				connectionArgs.put("database", database);
-
-				// Connect to the database
-				frequentItemSetMetricsManager = new FrequentItemSetMetricsManager(
-						connectionArgs);
-				minerInfoManager = new MinerInfoManager(connectionArgs);
-
-				// Find miner info
-				MinerInfo minerInfo = minerInfoManager.find(name);
-
-				if (minerInfo == null
-						|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
-					minerInfoManager.close();
-					throw new MinerException(new Exception("No mining called '"
-							+ name + "' in database '" + database
-							+ "' found. The data must be mined before "
-							+ "running metrics."));
-				}
-
-				// Get frequent item set metrics
-				frequentItemSetMetricsManager.setName(name);
-				frequentItemSetMetricsManager.setMinimumModifications(minerInfo
-						.getMinimumModifications());
-				FrequentItemSetMetrics fim = frequentItemSetMetricsManager
-						.frequentItemSetMetrics();
-				fim.setCSV(values.isCSV());
-				fim.setId(id);
-				id++;
-				fim.setDatabase(database);
-
-				// Print frequent item set metrics
-				System.out.println(fim);
+			// Get frequent item set metrics
+			for (FrequentItemSetMetrics fism : frequentItemSetMetricsManager
+					.frequentItemSetMetrics(values.getMinings())) {
+				fism.setCSV(values.isCSV());
+				System.out.println(fism);
 				if (!values.isCSV()) {
 					System.out
 							.println("-------------------------------------------------------------------------------");
 				}
-
-				frequentItemSetMetricsManager.close();
-				minerInfoManager.close();
 			}
 		} finally {
 			if (frequentItemSetMetricsManager != null) {
 				frequentItemSetMetricsManager.close();
-			}
-			if (minerInfoManager != null) {
-				minerInfoManager.close();
 			}
 		}
 	}

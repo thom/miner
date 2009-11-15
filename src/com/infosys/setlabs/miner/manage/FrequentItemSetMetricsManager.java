@@ -1,6 +1,8 @@
 package com.infosys.setlabs.miner.manage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
@@ -18,6 +20,7 @@ import com.infosys.setlabs.miner.domain.MinerInfo;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class FrequentItemSetMetricsManager extends Manager {
+	private HashMap<String, String> connectionArgs = null;
 	private String name = MinerInfo.defaultName;
 	private int minimumModifications;
 
@@ -31,6 +34,7 @@ public class FrequentItemSetMetricsManager extends Manager {
 	public FrequentItemSetMetricsManager(HashMap<String, String> connectionArgs)
 			throws MinerException {
 		super(connectionArgs);
+		this.connectionArgs = connectionArgs;
 	}
 
 	/**
@@ -72,11 +76,78 @@ public class FrequentItemSetMetricsManager extends Manager {
 	}
 
 	/**
-	 * Returns metrics for a given mining
+	 * Returns frequent item set metrics for a list of minings
 	 * 
-	 * @return metrics
+	 * @param minings
+	 *            list of minings
+	 * @return LinkedList<FrequentItemSetMetrics>
+	 * @throws MinerException
 	 */
-	public FrequentItemSetMetrics frequentItemSetMetrics()
+	public LinkedList<FrequentItemSetMetrics> frequentItemSetMetrics(
+			ArrayList<String> minings) throws MinerException {
+		LinkedList<FrequentItemSetMetrics> result = new LinkedList<FrequentItemSetMetrics>();
+		FrequentItemSetMetricsManager frequentItemSetMetricsManager = null;
+		MinerInfoManager minerInfoManager = null;
+
+		int id = 1;
+
+		try {
+			for (String mining : minings) {
+				// Set database and mining name
+				String[] arguments = mining.split(":");
+				String database = arguments[0];
+				String name = arguments.length == 1
+						? MinerInfo.defaultName
+						: arguments[1];
+
+				// Configure database name
+				connectionArgs.put("database", database);
+
+				// Connect to the database
+				frequentItemSetMetricsManager = new FrequentItemSetMetricsManager(
+						connectionArgs);
+				minerInfoManager = new MinerInfoManager(connectionArgs);
+
+				// Find miner info
+				MinerInfo minerInfo = minerInfoManager.find(name);
+
+				if (minerInfo == null
+						|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
+					minerInfoManager.close();
+					throw new MinerException(new Exception("No mining called '"
+							+ name + "' in database '" + database
+							+ "' found. The data must be mined before "
+							+ "running metrics."));
+				}
+
+				// Get frequent item set metrics
+				frequentItemSetMetricsManager.setName(name);
+				frequentItemSetMetricsManager.setMinimumModifications(minerInfo
+						.getMinimumModifications());
+				FrequentItemSetMetrics fim = frequentItemSetMetricsManager
+						.frequentItemSetMetrics();
+				fim.setId(id);
+				fim.setDatabase(database);
+				fim.setMinerInfo(minerInfo);
+				result.add(fim);
+				id++;
+
+				frequentItemSetMetricsManager.close();
+				minerInfoManager.close();
+			}
+		} finally {
+			if (frequentItemSetMetricsManager != null) {
+				frequentItemSetMetricsManager.close();
+			}
+			if (minerInfoManager != null) {
+				minerInfoManager.close();
+			}
+		}
+
+		return result;
+	}
+
+	private FrequentItemSetMetrics frequentItemSetMetrics()
 			throws MinerException {
 		FrequentItemSetMetrics result = null;
 		DAOTransaction trans = null;
@@ -109,10 +180,6 @@ public class FrequentItemSetMetricsManager extends Manager {
 			ModuleDAO moduleDAO = this.getFactory().getMinerModuleDAO(
 					this.getSession());
 			result.setModules(moduleDAO.count());
-
-			// Set miner info
-			result.setMinerInfo(this.getFactory().getMinerInfoDAO(
-					this.getSession()).find(getName()));
 
 			// Commit transaction
 			trans.commit();

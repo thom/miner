@@ -234,6 +234,7 @@ public class FrequentItemSetMetrics {
 					+ getModularization() + ",";
 			minerInfo.setCSV(true);
 		} else {
+			result += "Database\t\t\t\t" + getDatabase() + "\n";
 			result += "Code files\t\t\t\t" + getFiles() + "\n";
 			result += "Code files with >= "
 					+ minerInfo.getMinimumModifications() + " commits:\t\t"
