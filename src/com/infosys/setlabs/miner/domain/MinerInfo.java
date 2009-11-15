@@ -44,6 +44,8 @@ public class MinerInfo {
 	// Have the files randomized modules?
 	private boolean randomizedModules;
 
+	private boolean csv;
+
 	/**
 	 * Returns the ID
 	 * 
@@ -268,37 +270,74 @@ public class MinerInfo {
 		this.randomizedModules = randomizedModules;
 	}
 
+	/**
+	 * Should the output be comma separated values?
+	 * 
+	 * @return csv
+	 */
+	public boolean isCSV() {
+		return csv;
+	}
+
+	/**
+	 * Sets whether the output should be comma separated values
+	 * 
+	 * @param csv
+	 *            should the output be comma separated values?
+	 */
+	public void setCSV(boolean csv) {
+		this.csv = csv;
+	}
+
+	public String getCSVLabels() {
+		return "Mining name,Maximum module depth,"
+				+ "Minimum modifications (commits),Minimum commit size,"
+				+ "Maximum commit size,Randomized modularization?,"
+				+ "Minimum support per frequent item set "
+				+ "(negative: absolute; positive: percentage),"
+				+ "Minimum items per frequent item set,"
+				+ "Maximum items per frequent item set";
+	}
+
 	@Override
 	public String toString() {
 		String result = "";
-		result += "Name\t\t\t\t\t" + getName() + "\n";
-		result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
-		result += "Maximum module depth:\t\t\t" + val(getMaximumModuleDepth())
-				+ "\n";
-		result += "Minimum modifications (commits):\t"
-				+ getMinimumModifications() + "\n";
-		result += "Minimum commit size:\t\t\t" + val(getMinimumCommitSize())
-				+ "\n";
-		result += "Maximum commit size:\t\t\t" + val(getMaximumCommitSize())
-				+ "\n";
-		result += "Miner run?\t\t\t\t" + isMiner();
-		if (isMiner()) {
-			result += "\nRandomized?\t\t\t\t" + hasRandomizedModules() + "\n";
-			result += "Minimum support per frequent item set:\t";
-			if (getMinimumSupport() < 0) {
-				result += -getMinimumSupport() + " (absolute)\n";
-			} else {
-				result += getMinimumSupport() + "% (relative)\n";
-			}
-			result += "Minimum items per frequent item set:\t"
-					+ val(getMinimumItems()) + "\n";
-			result += "Maximum items per frequent item set:\t"
-					+ val(getMaximumItems());
+		if (isCSV()) {
+			result += getName() + "," + val(getMaximumModuleDepth()) + ","
+					+ getMinimumModifications() + ","
+					+ val(getMinimumCommitSize()) + ","
+					+ val(getMaximumCommitSize()) + ","
+					+ hasRandomizedModules() + ","
+					+ Math.abs(getMinimumSupport())
+					+ (getMinimumSupport() < 0 ? "" : "%") + ","
+					+ val(getMinimumItems()) + "," + val(getMaximumItems());
+		} else {
+			result += "Name\t\t\t\t\t" + getName() + "\n";
+			result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
+			result += "Maximum module depth:\t\t\t"
+					+ val(getMaximumModuleDepth()) + "\n";
+			result += "Minimum modifications (commits):\t"
+					+ getMinimumModifications() + "\n";
+			result += "Minimum commit size:\t\t\t"
+					+ val(getMinimumCommitSize()) + "\n";
+			result += "Maximum commit size:\t\t\t"
+					+ val(getMaximumCommitSize()) + "\n";
+			result += "Miner run?\t\t\t\t" + isMiner();
+			if (isMiner()) {
+				result += "\nRandomized?\t\t\t\t" + hasRandomizedModules()
+						+ "\n";
+				result += "Minimum support per frequent item set:\t";
+				result += Math.abs(getMinimumSupport())
+						+ (getMinimumSupport() < 0 ? "\n" : "%\n");
+				result += "Minimum items per frequent item set:\t"
+						+ val(getMinimumItems()) + "\n";
+				result += "Maximum items per frequent item set:\t"
+						+ val(getMaximumItems());
 
+			}
 		}
 		return result;
 	}
-
 	private String val(int value) {
 		return value == -1 ? "Not set" : Integer.toString(value);
 	}

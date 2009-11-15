@@ -6,6 +6,7 @@ package com.infosys.setlabs.miner.domain;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class FrequentItemSetMetrics {
+	private int id;
 	private int filesInFrequentItemSet;
 	private int files;
 	private int filesModified;
@@ -13,6 +14,27 @@ public class FrequentItemSetMetrics {
 	private int frequentItemSets;
 	private double modularization;
 	private MinerInfo minerInfo;
+
+	private boolean csv;
+
+	/**
+	 * Sets ID
+	 * 
+	 * @param id
+	 *            ID to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * Returns ID
+	 * 
+	 * @return id
+	 */
+	public int getId() {
+		return id;
+	}
 
 	/**
 	 * Returns the percentage of the included files in the frequent item set
@@ -154,21 +176,60 @@ public class FrequentItemSetMetrics {
 		this.minerInfo = minerInfo;
 	}
 
+	/**
+	 * Should the output be comma separated values?
+	 * 
+	 * @return csv
+	 */
+	public boolean isCSV() {
+		return csv;
+	}
+
+	/**
+	 * Sets whether the output should be comma separated values
+	 * 
+	 * @param csv
+	 *            should the output be comma separated values?
+	 */
+	public void setCSV(boolean csv) {
+		this.csv = csv;
+	}
+
 	@Override
 	public String toString() {
 		String result = "";
-		result += "Code files\t\t\t\t" + getFiles() + "\n";
-		result += "Code files with >= " + minerInfo.getMinimumModifications()
-				+ " commits:\t\t" + getFilesModified() + "\n";
-		result += "Files in frequent item set:\t\t"
-				+ getFilesInFrequentItemSet() + "\n";
-		result += "Code files with >= " + minerInfo.getMinimumModifications()
-				+ " commits in FIS:\t" + includedFilesInFrequentItemSet()
-				+ "%\n";
-		result += "Modules:\t\t\t\t" + getModules() + "\n";
-		result += "Frequent item sets:\t\t\t" + getFrequentItemSets() + "\n";
-		result += "Modularization:\t\t\t\t" + getModularization() + "\n\n";
-		result += "Miner information\n";
+		if (isCSV()) {
+			if (getId() == 1) {
+				result += "Code files,Code files with >= "
+						+ minerInfo.getMinimumModifications()
+						+ " commits,Files in frequent item sets,Code files with >= "
+						+ minerInfo.getMinimumModifications()
+						+ "commits in FIS (%),Modules,Frequent item sets,"
+						+ "Modularization," + minerInfo.getCSVLabels() + "\n";
+			}
+			result += getFiles() + "," + getFilesModified() + ","
+					+ getFilesInFrequentItemSet() + ","
+					+ includedFilesInFrequentItemSet() + "," + getModules()
+					+ "," + getFrequentItemSets() + "," + getModularization()
+					+ ",";
+			minerInfo.setCSV(true);
+		} else {
+			result += "Code files\t\t\t\t" + getFiles() + "\n";
+			result += "Code files with >= "
+					+ minerInfo.getMinimumModifications() + " commits:\t\t"
+					+ getFilesModified() + "\n";
+			result += "Files in frequent item set:\t\t"
+					+ getFilesInFrequentItemSet() + "\n";
+			result += "Code files with >= "
+					+ minerInfo.getMinimumModifications()
+					+ " commits in FIS:\t" + includedFilesInFrequentItemSet()
+					+ "%\n";
+			result += "Modules:\t\t\t\t" + getModules() + "\n";
+			result += "Frequent item sets:\t\t\t" + getFrequentItemSets()
+					+ "\n";
+			result += "Modularization:\t\t\t\t" + getModularization() + "\n\n";
+			result += "Miner information\n";
+		}
 		result += minerInfo;
 		return result;
 	}

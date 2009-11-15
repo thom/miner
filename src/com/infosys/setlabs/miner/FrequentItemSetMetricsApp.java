@@ -10,6 +10,7 @@ import org.kohsuke.args4j.Option;
 
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
+import com.infosys.setlabs.miner.domain.FrequentItemSetMetrics;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.FrequentItemSetMetricsManager;
@@ -79,6 +80,7 @@ public class FrequentItemSetMetricsApp {
 			frequentItemSetMetricsManager = new FrequentItemSetMetricsManager(
 					connectionArgs);
 			minerInfoManager = new MinerInfoManager(connectionArgs);
+			FrequentItemSetMetrics fim = null;
 
 			if (values.isAll()) {
 				Collection<MinerInfo> minerInfos = minerInfoManager.findAll();
@@ -94,10 +96,14 @@ public class FrequentItemSetMetricsApp {
 					frequentItemSetMetricsManager
 							.setMinimumModifications(minerInfo
 									.getMinimumModifications());
-					System.out.println(frequentItemSetMetricsManager
-							.frequentItemSetMetrics());
-					System.out
-							.println("-------------------------------------------------------------------------------");
+					fim = frequentItemSetMetricsManager
+							.frequentItemSetMetrics();
+					fim.setCSV(values.isCSV());
+					System.out.println(fim);
+					if (!values.isCSV()) {
+						System.out
+								.println("-------------------------------------------------------------------------------");
+					}
 				}
 			} else {
 				MinerInfo minerInfo = minerInfoManager.find(values.getName());
@@ -115,8 +121,9 @@ public class FrequentItemSetMetricsApp {
 				frequentItemSetMetricsManager.setName(values.getName());
 				frequentItemSetMetricsManager.setMinimumModifications(minerInfo
 						.getMinimumModifications());
-				System.out.println(frequentItemSetMetricsManager
-						.frequentItemSetMetrics());
+				fim = frequentItemSetMetricsManager.frequentItemSetMetrics();
+				fim.setCSV(values.isCSV());
+				System.out.println(fim);
 			}
 		} finally {
 			if (frequentItemSetMetricsManager != null) {
@@ -160,6 +167,9 @@ public class FrequentItemSetMetricsApp {
 
 		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
+		
+		@Option(name = "-c", aliases = {"--csv"}, usage = "should the output be comma separated values?")
+		private boolean csv = false;		
 
 		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
 		private String name = MinerInfo.defaultName;
@@ -211,6 +221,15 @@ public class FrequentItemSetMetricsApp {
 		public String getPort() {
 			return port;
 		}
+
+		/**
+		 * Does the user want comma separated values as output?
+		 * 
+		 * @return csv
+		 */
+		public boolean isCSV() {
+			return csv;
+		}		
 
 		/**
 		 * Returns the name
