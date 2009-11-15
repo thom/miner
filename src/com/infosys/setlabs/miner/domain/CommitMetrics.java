@@ -170,9 +170,12 @@ public class CommitMetrics {
 	public String toString() {
 		String result = "";
 		if (isCSV()) {
+			if (getId() == 1) {
+				result += "ID,Modularization,Commits,Start,Stop,Type\n";
+			}
 			result += getId() + "," + getModularization() + "," + getCommits()
-					+ "," + "From " + getStart() + " to " + getStop() + " ("
-					+ getIdType() + "s)";
+					+ "," + getStart() + "," + getStop() + "," + getIdType()
+					+ "s";
 		} else {
 			result += "ID:\t\t" + getId() + "\n";
 			result += "Start ID:\t" + getStart() + "\n";
