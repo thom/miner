@@ -39,13 +39,15 @@ public class ShiatsuManager extends Manager {
 			throws MinerException {
 		super(connectionArgs);
 
-		maxModuleDepthPattern = new Pattern[4];
+		maxModuleDepthPattern = new Pattern[5];
 		maxModuleDepthPattern[0] = Pattern.compile("(\\./)");
 		maxModuleDepthPattern[1] = Pattern.compile("(\\./.*?/|\\./)");
 		maxModuleDepthPattern[2] = Pattern
 				.compile("(\\./.*?/.*?/|\\./.*?/|\\./)");
 		maxModuleDepthPattern[3] = Pattern
 				.compile("(\\./.*?/.*?/.*?/|\\./.*?/.*?/|\\./.*?/|\\./)");
+		maxModuleDepthPattern[4] = Pattern
+				.compile("(\\./.*?/.*?/.*?/.*?/|\\./.*?/.*?/.*?/|\\./.*?/.*?/|\\./.*?/|\\./)");
 	}
 
 	/**
