@@ -38,15 +38,21 @@ public class CommitMetricsManager extends Manager {
 	 *            list of ranges
 	 * @param idType
 	 *            ID type
+	 * @param mimimumCommitSize
+	 *            minimum commit size to set
+	 * @param maximumCommitSize
+	 *            maximumCommitSize to set
 	 * @return LinkedList<CommitMetrics>
 	 * @throws MinerException
 	 */
 	public LinkedList<CommitMetrics> commitMetrics(ArrayList<String> ranges,
-			IdType idType) throws MinerException {
+			IdType idType, int minimumCommitSize, int maximumCommitSize)
+			throws MinerException {
 		LinkedList<CommitMetrics> result = new LinkedList<CommitMetrics>();
 		int id = 1;
 		for (String range : ranges) {
-			result.add(commitMetrics(range, idType));
+			result.add(commitMetrics(range, idType, minimumCommitSize,
+					maximumCommitSize));
 			result.getLast().setId(id);
 			id++;
 		}
@@ -60,10 +66,14 @@ public class CommitMetricsManager extends Manager {
 	 *            range of commit IDs
 	 * @param idType
 	 *            type of the IDs in the range
+	 * @param mimimumCommitSize
+	 *            minimum commit size to set
+	 * @param maximumCommitSize
+	 *            maximumCommitSize to set
 	 * @return metrics
 	 */
-	public CommitMetrics commitMetrics(String range, IdType idType)
-			throws MinerException {
+	public CommitMetrics commitMetrics(String range, IdType idType,
+			int minimumCommitSize, int maximumCommitSize) throws MinerException {
 		CommitMetrics result = null;
 		int startId = 0;
 		int stopId = 0;
@@ -95,7 +105,8 @@ public class CommitMetricsManager extends Manager {
 			}
 
 			// Get metrics
-			result = commitMetricsDAO.metrics(startId, stopId);
+			result = commitMetricsDAO.metrics(startId, stopId,
+					minimumCommitSize, maximumCommitSize);
 
 			// Set information about commits
 			result.setStart(start);

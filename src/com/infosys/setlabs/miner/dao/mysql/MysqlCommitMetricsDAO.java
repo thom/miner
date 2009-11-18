@@ -26,8 +26,13 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 		super(conn);
 	}
 
-	protected String modularizationSQL() {
-		String filter = "WHERE miner_files_touched > 1 AND id BETWEEN ? AND ?";
+	protected String modularizationSQL(int minimumCommitSize,
+			int maximumCommitSize) {
+		// TODO: add option for -mc
+		// TODO: add option for -mic
+		String filter = "WHERE miner_files_touched >= " + minimumCommitSize
+				+ " AND " + "miner_files_touched <= " + maximumCommitSize
+				+ " AND id BETWEEN ? AND ?";
 		return String.format("SELECT "
 				+ "@r := (SELECT COUNT(id) FROM %s %s) AS commits, "
 				+ "(SUM(1 - (IF(modules_touched = 1, 0, "
@@ -37,7 +42,8 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 	}
 
 	@Override
-	public CommitMetrics metrics(int startId, int stopId)
+	public CommitMetrics metrics(int startId, int stopId,
+			int minimumCommitSize, int maximumCommitSize)
 			throws DataAccessException {
 		CommitMetrics result = new CommitMetrics();
 		PreparedStatement ps = null;
@@ -54,7 +60,8 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 		result.setStop(Integer.toString(stopId));
 
 		try {
-			ps = this.getConnection().prepareStatement(modularizationSQL());
+			ps = this.getConnection().prepareStatement(
+					modularizationSQL(minimumCommitSize, maximumCommitSize));
 			ps.setInt(1, startId);
 			ps.setInt(2, stopId);
 			ps.setInt(3, startId);

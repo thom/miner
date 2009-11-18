@@ -16,9 +16,13 @@ public interface CommitMetricsDAO {
 	 *            ID to start with
 	 * @param stop
 	 *            ID to stop with
+	 * @param mimimumCommitSize
+	 *            minimum commit size to set
+	 * @param maximumCommitSize
+	 *            maximumCommitSize to set
 	 * @return CommitMetrics
 	 * @throws DataAccessException
 	 */
-	public CommitMetrics metrics(int start, int stop)
-			throws DataAccessException;
+	public CommitMetrics metrics(int start, int stop, int minimumCommitSize,
+			int maximumCommitSize) throws DataAccessException;
 }

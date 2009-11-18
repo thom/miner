@@ -92,7 +92,8 @@ public class CommitMetricsApp {
 
 			// Get commit metrics for all ranges
 			for (CommitMetrics cm : commitMetricsManager.commitMetrics(values
-					.getRanges(), values.getIdType())) {
+					.getRanges(), values.getIdType(),
+					values.getMinCommitSize(), values.getMaxCommitSize())) {
 				cm.setCSV(values.isCSV());
 				System.out.println(cm);
 				if (!values.isCSV()) {
@@ -141,6 +142,12 @@ public class CommitMetricsApp {
 
 		@Option(name = "-c", aliases = {"--csv"}, usage = "should the output be comma separated values?")
 		private boolean csv = false;
+
+		@Option(name = "-mic", aliases = {"--min-commit-size"}, usage = "minimum size of commits (number of code files) added to the transactions file (has to be >= 2, default: 2)")
+		private int minCommitSize = 2;
+
+		@Option(name = "-mc", aliases = {"--max-commit-size"}, usage = "maximum size of commits (number of code files) added to the transactions file (-1: no limit (default))")
+		private int maxCommitSize = 50;
 
 		@Option(name = "-t", aliases = {"--type", "--id-type"}, usage = "type of the IDs (id: commit IDs (default), rev: revisions, tag: tags", metaVar = "id|rev|tag")
 		private IdType idType = IdType.ID;
@@ -200,6 +207,26 @@ public class CommitMetricsApp {
 		 */
 		public boolean isCSV() {
 			return csv;
+		}
+
+		/**
+		 * Minimum size of commits (number of code files) added to the
+		 * transactions file (has to be >= 2)
+		 * 
+		 * @return minCommitSize
+		 */
+		public int getMinCommitSize() {
+			return minCommitSize;
+		}
+
+		/**
+		 * Maximum size of commits (number of code files) added to the
+		 * transactions file
+		 * 
+		 * @return maxCommitSize
+		 */
+		public int getMaxCommitSize() {
+			return maxCommitSize;
 		}
 
 		/**
