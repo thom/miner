@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ./fis-metrics -c \
 xserver_xf86_4_3_0_1 \
