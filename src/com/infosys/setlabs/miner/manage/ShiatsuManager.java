@@ -27,6 +27,8 @@ import com.infosys.setlabs.miner.domain.RepositoryFile;
 public class ShiatsuManager extends Manager {
 	private Pattern[] maxModuleDepthPattern;
 	private int maxModuleDepth;
+	private String excludePath;
+	private String excludeFile;
 
 	/**
 	 * Creates a new shiatsu manager
@@ -55,8 +57,11 @@ public class ShiatsuManager extends Manager {
 	 * 
 	 * @throws MinerException
 	 */
-	public void massage(int maxModuleDepth) throws MinerException {
+	public void massage(int maxModuleDepth, String excludePath,
+			String excludeFile) throws MinerException {
 		this.maxModuleDepth = maxModuleDepth;
+		this.excludePath = excludePath;
+		this.excludeFile = excludeFile;
 
 		DAOTransaction trans = null;
 		try {
@@ -103,6 +108,7 @@ public class ShiatsuManager extends Manager {
 			throw new MinerException(de);
 		}
 	}
+
 	private void fillTables() throws MinerException {
 		DAOTransaction trans = null;
 		try {
@@ -121,7 +127,9 @@ public class ShiatsuManager extends Manager {
 
 			for (RepositoryFile repositoryFile : repositoryFileDAO.findAll()) {
 				// Only save code files in miner file table
-				if (repositoryFile.isCode()) {
+				if (repositoryFile.isCode()
+						&& !repositoryFile.getPath().matches(excludePath)
+						&& !repositoryFile.getFileName().matches(excludeFile)) {
 					minerFile = new MinerFile(repositoryFile);
 
 					if (!(-1 <= maxModuleDepth && maxModuleDepth < maxModuleDepthPattern.length)) {

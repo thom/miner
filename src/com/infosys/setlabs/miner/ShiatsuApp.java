@@ -77,7 +77,8 @@ public class ShiatsuApp {
 			System.out.println("EXEC  > shiatsu\n");
 
 			// Massage data
-			shiatsuManager.massage(values.getMaxModuleDepth());
+			shiatsuManager.massage(values.getMaxModuleDepth(), values
+					.getExcludePath(), values.getExcludeFile());
 
 			System.out.println("DONE  > shiatsu");
 		} finally {
@@ -122,6 +123,12 @@ public class ShiatsuApp {
 
 		@Option(name = "-m", aliases = {"--max-depth", "--max-module-depth"}, usage = "sets the maximum depth of modules (-1 (default, no maxium depth), 0, 1, 2, 3)")
 		private int maxModuleDepth = -1;
+
+		@Option(name = "-ep", aliases = {"--exclude-path"}, usage = "regular expression of paths to exclude from the database")
+		private String excludePath = "";
+
+		@Option(name = "-ef", aliases = {"--exclude-file"}, usage = "regular expression of files to exclude from the database")
+		private String excludeFile = "";
 
 		/**
 		 * Returns database name
@@ -175,6 +182,24 @@ public class ShiatsuApp {
 		 */
 		public int getMaxModuleDepth() {
 			return maxModuleDepth;
+		}
+
+		/**
+		 * Returns the regular expression of paths to exclude
+		 * 
+		 * @return excludePath
+		 */
+		public String getExcludePath() {
+			return excludePath;
+		}
+
+		/**
+		 * Returns the regular expression of files to exclude
+		 * 
+		 * @return excludeFile
+		 */
+		public String getExcludeFile() {
+			return excludeFile;
 		}
 	}
 }
