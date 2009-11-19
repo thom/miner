@@ -14,7 +14,7 @@ minings=(
 	"XORG-7_0 xserver_XORG_7_0"
 	"XORG-7_1 xserver_XORG_7_1"
 	"xorg-server-1.4 xserver_xorg_server_1_4"
-	"origin/server-1.6-branch xserver_xorg_server_1_6_branch"
+	"origin/server-1.5-branch xserver_xorg_server_1_5_branch"
 	"xorg-server-1.7.0 xserver_xorg_server_1_7_0"
 	"master xserver_master"
 )
