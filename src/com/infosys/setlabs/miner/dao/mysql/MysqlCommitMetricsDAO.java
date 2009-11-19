@@ -28,8 +28,6 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 
 	protected String modularizationSQL(int minimumCommitSize,
 			int maximumCommitSize) {
-		// TODO: add option for -mc
-		// TODO: add option for -mic
 		String filter = "WHERE miner_files_touched >= " + minimumCommitSize
 				+ " AND " + "miner_files_touched <= " + maximumCommitSize
 				+ " AND id BETWEEN ? AND ?";
