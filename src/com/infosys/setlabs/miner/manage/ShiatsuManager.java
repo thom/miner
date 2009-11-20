@@ -27,8 +27,8 @@ import com.infosys.setlabs.miner.domain.RepositoryFile;
 public class ShiatsuManager extends Manager {
 	private Pattern[] maxModuleDepthPattern;
 	private int maxModuleDepth;
-	private String excludePath;
-	private String excludeFile;
+	private String excludePaths;
+	private String excludeFiles;
 
 	/**
 	 * Creates a new shiatsu manager
@@ -55,13 +55,19 @@ public class ShiatsuManager extends Manager {
 	/**
 	 * Massages the data
 	 * 
+	 * @param maxModuleDepth
+	 *            maximum module depth
+	 * @param excludePaths
+	 *            regular expression of paths to exclude
+	 * @param excludeFiles
+	 *            regular expression of files to exclude
 	 * @throws MinerException
 	 */
-	public void massage(int maxModuleDepth, String excludePath,
-			String excludeFile) throws MinerException {
+	public void massage(int maxModuleDepth, String excludePaths,
+			String excludeFiles) throws MinerException {
 		this.maxModuleDepth = maxModuleDepth;
-		this.excludePath = excludePath;
-		this.excludeFile = excludeFile;
+		this.excludePaths = excludePaths;
+		this.excludeFiles = excludeFiles;
 
 		DAOTransaction trans = null;
 		try {
@@ -93,6 +99,8 @@ public class ShiatsuManager extends Manager {
 			minerInfo.setName(MinerInfo.defaultName);
 			minerInfo.setShiatsu(true);
 			minerInfo.setMaximumModuleDepth(maxModuleDepth);
+			// TODO: minerInfo.setExcludePaths(excludePaths);
+			// TODO: minerInfo.setExcludeFiles(excludeFiles);
 			minerInfoDAO.create(minerInfo);
 
 			// Commit transaction
@@ -128,8 +136,8 @@ public class ShiatsuManager extends Manager {
 			for (RepositoryFile repositoryFile : repositoryFileDAO.findAll()) {
 				// Only save code files in miner file table
 				if (repositoryFile.isCode()
-						&& !repositoryFile.getPath().matches(excludePath)
-						&& !repositoryFile.getFileName().matches(excludeFile)) {
+						&& !repositoryFile.getPath().matches(excludePaths)
+						&& !repositoryFile.getFileName().matches(excludeFiles)) {
 					minerFile = new MinerFile(repositoryFile);
 
 					if (!(-1 <= maxModuleDepth && maxModuleDepth < maxModuleDepthPattern.length)) {

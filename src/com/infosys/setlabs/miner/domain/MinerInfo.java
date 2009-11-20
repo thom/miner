@@ -28,6 +28,10 @@ public class MinerInfo {
 
 	// Maximum commit size
 	private int maximumCommitSize;
+	
+	// TODO: Paths to exclude (regular expression)
+	
+	// TODO: Files to exclude (regular expression)
 
 	// Was miner run already?
 	private boolean miner;
@@ -301,6 +305,7 @@ public class MinerInfo {
 
 	@Override
 	public String toString() {
+		// TODO: add paths and files to exclude		
 		String result = "";
 		if (isCSV()) {
 			result += getName() + "," + val(getMaximumModuleDepth()) + ","

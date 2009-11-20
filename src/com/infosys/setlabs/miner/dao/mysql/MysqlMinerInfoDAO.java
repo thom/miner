@@ -27,6 +27,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 	}
 
 	protected String createTableSQL() {
+		// TODO: add paths and files to exclude
 		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
 				+ "name VARCHAR(255) NOT NULL DEFAULT 'default', "
@@ -46,6 +47,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 	}
 
 	protected String selectSQL() {
+		// TODO: add paths and files to exclude		
 		return String.format("SELECT id, name, shiatsu, maximum_module_depth, "
 				+ "minimum_modifications, minimum_commit_size, "
 				+ "maximum_commit_size, miner, minimum_items, maximum_items, "
@@ -54,6 +56,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 	}
 
 	protected String selectByNameSQL() {
+		// TODO: add paths and files to exclude		
 		return String.format("SELECT id, name, shiatsu, maximum_module_depth, "
 				+ "minimum_modifications, minimum_commit_size, "
 				+ "maximum_commit_size, miner, minimum_items, maximum_items, "
@@ -62,6 +65,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 	}
 
 	protected String selectAllSQL() {
+		// TODO: add paths and files to exclude		
 		return String.format("SELECT id, name, shiatsu, maximum_module_depth, "
 				+ "minimum_modifications, minimum_commit_size, "
 				+ "maximum_commit_size, miner, minimum_items, maximum_items, "
@@ -69,6 +73,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 				tableName);
 	}
 	protected String createSQL() {
+		// TODO: add paths and files to exclude		
 		return String.format("INSERT INTO %s (id, name, shiatsu, "
 				+ "maximum_module_depth, minimum_modifications, "
 				+ "minimum_commit_size, maximum_commit_size, miner, "
@@ -82,6 +87,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 	}
 
 	protected String updateSQL() {
+		// TODO: add paths and files to exclude		
 		return String.format("UPDATE %s SET name=?, shiatsu=?, "
 				+ "maximum_module_depth=?, minimum_modifications=?, "
 				+ "minimum_commit_size=?, maximum_commit_size=?, "
@@ -92,6 +98,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 
 	@Override
 	public MinerInfo find(int id) throws DataAccessException {
+		// TODO: add paths and files to exclude		
 		MinerInfo result = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -127,6 +134,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 
 	@Override
 	public MinerInfo find(String minerInfoName) throws DataAccessException {
+		// TODO: add paths and files to exclude		
 		MinerInfo result = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -162,6 +170,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 
 	@Override
 	public Collection<MinerInfo> findAll() throws DataAccessException {
+		// TODO: add paths and files to exclude		
 		ArrayList<MinerInfo> result = new ArrayList<MinerInfo>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -200,6 +209,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 
 	@Override
 	public MinerInfo create(MinerInfo minerInfo) throws DataAccessException {
+		// TODO: add paths and files to exclude		
 		MinerInfo result = minerInfo;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -249,6 +259,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 
 	@Override
 	public void update(MinerInfo minerInfo) throws DataAccessException {
+		// TODO: add paths and files to exclude		
 		PreparedStatement ps = null;
 		try {
 			ps = this.getConnection().prepareStatement(updateSQL());
