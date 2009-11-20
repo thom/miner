@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./fis-metrics -c \
+./fis-metrics $@ \
 gtk_1_0_branch \
 gtk_1_1_0 \
 gtk_1_2_branch \
