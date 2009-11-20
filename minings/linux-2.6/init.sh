@@ -3,8 +3,8 @@
 repository="/home/thom/workspace/repositories/linux-2.6"
 module_depth=4
 commits=5
-min_support=25
-maximum_commits=50
+min_support=20
+maximum_commits=60
 
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(

@@ -2,9 +2,9 @@
 
 repository="/home/thom/workspace/repositories/samba"
 module_depth=4
-commits=7
+commits=5
 min_support=7
-maximum_commits=50
+maximum_commits=60
 
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(
