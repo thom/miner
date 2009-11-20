@@ -3,6 +3,7 @@
 repository="/home/thom/workspace/repositories/gtk"
 module_depth=3
 commits=6
+min_support=6
 maximum_commits=50
 
 # Format of minings: "BRANCH/TAG DATABASE"
@@ -25,5 +26,5 @@ for mining in "${minings[@]}"; do
                 ./gitup ${repository} -b ${branch} -d ${database} -o
                 ./shiatsu ${database} -m ${module_depth} -ep "\./examples/.*"
         fi
-        ./miner ${database} -s -${commits} -c ${commits} -mc ${maximum_commits} -o
+        ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -o
 done
