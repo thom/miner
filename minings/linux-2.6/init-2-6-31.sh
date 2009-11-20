@@ -8,7 +8,7 @@ maximum_commits=50
 
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(
-	"master linux_2_6_30_master"
+	"master linux_2_6_31_master"
 )
 
 for mining in "${minings[@]}"; do
