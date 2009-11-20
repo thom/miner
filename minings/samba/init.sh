@@ -24,8 +24,13 @@ for mining in "${minings[@]}"; do
 	branch=${var[0]}
 	database=${var[1]}
 	if [ "$1" = "db" ]; then
+		echo "Running ./gitup ${repository} -b ${branch} -d ${database} -o"
 		./gitup ${repository} -b ${branch} -d ${database} -o
+		echo ""
+		echo "Running ./shiatsu ${database} -m ${module_depth}"
 		./shiatsu ${database} -m ${module_depth} -ep "\./examples/.*"
+		echo ""
 	fi
+	echo "Running ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -o"
 	./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -o
 done

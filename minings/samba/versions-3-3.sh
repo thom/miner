@@ -1,4 +1,4 @@
-./commit-metrics samba_3_3_branch -t tag -c \
+./commit-metrics samba_3_3_branch -t tag $@ \
 release-3-3-0pre1:release-3-3-0pre2 \
 release-3-3-0pre2:release-3-3-0rc1 \
 release-3-3-0rc1:release-3-3-0rc2 \

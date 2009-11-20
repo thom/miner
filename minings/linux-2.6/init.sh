@@ -8,11 +8,6 @@ maximum_commits=50
 
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(
-	"v2.6.19 linux_2_6_19"
-	"v2.6.20 linux_2_6_20"
-	"v2.6.21 linux_2_6_21"
-	"v2.6.22 linux_2_6_22"
-	"v2.6.23 linux_2_6_23"
 	"v2.6.24 linux_2_6_24"
 	"v2.6.25 linux_2_6_25"
 	"v2.6.26 linux_2_6_26"
@@ -29,8 +24,13 @@ for mining in "${minings[@]}"; do
         branch=${var[0]}
         database=${var[1]}
         if [ "$1" = "db" ]; then
+		echo "Running ./gitup ${repository} -b ${branch} -d ${database} -o"
                 ./gitup ${repository} -b ${branch} -d ${database} -o
+		echo ""
+		echo "Running ./shiatsu ${database} -m ${module_depth}"
                 ./shiatsu ${database} -m ${module_depth}
+		echo ""
         fi
+	echo "Running ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -o"
         ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -o
 done

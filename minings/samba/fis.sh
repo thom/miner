@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./fis-metrics -c \
+./fis-metrics $@ \
 samba_1_9_17 \
 samba_2_0_0 \
 samba_2_2_0 \
