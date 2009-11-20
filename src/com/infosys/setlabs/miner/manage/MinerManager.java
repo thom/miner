@@ -33,7 +33,8 @@ public class MinerManager extends Manager {
 
 	/**
 	 * Formats revision history into basket format
-	 * @param minSize 
+	 * 
+	 * @param minSize
 	 * 
 	 * @throws MinerException
 	 */
@@ -76,12 +77,12 @@ public class MinerManager extends Manager {
 	private String[] getCmd(String exec, double minSupport, int minItems,
 			int maxItems, String transactions, String frequentItemSets) {
 		if (maxItems > -1) {
-			String[] result = {exec, "-s" + minSupport, "-m" + minItems,
+			String[] result = {exec, "-tm", "-s" + minSupport, "-m" + minItems,
 					"-n" + maxItems, "-v:%a %4S", transactions,
 					frequentItemSets};
 			return result;
 		} else {
-			String[] result = {exec, "-s" + minSupport, "-m" + minItems,
+			String[] result = {exec, "-tm", "-s" + minSupport, "-m" + minItems,
 					"-v:%a %4S", transactions, frequentItemSets};
 			return result;
 		}
