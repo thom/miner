@@ -4,7 +4,7 @@ repository="/home/thom/workspace/repositories/xserver"
 module_depth=4
 commits=5
 min_support=5
-maximum_commits=50
+maximum_commits=60
 
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(
@@ -14,9 +14,9 @@ minings=(
 	"XORG-6_8_0 xserver_XORG_6_8_0"
 	"XORG-7_0 xserver_XORG_7_0"
 	"XORG-7_1 xserver_XORG_7_1"
-	"xorg-server-1.4 xserver_xorg_server_1_4"
+	"origin/server-1.4-branch xserver_xorg_server_1_4_branch"
 	"origin/server-1.5-branch xserver_xorg_server_1_5_branch"
-	"xorg-server-1.7.0 xserver_xorg_server_1_7_0"
+	"origin/server-1.7-branch xserver_xorg_server_1_7_branch"
 	"master xserver_master"
 )
 
@@ -25,9 +25,14 @@ for mining in "${minings[@]}"; do
         branch=${var[0]}
         database=${var[1]}
         if [ "$1" = "db" ]; then
+		echo "Running ./gitup ${repository} -b ${branch} -d ${database} -o"
                 ./gitup ${repository} -b ${branch} -d ${database} -o
+		echo ""
+		echo "Running ./shiatsu ${database} -m ${module_depth}"
                 ./shiatsu ${database} -m ${module_depth}
+		echo ""
         fi
+	echo "Running ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -o"
         ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -o
 	mysql -u root --password=root ${database} < minings/xserver/fix-tag.sql
 done

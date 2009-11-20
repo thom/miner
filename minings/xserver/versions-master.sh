@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./commit-metrics xserver_master -c -t tag -mic 2 -mc 50 \
+./commit-metrics xserver_master -t tag -mic 2 -mc 60 $@ \
 xf-4_0_1b:xf86-4_3_0_1 \
 xf86-4_3_0_1:xf86-4_3_99_902 \
 xf86-4_3_99_902:xf86-4_4_99_1 \
