@@ -28,10 +28,12 @@ public class MinerInfo {
 
 	// Maximum commit size
 	private int maximumCommitSize;
-	
-	// TODO: Paths to exclude (regular expression)
-	
-	// TODO: Files to exclude (regular expression)
+
+	// Paths to exclude (regular expression)
+	private String pathsToExclude;
+
+	// Files to exclude (regular expression)
+	private String filesToExclude;
 
 	// Was miner run already?
 	private boolean miner;
@@ -48,6 +50,7 @@ public class MinerInfo {
 	// Have the files randomized modules?
 	private boolean randomizedModules;
 
+	// Does the user want CSV output?
 	private boolean csv;
 
 	/**
@@ -182,6 +185,44 @@ public class MinerInfo {
 	}
 
 	/**
+	 * Returns regular expression of paths to exclude
+	 * 
+	 * @return pathsToExclude
+	 */
+	public String getPathsToExclude() {
+		return pathsToExclude;
+	}
+
+	/**
+	 * Sets regular expression of paths to exclude
+	 * 
+	 * @param pathsToExclude
+	 *            regular expression of paths to exclude
+	 */
+	public void setPathsToExclude(String pathsToExclude) {
+		this.pathsToExclude = pathsToExclude;
+	}
+
+	/**
+	 * Returns regular expression of files to exclude
+	 * 
+	 * @return filesToExclude
+	 */
+	public String getFilesToExclude() {
+		return filesToExclude;
+	}
+
+	/**
+	 * Sets regular expression of files to exclude
+	 * 
+	 * @param filesToExclude
+	 *            regular expression of files to exclude
+	 */
+	public void setFilesToExclude(String filesToExclude) {
+		this.filesToExclude = filesToExclude;
+	}
+
+	/**
 	 * Was miner run already?
 	 * 
 	 * @return miner
@@ -293,10 +334,16 @@ public class MinerInfo {
 		this.csv = csv;
 	}
 
+	/**
+	 * Returns CSV labels
+	 * 
+	 * @return CSV labels
+	 */
 	public String getCSVLabels() {
 		return "Mining name,Maximum module depth,"
 				+ "Minimum modifications (commits),Minimum commit size,"
-				+ "Maximum commit size,Randomized modularization?,"
+				+ "Maximum commit size,Excluded paths,Excluded files,"
+				+ "Randomized modularization?,"
 				+ "Minimum support per frequent item set "
 				+ "(negative: absolute; positive: percentage),"
 				+ "Minimum items per frequent item set,"
@@ -305,14 +352,14 @@ public class MinerInfo {
 
 	@Override
 	public String toString() {
-		// TODO: add paths and files to exclude		
 		String result = "";
 		if (isCSV()) {
 			result += getName() + "," + val(getMaximumModuleDepth()) + ","
 					+ getMinimumModifications() + ","
 					+ val(getMinimumCommitSize()) + ","
 					+ val(getMaximumCommitSize()) + ","
-					+ hasRandomizedModules() + ","
+					+ val(getPathsToExclude()) + "," + val(getFilesToExclude())
+					+ "," + hasRandomizedModules() + ","
 					+ Math.abs(getMinimumSupport())
 					+ (getMinimumSupport() < 0 ? "" : "%") + ","
 					+ val(getMinimumItems()) + "," + val(getMaximumItems());
@@ -327,6 +374,10 @@ public class MinerInfo {
 					+ val(getMinimumCommitSize()) + "\n";
 			result += "Maximum commit size:\t\t\t"
 					+ val(getMaximumCommitSize()) + "\n";
+			result += "Excluded Paths:\t\t\t\t" + val(getPathsToExclude())
+					+ "\n";
+			result += "Excluded Files:\t\t\t\t" + val(getFilesToExclude())
+					+ "\n";
 			result += "Miner run?\t\t\t\t" + isMiner();
 			if (isMiner()) {
 				result += "\nRandomized?\t\t\t\t" + hasRandomizedModules()
@@ -343,6 +394,11 @@ public class MinerInfo {
 		}
 		return result;
 	}
+
+	private String val(String value) {
+		return (value == null || value.equals("")) ? "None" : value;
+	}
+
 	private String val(int value) {
 		return value == -1 ? "Not set" : Integer.toString(value);
 	}
