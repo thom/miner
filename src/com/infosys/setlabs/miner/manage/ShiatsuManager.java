@@ -27,8 +27,8 @@ import com.infosys.setlabs.miner.domain.RepositoryFile;
 public class ShiatsuManager extends Manager {
 	private Pattern[] maxModuleDepthPattern;
 	private int maxModuleDepth;
-	private String excludePaths;
-	private String excludeFiles;
+	private String pathsToExclude;
+	private String filesToExclude;
 
 	/**
 	 * Creates a new shiatsu manager
@@ -57,17 +57,17 @@ public class ShiatsuManager extends Manager {
 	 * 
 	 * @param maxModuleDepth
 	 *            maximum module depth
-	 * @param excludePaths
+	 * @param pathsToExclude
 	 *            regular expression of paths to exclude
-	 * @param excludeFiles
+	 * @param filesToExclude
 	 *            regular expression of files to exclude
 	 * @throws MinerException
 	 */
-	public void massage(int maxModuleDepth, String excludePaths,
-			String excludeFiles) throws MinerException {
+	public void massage(int maxModuleDepth, String pathsToExclude,
+			String filesToExclude) throws MinerException {
 		this.maxModuleDepth = maxModuleDepth;
-		this.excludePaths = excludePaths;
-		this.excludeFiles = excludeFiles;
+		this.pathsToExclude = pathsToExclude;
+		this.filesToExclude = filesToExclude;
 
 		DAOTransaction trans = null;
 		try {
@@ -99,8 +99,8 @@ public class ShiatsuManager extends Manager {
 			minerInfo.setName(MinerInfo.defaultName);
 			minerInfo.setShiatsu(true);
 			minerInfo.setMaximumModuleDepth(maxModuleDepth);
-			// TODO: minerInfo.setExcludePaths(excludePaths);
-			// TODO: minerInfo.setExcludeFiles(excludeFiles);
+			minerInfo.setPathsToExclude(pathsToExclude);
+			minerInfo.setFilesToExclude(filesToExclude);
 			minerInfoDAO.create(minerInfo);
 
 			// Commit transaction
@@ -136,8 +136,8 @@ public class ShiatsuManager extends Manager {
 			for (RepositoryFile repositoryFile : repositoryFileDAO.findAll()) {
 				// Only save code files in miner file table
 				if (repositoryFile.isCode()
-						&& !repositoryFile.getPath().matches(excludePaths)
-						&& !repositoryFile.getFileName().matches(excludeFiles)) {
+						&& !repositoryFile.getPath().matches(pathsToExclude)
+						&& !repositoryFile.getFileName().matches(filesToExclude)) {
 					minerFile = new MinerFile(repositoryFile);
 
 					if (!(-1 <= maxModuleDepth && maxModuleDepth < maxModuleDepthPattern.length)) {
