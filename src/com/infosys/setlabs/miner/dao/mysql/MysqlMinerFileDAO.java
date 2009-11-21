@@ -104,6 +104,8 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	protected String countModifiedSQL() {
 		return countSQL() + " WHERE modifications >= ?";
 	}
+	
+	// TODO: LOAD DATA $INFILE
 
 	@Override
 	public MinerFile find(int id) throws DataAccessException {
