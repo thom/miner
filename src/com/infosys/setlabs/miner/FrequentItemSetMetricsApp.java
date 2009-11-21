@@ -11,6 +11,7 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.FrequentItemSetMetrics;
+import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.manage.FrequentItemSetMetricsManager;
 import com.infosys.setlabs.miner.manage.Manager;
 
@@ -75,6 +76,7 @@ public class FrequentItemSetMetricsApp {
 			// Get new frequent item set metrics manager
 			frequentItemSetMetricsManager = new FrequentItemSetMetricsManager(
 					connectionArgs);
+			frequentItemSetMetricsManager.setName(values.getName());
 
 			// Get frequent item set metrics
 			for (FrequentItemSetMetrics fism : frequentItemSetMetricsManager
@@ -125,6 +127,9 @@ public class FrequentItemSetMetricsApp {
 		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
 
+		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
+		private String name = MinerInfo.defaultName;
+
 		@Option(name = "-c", aliases = {"--csv"}, usage = "should the output be comma separated values?")
 		private boolean csv = false;
 
@@ -171,6 +176,15 @@ public class FrequentItemSetMetricsApp {
 		 */
 		public String getPort() {
 			return port;
+		}
+
+		/**
+		 * Returns the name
+		 * 
+		 * @return name
+		 */
+		public String getName() {
+			return name;
 		}
 
 		/**

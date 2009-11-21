@@ -109,7 +109,7 @@ public class FrequentItemSetMetricsManager extends Manager {
 				minerInfoManager = new MinerInfoManager(connectionArgs);
 
 				// Find miner info
-				MinerInfo minerInfo = minerInfoManager.find(name);
+				MinerInfo minerInfo = minerInfoManager.find(getName());
 
 				if (minerInfo == null
 						|| !(minerInfo.isShiatsu() && minerInfo.isMiner())) {
@@ -121,7 +121,7 @@ public class FrequentItemSetMetricsManager extends Manager {
 				}
 
 				// Get frequent item set metrics
-				frequentItemSetMetricsManager.setName(name);
+				frequentItemSetMetricsManager.setName(getName());
 				frequentItemSetMetricsManager.setMinimumModifications(minerInfo
 						.getMinimumModifications());
 				FrequentItemSetMetrics fim = frequentItemSetMetricsManager
