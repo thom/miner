@@ -154,11 +154,11 @@ public class FrequentItemSetInfoApp {
 		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
 
+		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
+		private String name = MinerInfo.defaultName;		
+		
 		@Argument(index = 1, usage = "ID of the frequent item set", metaVar = "ID", required = true)
 		private int id;
-
-		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
-		private String name = MinerInfo.defaultName;
 
 		/**
 		 * Returns database name
@@ -206,21 +206,21 @@ public class FrequentItemSetInfoApp {
 		}
 
 		/**
-		 * Returns file ID
-		 * 
-		 * @return id
-		 */
-		public int getId() {
-			return id;
-		}
-
-		/**
 		 * Returns the name
 		 * 
 		 * @return name
 		 */
 		public String getName() {
 			return name;
+		}		
+		
+		/**
+		 * Returns file ID
+		 * 
+		 * @return id
+		 */
+		public int getId() {
+			return id;
 		}
 	}
 }
