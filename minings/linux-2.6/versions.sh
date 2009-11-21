@@ -1,4 +1,4 @@
-./commit-metrics linux_2_6_master -t tag -mic 2 -mc 60 $@ \
+./commit-metrics linux_2_6_master -t tag -mic 2 -mc 50 $@ \
 v2.6.29:v2.6.30-rc1 \
 v2.6.30-rc1:v2.6.30-rc2 \
 v2.6.30-rc2:v2.6.30-rc3 \

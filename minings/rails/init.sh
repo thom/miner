@@ -1,16 +1,23 @@
 #!/bin/bash
 
-repository="/home/thom/workspace/repositories/linux-2.6.31.y"
+repository="/home/thom/workspace/repositories/rails"
 module_depth=4
-commits=5
-min_support=20
+commits=4
+min_support=6
 maximum_items=-1
 maximum_commits=50
 name=default
 
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(
-	"master linux_2_6_31_master"
+	"origin/1-2-stable rails_1_2_branch"
+	"v2.0.0 rails_2_0_0"
+	"origin/2-0-stable rails_2_0_branch"
+	"v2.1.0_RC1 rails_2_1_0_rc1"
+	"origin/2-1-stable rails_2_1_branch"
+	"origin/2-2-stable rails_2_2_branch"
+	"origin/2-3-stable rails_2_3_branch"
+	"master rails_master"
 )
 
 for mining in "${minings[@]}"; do
@@ -25,6 +32,6 @@ for mining in "${minings[@]}"; do
                 ./shiatsu ${database} -m ${module_depth}
 		echo ""
         fi
-        echo "Running ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -mi ${maximum_items} -n ${name} -o"
+	echo "Running ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -mi ${maximum_items} -n ${name} -o"
         ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -mi ${maximum_items} -n ${name} -o
 done

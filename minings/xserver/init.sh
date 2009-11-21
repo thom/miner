@@ -2,10 +2,10 @@
 
 repository="/home/thom/workspace/repositories/xserver"
 module_depth=4
-commits=5
+commits=4
 min_support=5
 maximum_items=-1
-maximum_commits=60
+maximum_commits=50
 name=default
 
 # Format of minings: "BRANCH/TAG DATABASE"

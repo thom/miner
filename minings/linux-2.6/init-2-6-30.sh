@@ -4,7 +4,9 @@ repository="/home/thom/workspace/repositories/linux-2.6.30.y"
 module_depth=4
 commits=5
 min_support=20
-maximum_commits=60
+maximum_items=-1
+maximum_commits=50
+name=default
 
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(
@@ -23,6 +25,6 @@ for mining in "${minings[@]}"; do
                 ./shiatsu ${database} -m ${module_depth}
 		echo ""
         fi
-	echo "./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -o"
-        ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -o
+        echo "Running ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -mi ${maximum_items} -n ${name} -o"
+        ./miner ${database} -s -${min_support} -c ${commits} -mc ${maximum_commits} -mi ${maximum_items} -n ${name} -o
 done
