@@ -105,8 +105,6 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		return countSQL() + " WHERE modifications >= ?";
 	}
 	
-	// TODO: LOAD DATA $INFILE
-
 	@Override
 	public MinerFile find(int id) throws DataAccessException {
 		MinerFile result = null;
@@ -134,6 +132,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		}
 		return result;
 	}
+	
 	@Override
 	public Collection<MinerFile> findAll() throws DataAccessException {
 		ArrayList<MinerFile> result = new ArrayList<MinerFile>();

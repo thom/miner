@@ -167,8 +167,6 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 		this.randomizedModules = randomizedModules;
 	}
 	
-	// TODO: LOAD DATA $INFILE
-
 	@Override
 	public FrequentItemSet find(int id) throws DataAccessException {
 		FrequentItemSet result = null;
