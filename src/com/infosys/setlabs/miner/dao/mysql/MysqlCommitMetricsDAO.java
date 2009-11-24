@@ -26,7 +26,7 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 		super(conn);
 	}
 
-	protected String modularizationSQL(int minimumCommitSize,
+	protected String localizationSQL(int minimumCommitSize,
 			int maximumCommitSize) {
 		String filter = "WHERE miner_files_touched >= " + minimumCommitSize
 				+ " AND " + "miner_files_touched <= " + maximumCommitSize
@@ -35,7 +35,7 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 				+ "@r := (SELECT COUNT(id) FROM %s %s) AS commits, "
 				+ "(SUM(1 - (IF(modules_touched = 1, 0, "
 				+ "(modules_touched / miner_files_touched)))) / @r) "
-				+ "AS modularization FROM %s %s", MysqlCommitDAO.tableName,
+				+ "AS localization FROM %s %s", MysqlCommitDAO.tableName,
 				filter, MysqlCommitDAO.tableName, filter);
 	}
 
@@ -59,7 +59,7 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 
 		try {
 			ps = this.getConnection().prepareStatement(
-					modularizationSQL(minimumCommitSize, maximumCommitSize));
+					localizationSQL(minimumCommitSize, maximumCommitSize));
 			ps.setInt(1, startId);
 			ps.setInt(2, stopId);
 			ps.setInt(3, startId);
@@ -67,7 +67,7 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result.setCommits(rs.getInt("commits"));
-				result.setModularization(rs.getDouble("modularization"));
+				result.setLocalization(rs.getDouble("localization"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

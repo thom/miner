@@ -5,7 +5,7 @@ public class CommitMetrics {
 	private String start;
 	private String stop;
 	private IdType idType;
-	private double modularization;
+	private double localization;
 	private int commits;
 
 	private boolean csv;
@@ -110,22 +110,22 @@ public class CommitMetrics {
 	}
 
 	/**
-	 * Returns the modularization
+	 * Returns the localization
 	 * 
-	 * @return modularization
+	 * @return localization
 	 */
-	public double getModularization() {
-		return modularization;
+	public double getLocalization() {
+		return localization;
 	}
 
 	/**
-	 * Sets the modularization
+	 * Sets the localization
 	 * 
-	 * @param modularization
-	 *            modularization to set
+	 * @param localization
+	 *            localization to set
 	 */
-	public void setModularization(double modularization) {
-		this.modularization = modularization;
+	public void setLocalization(double localization) {
+		this.localization = localization;
 	}
 
 	/**
@@ -171,9 +171,9 @@ public class CommitMetrics {
 		String result = "";
 		if (isCSV()) {
 			if (getId() == 1) {
-				result += "ID,Modularization,Commits,Start,Stop,Type\n";
+				result += "ID,Localization,Commits,Start,Stop,Type\n";
 			}
-			result += getId() + "," + getModularization() + "," + getCommits()
+			result += getId() + "," + getLocalization() + "," + getCommits()
 					+ "," + getStart() + "," + getStop() + "," + getIdType()
 					+ "s";
 		} else {
@@ -181,7 +181,7 @@ public class CommitMetrics {
 			result += "Start ID:\t" + getStart() + "\n";
 			result += "Stop ID:\t" + getStop() + "\n";
 			result += "ID types:\t" + getIdType() + "s\n";
-			result += "Modularization:\t" + getModularization() + "\n";
+			result += "Localization:\t" + getLocalization() + "\n";
 			result += "Commits:\t" + getCommits();
 		}
 		return result;

@@ -13,7 +13,7 @@ public class FrequentItemSetMetrics {
 	private int filesModified;
 	private int modules;
 	private int frequentItemSets;
-	private double modularization;
+	private double localization;
 	private MinerInfo minerInfo;
 
 	private boolean csv;
@@ -159,22 +159,22 @@ public class FrequentItemSetMetrics {
 	}
 
 	/**
-	 * Returns the modularization metrics
+	 * Returns the localization metrics
 	 * 
-	 * @return modularization
+	 * @return localization
 	 */
-	public double getModularization() {
-		return modularization;
+	public double getLocalization() {
+		return localization;
 	}
 
 	/**
-	 * Sets the modularization metrics
+	 * Sets the localization metrics
 	 * 
-	 * @param modularization
-	 *            modularization metrics to set
+	 * @param localization
+	 *            localization metrics to set
 	 */
-	public void setModularization(double modularization) {
-		this.modularization = modularization;
+	public void setLocalization(double localization) {
+		this.localization = localization;
 	}
 
 	/**
@@ -225,13 +225,13 @@ public class FrequentItemSetMetrics {
 						+ " commits,Files in frequent item sets,Code files with >= "
 						+ minerInfo.getMinimumModifications()
 						+ " commits in FIS (%),Modules,Frequent item sets,"
-						+ "Modularization," + minerInfo.getCSVLabels() + "\n";
+						+ "Localization," + minerInfo.getCSVLabels() + "\n";
 			}
 			result += getId() + "," + getDatabase() + "," + getFiles() + ","
 					+ getFilesModified() + "," + getFilesInFrequentItemSet()
 					+ "," + includedFilesInFrequentItemSet() + ","
 					+ getModules() + "," + getFrequentItemSets() + ","
-					+ getModularization() + ",";
+					+ getLocalization() + ",";
 			minerInfo.setCSV(true);
 		} else {
 			result += "Database\t\t\t\t" + getDatabase() + "\n";
@@ -248,7 +248,7 @@ public class FrequentItemSetMetrics {
 			result += "Modules:\t\t\t\t" + getModules() + "\n";
 			result += "Frequent item sets:\t\t\t" + getFrequentItemSets()
 					+ "\n";
-			result += "Modularization:\t\t\t\t" + getModularization() + "\n\n";
+			result += "Localization:\t\t\t\t" + getLocalization() + "\n\n";
 			result += "Miner information\n";
 		}
 		result += minerInfo;
