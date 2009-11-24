@@ -12,6 +12,7 @@ public class RepositoryFile {
 	private String fileName;
 	private String path;
 	private Type type;
+	private boolean deleted;
 	private int modifications;
 
 	/**
@@ -142,6 +143,25 @@ public class RepositoryFile {
 	}
 
 	/**
+	 * Was the file already deleted?
+	 * 
+	 * @return deleted
+	 */
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	/**
+	 * Sets a file to deleted
+	 * 
+	 * @param deleted
+	 *            was the file already deleted?
+	 */
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	/**
 	 * Returns how many modifications a file had
 	 * 
 	 * @return modifications
@@ -168,6 +188,7 @@ public class RepositoryFile {
 		result += "Path:\t\t" + getPath() + "\n";
 		result += "Directory:\t" + getDirectory() + "\n";
 		result += "Type:\t\t" + getType().toString().toLowerCase() + "\n";
+		result += "Deleted?:\t" + isDeleted() + "\n";
 		result += "Modifications:\t" + getModifications();
 		return result;
 	}

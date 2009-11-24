@@ -58,8 +58,8 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	protected String createTableSQL() {
 		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL PRIMARY KEY, file_name VARCHAR(255), "
-				+ "path MEDIUMTEXT, type VARCHAR(255), modifications INT, "
-				+ "miner_module_id INT NOT NULL, "
+				+ "path MEDIUMTEXT, type VARCHAR(255), deleted BOOLEAN, "
+				+ "modifications INT, miner_module_id INT NOT NULL, "
 				+ "INDEX(file_name), FOREIGN KEY(id) REFERENCES files(id), "
 				+ "FOREIGN KEY(miner_module_id) REFERENCES %s(id)"
 				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
@@ -73,19 +73,19 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	}
 
 	protected String selectSQL() {
-		return String.format("SELECT id, file_name, path, type, "
+		return String.format("SELECT id, file_name, path, type, deleted, "
 				+ "modifications, miner_module_id FROM %s WHERE id=?",
 				getName());
 	}
 
 	protected String selectAllSQL() {
-		return String.format("SELECT id, file_name, path, type, "
+		return String.format("SELECT id, file_name, path, type, deleted, "
 				+ "modifications, miner_module_id FROM %s", getName());
 	}
 	protected String createSQL() {
 		return String.format("INSERT INTO %s (id, file_name, path, type, "
-				+ "modifications, miner_module_id) VALUES (?,?,?,?,?,?)",
-				getName());
+				+ "deleted, modifications, miner_module_id) "
+				+ "VALUES (?,?,?,?,?,?,?)", getName());
 	}
 
 	protected String deleteSQL() {
@@ -94,7 +94,8 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 
 	protected String updateSQL() {
 		return String.format("UPDATE %s SET file_name=?, path=?, type=?, "
-				+ "modifications=?, miner_module_id=? WHERE id=?", getName());
+				+ "deleted=?, modifications=?, miner_module_id=? WHERE id=?",
+				getName());
 	}
 
 	protected String countSQL() {
@@ -104,7 +105,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	protected String countModifiedSQL() {
 		return countSQL() + " WHERE modifications >= ?";
 	}
-	
+
 	@Override
 	public MinerFile find(int id) throws DataAccessException {
 		MinerFile result = null;
@@ -120,6 +121,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				result.setFileName(rs.getString("file_name"));
 				result.setPath(rs.getString("path"));
 				result.setType(rs.getString("type"));
+				result.setDeleted(rs.getBoolean("deleted"));
 				result.setModifications(rs.getInt("modifications"));
 				result.setModule(new MysqlModuleDAO(this.getConnection())
 						.find(rs.getInt("miner_module_id")));
@@ -132,7 +134,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		}
 		return result;
 	}
-	
+
 	@Override
 	public Collection<MinerFile> findAll() throws DataAccessException {
 		ArrayList<MinerFile> result = new ArrayList<MinerFile>();
@@ -147,6 +149,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				minerFile.setFileName(rs.getString("file_name"));
 				minerFile.setPath(rs.getString("path"));
 				minerFile.setType(rs.getString("type"));
+				minerFile.setDeleted(rs.getBoolean("deleted"));
 				minerFile.setModifications(rs.getInt("modifications"));
 				minerFile.setModule(new MysqlModuleDAO(this.getConnection())
 						.find(rs.getInt("miner_module_id")));
@@ -174,8 +177,9 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			ps.setString(2, minerFile.getFileName());
 			ps.setString(3, minerFile.getPath());
 			ps.setString(4, minerFile.getType().toString());
-			ps.setInt(5, minerFile.getModifications());
-			ps.setInt(6, minerFile.getModule().getId());
+			ps.setBoolean(5, minerFile.isDeleted());
+			ps.setInt(6, minerFile.getModifications());
+			ps.setInt(7, minerFile.getModule().getId());
 			ps.execute();
 
 			rs = ps.getGeneratedKeys();
@@ -212,9 +216,10 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			ps.setString(1, minerFile.getFileName());
 			ps.setString(2, minerFile.getPath());
 			ps.setString(3, minerFile.getType().toString());
-			ps.setInt(4, minerFile.getModifications());
-			ps.setInt(5, minerFile.getModule().getId());
-			ps.setInt(6, minerFile.getId());
+			ps.setBoolean(4, minerFile.isDeleted());
+			ps.setInt(5, minerFile.getModifications());
+			ps.setInt(6, minerFile.getModule().getId());
+			ps.setInt(7, minerFile.getId());
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -36,20 +36,25 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 	}
 
 	protected String selectSQL() {
-		return String.format("SELECT id, file_name, repository_id FROM %s "
-				+ "WHERE id = ?", tableName);
+		return String.format(
+				"SELECT f.id, f.file_name, f.repository_id, ft.type "
+						+ "FROM %s f LEFT JOIN file_types ft "
+						+ "ON f.id = ft.file_id WHERE f.id = ?", tableName);
 	}
 
 	protected String selectAllSQL() {
-		return String.format("SELECT id, file_name, repository_id FROM %s",
-				tableName);
+		return String.format(
+				"SELECT f.id, f.file_name, f.repository_id, ft.type "
+						+ "FROM %s f LEFT JOIN file_types ft "
+						+ "ON f.id = ft.file_id", tableName);
 	}
 
-	protected String selectFileTypeSQL() {
-		return "SELECT file_id, type FROM file_types WHERE file_id = ?";
+	protected String selectDeletedSQL() {
+		return String.format("SELECT f.id, 1 AS deleted "
+				+ "FROM files f, actions a WHERE f.id = a.file_id "
+				+ "AND a.type = 'D' AND f.id = ?", tableName);
 	}
-
-	protected String selectModifications() {
+	protected String selectModificationsSQL() {
 		return "SELECT f.id, COUNT(f.id) AS modifications "
 				+ "FROM files f, actions a "
 				+ "WHERE a.file_id = f.id AND f.id = ? GROUP BY f.id";
@@ -81,6 +86,10 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 				// Create a new file
 				result = new RepositoryFile(rs.getInt("id"));
 
+				// Set type
+				String type = rs.getString("type");
+				result.setType(type == null ? "directory" : type);
+
 				// Get the newest file name
 				result.setFileName(getNewestFileName(id, rs
 						.getString("file_name")));
@@ -88,8 +97,8 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 				// Get path
 				result.setPath(getPath(id));
 
-				// Set type
-				result.setType(getFileType(id));
+				// Set deleted
+				result.setDeleted(isDeleted(id));
 
 				// Set number of modifications
 				result.setModifications(getModifications(id));
@@ -127,7 +136,11 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 				repositoryFile.setPath(getPath(id));
 
 				// Set type
-				repositoryFile.setType(getFileType(id));
+				String type = rs.getString("type");
+				repositoryFile.setType(type == null ? "directory" : type);
+
+				// Set deleted
+				repositoryFile.setDeleted(isDeleted(id));
 
 				// Set number of modifications
 				repositoryFile.setModifications(getModifications(id));
@@ -143,27 +156,23 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		return result;
 	}
 
-	private String getFileType(int id) throws DataAccessException {
-		String result = null;
+	private boolean isDeleted(int id) throws DataAccessException {
+		boolean result = false;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		try {
-			ps = this.getConnection().prepareStatement(selectFileTypeSQL());
+			ps = this.getConnection().prepareStatement(selectDeletedSQL());
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				result = rs.getString("type");
+				result = rs.getBoolean("deleted");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			this.closeResultSet(rs);
 			this.closeStatement(ps);
-		}
-
-		if (result == null) {
-			result = "directory";
 		}
 
 		return result;
@@ -175,7 +184,8 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 		ResultSet rs = null;
 
 		try {
-			ps = this.getConnection().prepareStatement(selectModifications());
+			ps = this.getConnection()
+					.prepareStatement(selectModificationsSQL());
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {

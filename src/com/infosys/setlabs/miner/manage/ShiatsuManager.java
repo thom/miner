@@ -134,10 +134,12 @@ public class ShiatsuManager extends Manager {
 			Module module = null;
 
 			for (RepositoryFile repositoryFile : repositoryFileDAO.findAll()) {
-				// Only save code files in miner file table
+				// Only save non-deleted code files in miner file table
 				if (repositoryFile.isCode()
+						&& !repositoryFile.isDeleted()
 						&& !repositoryFile.getPath().matches(pathsToExclude)
-						&& !repositoryFile.getFileName().matches(filesToExclude)) {
+						&& !repositoryFile.getFileName()
+								.matches(filesToExclude)) {
 					minerFile = new MinerFile(repositoryFile);
 
 					if (!(-1 <= maxModuleDepth && maxModuleDepth < maxModuleDepthPattern.length)) {
