@@ -18,6 +18,7 @@ import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.domain.Module;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
+import com.infosys.setlabs.miner.domain.RepositoryFile.Type;
 
 /**
  * Shiatsu manager
@@ -133,10 +134,10 @@ public class ShiatsuManager extends Manager {
 			MinerFile minerFile = null;
 			Module module = null;
 
-			for (RepositoryFile repositoryFile : repositoryFileDAO.findAll()) {
+			for (RepositoryFile repositoryFile : repositoryFileDAO
+					.findAll(Type.CODE)) {
 				// Only save non-deleted code files in miner file table
-				if (repositoryFile.isCode()
-						&& !repositoryFile.isDeleted()
+				if (!repositoryFile.isDeleted()
 						&& !repositoryFile.getPath().matches(pathsToExclude)
 						&& !repositoryFile.getFileName()
 								.matches(filesToExclude)) {

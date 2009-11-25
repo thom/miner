@@ -11,6 +11,7 @@ import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
+import com.infosys.setlabs.miner.domain.RepositoryFile.Type;
 
 /**
  * MySQL Repository File DAO
@@ -47,6 +48,14 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 				"SELECT f.id, f.file_name, f.repository_id, ft.type "
 						+ "FROM %s f LEFT JOIN file_types ft "
 						+ "ON f.id = ft.file_id", tableName);
+	}
+
+	protected String selectAllTypeSQL(Type type) {
+		return String.format(
+				"SELECT f.id, f.file_name, f.repository_id, ft.type "
+						+ "FROM %s f LEFT JOIN file_types ft "
+						+ "ON f.id = ft.file_id WHERE ft.type = '%s'",
+				tableName, type);
 	}
 
 	protected String selectDeletedSQL() {
@@ -138,6 +147,50 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 				// Set type
 				String type = rs.getString("type");
 				repositoryFile.setType(type == null ? "directory" : type);
+
+				// Set deleted
+				repositoryFile.setDeleted(isDeleted(id));
+
+				// Set number of modifications
+				repositoryFile.setModifications(getModifications(id));
+
+				result.add(repositoryFile);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
+		return result;
+	}
+
+	@Override
+	public Collection<RepositoryFile> findAll(Type type)
+			throws DataAccessException {
+		ArrayList<RepositoryFile> result = new ArrayList<RepositoryFile>();
+		RepositoryFile repositoryFile = null;
+		int id;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = this.getConnection().prepareStatement(selectAllTypeSQL(type));
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				id = rs.getInt("id");
+
+				// Create a new file
+				repositoryFile = new RepositoryFile(id);
+
+				// Get the newest file name
+				repositoryFile.setFileName(getNewestFileName(id, rs
+						.getString("file_name")));
+
+				// Get path
+				repositoryFile.setPath(getPath(id));
+
+				// Set type
+				repositoryFile.setType(rs.getString("type"));
 
 				// Set deleted
 				repositoryFile.setDeleted(isDeleted(id));
