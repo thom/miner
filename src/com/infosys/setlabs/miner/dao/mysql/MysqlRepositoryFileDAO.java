@@ -11,7 +11,6 @@ import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
-import com.infosys.setlabs.miner.domain.RepositoryFile.Type;
 
 /**
  * MySQL Repository File DAO
@@ -50,25 +49,6 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 						+ "ON f.id = ft.file_id", tableName);
 	}
 
-	protected String selectAllTypeSQL(Type type) {
-		return String.format(
-				"SELECT f.id, f.file_name, f.repository_id, ft.type "
-						+ "FROM %s f LEFT JOIN file_types ft "
-						+ "ON f.id = ft.file_id WHERE ft.type = '%s'",
-				tableName, type);
-	}
-
-	protected String selectDeletedSQL() {
-		return String.format("SELECT f.id, 1 AS deleted "
-				+ "FROM files f, actions a WHERE f.id = a.file_id "
-				+ "AND a.type = 'D' AND f.id = ?", tableName);
-	}
-	protected String selectModificationsSQL() {
-		return "SELECT f.id, COUNT(f.id) AS modifications "
-				+ "FROM files f, actions a "
-				+ "WHERE a.file_id = f.id AND f.id = ? GROUP BY f.id";
-	}
-
 	protected String selectPathSQL() {
 		return String.format("SELECT f.id, f.file_name, fl.parent_id "
 				+ "FROM %s f, file_links fl "
@@ -105,12 +85,6 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 
 				// Get path
 				result.setPath(getPath(id));
-
-				// Set deleted
-				result.setDeleted(isDeleted(id));
-
-				// Set number of modifications
-				result.setModifications(getModifications(id));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -148,12 +122,6 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 				String type = rs.getString("type");
 				repositoryFile.setType(type == null ? "directory" : type);
 
-				// Set deleted
-				repositoryFile.setDeleted(isDeleted(id));
-
-				// Set number of modifications
-				repositoryFile.setModifications(getModifications(id));
-
 				result.add(repositoryFile);
 			}
 		} catch (SQLException e) {
@@ -166,95 +134,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 	}
 
 	@Override
-	public Collection<RepositoryFile> findAll(Type type)
-			throws DataAccessException {
-		ArrayList<RepositoryFile> result = new ArrayList<RepositoryFile>();
-		RepositoryFile repositoryFile = null;
-		int id;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = this.getConnection().prepareStatement(selectAllTypeSQL(type));
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				id = rs.getInt("id");
-
-				// Create a new file
-				repositoryFile = new RepositoryFile(id);
-
-				// Get the newest file name
-				repositoryFile.setFileName(getNewestFileName(id, rs
-						.getString("file_name")));
-
-				// Get path
-				repositoryFile.setPath(getPath(id));
-
-				// Set type
-				repositoryFile.setType(rs.getString("type"));
-
-				// Set deleted
-				repositoryFile.setDeleted(isDeleted(id));
-
-				// Set number of modifications
-				repositoryFile.setModifications(getModifications(id));
-
-				result.add(repositoryFile);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.closeResultSet(rs);
-			this.closeStatement(ps);
-		}
-		return result;
-	}
-
-	private boolean isDeleted(int id) throws DataAccessException {
-		boolean result = false;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			ps = this.getConnection().prepareStatement(selectDeletedSQL());
-			ps.setInt(1, id);
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				result = rs.getBoolean("deleted");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.closeResultSet(rs);
-			this.closeStatement(ps);
-		}
-
-		return result;
-	}
-
-	private int getModifications(int id) throws DataAccessException {
-		int result = 0;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			ps = this.getConnection()
-					.prepareStatement(selectModificationsSQL());
-			ps.setInt(1, id);
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				result = rs.getInt("modifications");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.closeResultSet(rs);
-			this.closeStatement(ps);
-		}
-
-		return result;
-	}
-
-	private String getPath(int id) throws DataAccessException {
+	public String getPath(int id) throws DataAccessException {
 		return getPathRecursive(id);
 	}
 
@@ -271,14 +151,15 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 			ps = this.getConnection().prepareStatement(selectPathSQL());
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
+
 			// Retrieve the data from the result set
-			rs.beforeFirst();
-			if (rs.next()) {
-				if (rs.getInt("parent_id") == -1) {
-					return getPathRecursive(rs.getInt("parent_id"))
+			if (rs.last()) {
+				int parentId = rs.getInt("parent_id");
+				if (parentId == -1) {
+					return getPathRecursive(parentId)
 							+ getNewestFileName(id, rs.getString("file_name"));
 				} else {
-					return getPathRecursive(rs.getInt("parent_id"))
+					return getPathRecursive(parentId)
 							+ System.getProperty("file.separator")
 							+ getNewestFileName(id, rs.getString("file_name"));
 				}

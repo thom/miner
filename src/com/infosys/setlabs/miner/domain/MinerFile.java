@@ -6,6 +6,8 @@ package com.infosys.setlabs.miner.domain;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MinerFile extends RepositoryFile {
+	private boolean deleted;
+	private int modifications;
 	private Module module;
 
 	/**
@@ -24,7 +26,44 @@ public class MinerFile extends RepositoryFile {
 		setFileName(repositoryFile.getFileName());
 		setPath(repositoryFile.getPath());
 		setType(repositoryFile.getType());
-		setModifications(repositoryFile.getModifications());
+	}
+
+	/**
+	 * Was the file already deleted?
+	 * 
+	 * @return deleted
+	 */
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	/**
+	 * Sets a file to deleted
+	 * 
+	 * @param deleted
+	 *            was the file already deleted?
+	 */
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	/**
+	 * Returns how many modifications a file had
+	 * 
+	 * @return modifications
+	 */
+	public int getModifications() {
+		return modifications;
+	}
+
+	/**
+	 * Sets how many modifications a file had
+	 * 
+	 * @param modifications
+	 *            number of modifications of this file
+	 */
+	public void setModifications(int modifications) {
+		this.modifications = modifications;
 	}
 
 	/**
@@ -59,7 +98,9 @@ public class MinerFile extends RepositoryFile {
 	@Override
 	public String toString() {
 		String result = "";
-		result += super.toString() + "\n\n";
+		result += super.toString() + "\n";
+		result += "Deleted?:\t" + isDeleted() + "\n";
+		result += "Modifications:\t" + getModifications() + "\n\n";
 		result += "Module:\n";
 		result += getModule();
 		return result;

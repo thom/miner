@@ -12,8 +12,6 @@ public class RepositoryFile {
 	private String fileName;
 	private String path;
 	private Type type;
-	private boolean deleted;
-	private int modifications;
 
 	/**
 	 * File types
@@ -142,44 +140,6 @@ public class RepositoryFile {
 		type = Type.valueOf(typeName.toUpperCase().replace("-", "_"));
 	}
 
-	/**
-	 * Was the file already deleted?
-	 * 
-	 * @return deleted
-	 */
-	public boolean isDeleted() {
-		return deleted;
-	}
-
-	/**
-	 * Sets a file to deleted
-	 * 
-	 * @param deleted
-	 *            was the file already deleted?
-	 */
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
-
-	/**
-	 * Returns how many modifications a file had
-	 * 
-	 * @return modifications
-	 */
-	public int getModifications() {
-		return modifications;
-	}
-
-	/**
-	 * Sets how many modifications a file had
-	 * 
-	 * @param modifications
-	 *            number of modifications of this file
-	 */
-	public void setModifications(int modifications) {
-		this.modifications = modifications;
-	}
-
 	@Override
 	public String toString() {
 		String result = "";
@@ -187,9 +147,7 @@ public class RepositoryFile {
 		result += "File name:\t" + getFileName() + "\n";
 		result += "Path:\t\t" + getPath() + "\n";
 		result += "Directory:\t" + getDirectory() + "\n";
-		result += "Type:\t\t" + getType().toString().toLowerCase() + "\n";
-		result += "Deleted?:\t" + isDeleted() + "\n";
-		result += "Modifications:\t" + getModifications();
+		result += "Type:\t\t" + getType().toString().toLowerCase();
 		return result;
 	}
 }

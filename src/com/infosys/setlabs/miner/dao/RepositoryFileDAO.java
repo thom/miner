@@ -1,11 +1,8 @@
 package com.infosys.setlabs.miner.dao;
 
-import java.util.Collection;
-
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.ReadObjectDAO;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
-import com.infosys.setlabs.miner.domain.RepositoryFile.Type;
 
 /**
  * Repository File DAO
@@ -14,13 +11,12 @@ import com.infosys.setlabs.miner.domain.RepositoryFile.Type;
  */
 public interface RepositoryFileDAO extends ReadObjectDAO<RepositoryFile> {
 	/**
-	 * Find all files of a certain type
+	 * Returns the path of a repository file
 	 * 
-	 * @param type
-	 *            type of files to find
-	 * @return Collection<RepositoryFile>
+	 * @param id
+	 *            ID to find path for
+	 * @return path
 	 * @throws DataAccessException
 	 */
-	public Collection<RepositoryFile> findAll(Type type)
-			throws DataAccessException;
+	public String getPath(int id) throws DataAccessException;
 }

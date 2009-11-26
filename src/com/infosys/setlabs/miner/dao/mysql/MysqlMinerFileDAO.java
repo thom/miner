@@ -58,11 +58,13 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 	protected String createTableSQL() {
 		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL PRIMARY KEY, file_name VARCHAR(255), "
-				+ "path MEDIUMTEXT, type VARCHAR(255), deleted BOOLEAN, "
-				+ "modifications INT, miner_module_id INT NOT NULL, "
+				+ "path MEDIUMTEXT, type VARCHAR(255), "
+				+ "deleted BOOLEAN DEFAULT FALSE, modifications INT, "
+				+ "miner_module_id INT NOT NULL DEFAULT 0, "
 				+ "INDEX(file_name), FOREIGN KEY(id) REFERENCES files(id), "
 				+ "FOREIGN KEY(miner_module_id) REFERENCES %s(id)"
-				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
+				// MyISAM doesn't support foreign keys, but as
+				// CVSAnaly2 uses
 				// MyISAM too, we can't use InnoDB here
 				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", getName(),
 				MysqlModuleDAO.tableName);
@@ -82,6 +84,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 		return String.format("SELECT id, file_name, path, type, deleted, "
 				+ "modifications, miner_module_id FROM %s", getName());
 	}
+
 	protected String createSQL() {
 		return String.format("INSERT INTO %s (id, file_name, path, type, "
 				+ "deleted, modifications, miner_module_id) "
@@ -104,6 +107,68 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 
 	protected String countModifiedSQL() {
 		return countSQL() + " WHERE modifications >= ?";
+	}
+
+	protected String initializeSQL() {
+		return String.format("INSERT INTO %s (id, file_name, type) "
+				+ "SELECT f.id, f.file_name, ft.type "
+				+ "FROM files f, file_types ft "
+				+ "WHERE f.id = ft.file_id AND ft.type = 'code'", getName());
+	}
+
+	protected String initializeRandomSQL() {
+		return String.format("INSERT %s "
+				+ "SELECT id, file_name, path, type, deleted, "
+				+ "modifications, FLOOR(1 + (RAND() * (SELECT MAX(id) "
+				+ "FROM miner_modules) -1)) as miner_module_id FROM %s",
+				tableNameRandomized, tableName);
+	}
+	
+	protected String deleteDeletedSQL() {
+		return String.format("DELETE f FROM %s f, actions a "
+				+ "WHERE f.id = a.file_id AND a.type = 'D'", getName());
+	}
+
+	protected String setModificationsSQL() {
+		return String.format("UPDATE %s AS f1, "
+				+ "(SELECT f.id, COUNT(f.id) AS modifications "
+				+ "FROM %s f, actions a "
+				+ "WHERE a.file_id = f.id GROUP BY f.id) AS f2 "
+				+ "SET f1.modifications = f2.modifications "
+				+ "WHERE f1.id = f2.id", getName(), getName());
+	}
+
+	protected String setNewestFileNameSQL() {
+		return String.format("UPDATE %s AS f1, "
+				+ "(SELECT f.id, fc.new_file_name as file_name "
+				+ "FROM %s f, actions a, file_copies fc "
+				+ "WHERE a.type = 'V' AND a.id = fc.action_id "
+				+ "AND f.id = a.file_id "
+				+ "AND fc.new_file_name <> f.file_name) AS f2 "
+				+ "SET f1.file_name = f2.file_name WHERE f1.id = f2.id",
+				getName(), getName());
+	}
+
+	@Override
+	public void initialize() throws DataAccessException {
+		PreparedStatement ps = null;
+		try {
+			if (!hasRandomizedModules()) {
+				ps = this.getConnection().prepareStatement(initializeSQL());
+				ps.executeUpdate();
+				ps.executeUpdate(deleteDeletedSQL());
+				ps.executeUpdate(setModificationsSQL());
+				ps.executeUpdate(setNewestFileNameSQL());
+			} else {
+				ps = this.getConnection().prepareStatement(
+						initializeRandomSQL());
+				ps.executeUpdate();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeStatement(ps);
+		}
 	}
 
 	@Override

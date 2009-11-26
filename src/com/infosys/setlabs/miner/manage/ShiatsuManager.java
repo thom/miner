@@ -1,8 +1,6 @@
 package com.infosys.setlabs.miner.manage;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,8 +15,6 @@ import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.domain.Module;
-import com.infosys.setlabs.miner.domain.RepositoryFile;
-import com.infosys.setlabs.miner.domain.RepositoryFile.Type;
 
 /**
  * Shiatsu manager
@@ -69,6 +65,13 @@ public class ShiatsuManager extends Manager {
 		this.maxModuleDepth = maxModuleDepth;
 		this.pathsToExclude = pathsToExclude;
 		this.filesToExclude = filesToExclude;
+
+		// Check if specified maximum module depth is valid
+		if (!(-1 <= maxModuleDepth && maxModuleDepth < maxModuleDepthPattern.length)) {
+			throw new MinerException(new Exception(
+					"Module depth must be between -1 and "
+							+ (maxModuleDepthPattern.length - 1)));
+		}
 
 		DAOTransaction trans = null;
 		try {
@@ -131,44 +134,40 @@ public class ShiatsuManager extends Manager {
 					this.getSession());
 			ModuleDAO moduleDAO = this.getFactory().getMinerModuleDAO(
 					this.getSession());
-			MinerFile minerFile = null;
 			Module module = null;
 
-			for (RepositoryFile repositoryFile : repositoryFileDAO
-					.findAll(Type.CODE)) {
-				// Only save non-deleted code files in miner file table
-				if (!repositoryFile.isDeleted()
-						&& !repositoryFile.getPath().matches(pathsToExclude)
-						&& !repositoryFile.getFileName()
-								.matches(filesToExclude)) {
-					minerFile = new MinerFile(repositoryFile);
+			minerFileDAO.initialize();
 
-					if (!(-1 <= maxModuleDepth && maxModuleDepth < maxModuleDepthPattern.length)) {
-						throw new MinerException(new Exception(
-								"Module depth must be between -1 and "
-										+ (maxModuleDepthPattern.length - 1)));
-					}
+			for (MinerFile minerFile : minerFileDAO.findAll()) {
+				// Get path and set miner file path
+				minerFile.setPath(repositoryFileDAO.getPath(minerFile.getId()));
 
-					String moduleName = null;
-					if (maxModuleDepth == -1) {
-						moduleName = minerFile.getDirectory();
-					} else {
-						Pattern p = maxModuleDepthPattern[maxModuleDepth];
-						Matcher m = p.matcher(minerFile.getDirectory());
-						m.find();
-						moduleName = m.group(1);
-					}
-
-					module = moduleDAO.find(moduleName);
-					if (module == null) {
-						module = new Module(moduleName);
-						minerFile.setModule(moduleDAO.create(module));
-					} else {
-						minerFile.setModule(module);
-					}
-
-					minerFileDAO.create(minerFile);
+				// Delete miner files matching files to exclude or paths to
+				// exclude
+				if (minerFile.getFileName().matches(filesToExclude)
+						|| minerFile.getPath().matches(pathsToExclude)) {
+					minerFileDAO.delete(minerFile);
 				}
+
+				String moduleName = null;
+				if (maxModuleDepth == -1) {
+					moduleName = minerFile.getDirectory();
+				} else {
+					Pattern p = maxModuleDepthPattern[maxModuleDepth];
+					Matcher m = p.matcher(minerFile.getDirectory());
+					m.find();
+					moduleName = m.group(1);
+				}
+				
+				module = moduleDAO.find(moduleName);
+				if (module == null) {
+					module = new Module(moduleName);
+					minerFile.setModule(moduleDAO.create(module));
+				} else {
+					minerFile.setModule(module);
+				}
+				
+				minerFileDAO.update(minerFile);
 			}
 
 			// Commit transaction
@@ -184,29 +183,20 @@ public class ShiatsuManager extends Manager {
 			throw new MinerException(de);
 		}
 	}
-
+	
 	private void randomizeModules() throws MinerException {
-		Random random = null;
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			int modules = this.getFactory()
-					.getMinerModuleDAO(this.getSession()).count();
-			random = new Random();
 			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
 					this.getSession());
-			Collection<MinerFile> minerFiles = minerFileDAO.findAll();
 
 			minerFileDAO.setRandomizedModules(true);
 			minerFileDAO.createTables();
-
-			for (MinerFile file : minerFiles) {
-				file.changeModuleId(random.nextInt(modules) + 1);
-				minerFileDAO.create(file);
-			}
+			minerFileDAO.initialize();
 
 			// Commit transaction
 			trans.commit();

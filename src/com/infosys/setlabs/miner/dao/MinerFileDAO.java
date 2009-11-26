@@ -27,6 +27,13 @@ public interface MinerFileDAO extends ObjectDAO<MinerFile>, CreateTablesDAO {
 	public void setRandomizedModules(boolean randomizedModules);
 
 	/**
+	 * Initializes the miner files table
+	 * 
+	 * @throws DataAccessException
+	 */
+	public void initialize() throws DataAccessException;
+
+	/**
 	 * Returns the number of files
 	 * 
 	 * @return number of files
