@@ -39,6 +39,14 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 				filter, MysqlCommitDAO.tableName, filter);
 	}
 
+	protected String numberOfFilesMovedSQL() {
+		return String.format("SELECT COUNT(*) as count "
+				+ "FROM (SELECT f.id FROM %s f, file_links fl "
+				+ "WHERE f.id = fl.file_id GROUP BY f.id "
+				+ "HAVING COUNT(fl.parent_id) > 1) AS moved",
+				MysqlMinerFileDAO.tableName);
+	}
+
 	@Override
 	public CommitMetrics metrics(int startId, int stopId,
 			int minimumCommitSize, int maximumCommitSize)
@@ -68,6 +76,7 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 			while (rs.next()) {
 				result.setCommits(rs.getInt("commits"));
 				result.setLocalization(rs.getDouble("localization"));
+				result.setFilesMoved(numberOfFilesMoved());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -76,6 +85,25 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 			this.closeStatement(ps);
 		}
 
+		return result;
+	}
+
+	private int numberOfFilesMoved() {
+		int result = 0;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = this.getConnection().prepareStatement(numberOfFilesMovedSQL());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				result = rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
 		return result;
 	}
 }

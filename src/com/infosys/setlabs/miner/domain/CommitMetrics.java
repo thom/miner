@@ -6,7 +6,7 @@ public class CommitMetrics {
 	private String stop;
 	private IdType idType;
 	private double localization;
-	// TODO: Add number of files moves	
+	private int filesMoved;
 	private int commits;
 
 	private boolean csv;
@@ -130,6 +130,27 @@ public class CommitMetrics {
 	}
 
 	/**
+	 * Returns the number of distinct code files that have been moved into
+	 * another directory
+	 * 
+	 * @return filesMoved
+	 */
+	public int getFilesMoved() {
+		return filesMoved;
+	}
+
+	/**
+	 * Sets the number of distinct code files that have been moved into another
+	 * directory
+	 * 
+	 * @param filesMoved
+	 *            number of distinct code files moved into another directory
+	 */
+	public void setFilesMoved(int filesMoved) {
+		this.filesMoved = filesMoved;
+	}
+
+	/**
 	 * Returns the number of commits with more than one code file
 	 * 
 	 * @return commits
@@ -172,17 +193,18 @@ public class CommitMetrics {
 		String result = "";
 		if (isCSV()) {
 			if (getId() == 1) {
-				result += "ID,Localization,Commits,Start,Stop,Type\n";
+				result += "ID,Localization,Moves,Commits,Start,Stop,Type\n";
 			}
-			result += getId() + "," + getLocalization() + "," + getCommits()
-					+ "," + getStart() + "," + getStop() + "," + getIdType()
-					+ "s";
+			result += getId() + "," + getLocalization() + "," + getFilesMoved()
+					+ "," + getCommits() + "," + getStart() + "," + getStop()
+					+ "," + getIdType() + "s";
 		} else {
 			result += "ID:\t\t" + getId() + "\n";
 			result += "Start ID:\t" + getStart() + "\n";
 			result += "Stop ID:\t" + getStop() + "\n";
 			result += "ID types:\t" + getIdType() + "s\n";
 			result += "Localization:\t" + getLocalization() + "\n";
+			result += "Moves:\t\t" + getFilesMoved() + "\n";
 			result += "Commits:\t" + getCommits();
 		}
 		return result;

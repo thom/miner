@@ -11,7 +11,7 @@ public class FrequentItemSetMetrics {
 	private int filesInFrequentItemSet;
 	private int files;
 	private int filesModified;
-	// TODO: Add number of files moves	
+	private int filesMoved;
 	private int modules;
 	private int frequentItemSets;
 	private double localization;
@@ -105,7 +105,7 @@ public class FrequentItemSetMetrics {
 	/**
 	 * Returns the number of code files that have been modified at least n times
 	 * 
-	 * @return files
+	 * @return filesModified
 	 */
 	public int getFilesModified() {
 		return filesModified;
@@ -114,11 +114,32 @@ public class FrequentItemSetMetrics {
 	/**
 	 * Sets the number of code files that have been modified at least n times
 	 * 
-	 * @param files
+	 * @param filesModified
 	 *            number of code files modified at least n times
 	 */
 	public void setFilesModified(int filesModified) {
 		this.filesModified = filesModified;
+	}
+
+	/**
+	 * Returns the number of distinct code files that have been moved into
+	 * another directory
+	 * 
+	 * @return filesMoved
+	 */
+	public int getFilesMoved() {
+		return filesMoved;
+	}
+
+	/**
+	 * Sets the number of distinct code files that have been moved into another
+	 * directory
+	 * 
+	 * @param filesMoved
+	 *            number of distinct code files moved into another directory
+	 */
+	public void setFilesMoved(int filesMoved) {
+		this.filesMoved = filesMoved;
 	}
 
 	/**
@@ -225,14 +246,15 @@ public class FrequentItemSetMetrics {
 						+ minerInfo.getMinimumModifications()
 						+ " commits,Files in frequent item sets,Code files with >= "
 						+ minerInfo.getMinimumModifications()
-						+ " commits in FIS (%),Modules,Frequent item sets,"
-						+ "Localization," + minerInfo.getCSVLabels() + "\n";
+						+ " commits in FIS (%),Code files moved to another directory,"
+						+ "Modules,Frequent item sets," + "Localization,"
+						+ minerInfo.getCSVLabels() + "\n";
 			}
 			result += getId() + "," + getDatabase() + "," + getFiles() + ","
 					+ getFilesModified() + "," + getFilesInFrequentItemSet()
 					+ "," + includedFilesInFrequentItemSet() + ","
-					+ getModules() + "," + getFrequentItemSets() + ","
-					+ getLocalization() + ",";
+					+ getFilesMoved() + "," + getModules() + ","
+					+ getFrequentItemSets() + "," + getLocalization() + ",";
 			minerInfo.setCSV(true);
 		} else {
 			result += "Database\t\t\t\t" + getDatabase() + "\n";
@@ -246,6 +268,8 @@ public class FrequentItemSetMetrics {
 					+ minerInfo.getMinimumModifications()
 					+ " commits in FIS:\t" + includedFilesInFrequentItemSet()
 					+ "%\n";
+			result += "Code files moved to another directory:\t"
+					+ getFilesMoved() + "\n";
 			result += "Modules:\t\t\t\t" + getModules() + "\n";
 			result += "Frequent item sets:\t\t\t" + getFrequentItemSets()
 					+ "\n";
