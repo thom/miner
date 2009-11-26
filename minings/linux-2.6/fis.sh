@@ -8,5 +8,3 @@ linux_2_6_27 \
 linux_2_6_28 \
 linux_2_6_29 \
 linux_2_6_30 \
-linux_2_6_31 \
-linux_2_6_master
