@@ -1,7 +1,7 @@
 #!/bin/bash
 
 repository="/home/thom/workspace/repositories/wine"
-module_depth=3
+module_depth=4
 commits=4
 min_support=10
 maximum_items=-1

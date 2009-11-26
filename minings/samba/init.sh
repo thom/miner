@@ -12,7 +12,6 @@ name=default
 minings=(
 	"release-1-9-17 samba_1_9_17"
 	"release-2-0-0 samba_2_0_0"
-	"release-2-2-0 samba_2_2_0"
 	"origin/v3-0-stable samba_3_0_branch"
 	"origin/v3-2-stable samba_3_2_branch"
 	"origin/v3-3-stable samba_3_3_branch"
