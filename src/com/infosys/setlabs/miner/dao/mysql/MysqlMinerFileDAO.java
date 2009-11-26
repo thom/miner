@@ -123,7 +123,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				+ "FROM miner_modules) -1)) as miner_module_id FROM %s",
 				tableNameRandomized, tableName);
 	}
-	
+
 	protected String deleteDeletedSQL() {
 		return String.format("DELETE f FROM %s f, actions a "
 				+ "WHERE f.id = a.file_id AND a.type = 'D'", getName());
@@ -140,12 +140,13 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 
 	protected String setNewestFileNameSQL() {
 		return String.format("UPDATE %s AS f1, "
-				+ "(SELECT f.id, fc.new_file_name as file_name "
+				+ "(SELECT f.id, fc.new_file_name "
 				+ "FROM %s f, actions a, file_copies fc "
 				+ "WHERE a.type = 'V' AND a.id = fc.action_id "
 				+ "AND f.id = a.file_id "
-				+ "AND fc.new_file_name <> f.file_name) AS f2 "
-				+ "SET f1.file_name = f2.file_name WHERE f1.id = f2.id",
+				+ "AND fc.new_file_name <> f.file_name "
+				+ "ORDER BY a.commit_id) AS f2 "
+				+ "SET f1.file_name = f2.new_file_name WHERE f1.id = f2.id",
 				getName(), getName());
 	}
 

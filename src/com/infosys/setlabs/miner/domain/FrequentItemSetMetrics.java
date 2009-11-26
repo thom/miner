@@ -11,6 +11,7 @@ public class FrequentItemSetMetrics {
 	private int filesInFrequentItemSet;
 	private int files;
 	private int filesModified;
+	// TODO: Add number of files moves	
 	private int modules;
 	private int frequentItemSets;
 	private double localization;

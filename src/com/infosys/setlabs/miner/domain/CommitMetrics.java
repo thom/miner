@@ -6,6 +6,7 @@ public class CommitMetrics {
 	private String stop;
 	private IdType idType;
 	private double localization;
+	// TODO: Add number of files moves	
 	private int commits;
 
 	private boolean csv;
