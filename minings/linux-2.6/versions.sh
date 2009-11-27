@@ -1,18 +1,10 @@
-./commit-metrics linux_2_6_master -t tag -mic 2 -mc 50 $@ \
-v2.6.29:v2.6.30-rc1 \
-v2.6.30-rc1:v2.6.30-rc2 \
-v2.6.30-rc2:v2.6.30-rc3 \
-v2.6.30-rc3:v2.6.30-rc4 \
-v2.6.30-rc4:v2.6.30-rc5 \
-v2.6.30-rc5:v2.6.30-rc6 \
-v2.6.30-rc6:v2.6.30-rc7 \
-v2.6.30-rc7:v2.6.30 \
-v2.6.30:v2.6.31-rc1 \
-v2.6.31-rc1:v2.6.31-rc2 \
-v2.6.31-rc2:v2.6.31-rc3 \
-v2.6.31-rc3:v2.6.31-rc4 \
-v2.6.31-rc4:v2.6.31-rc5 \
-v2.6.31-rc5:v2.6.31-rc6 \
-v2.6.31-rc6:v2.6.31-rc7 \
-v2.6.31-rc7:v2.6.31-rc8 \
-v2.6.31-rc8:v2.6.31
+#!/bin/bash
+
+./commit-metrics -mic 2 -mc 50 $@ \
+linux_2_6_24_to_25 \
+linux_2_6_25_to_26 \
+linux_2_6_26_to_27 \
+linux_2_6_27_to_28 \
+linux_2_6_28_to_29 \
+linux_2_6_29_to_30 \
+linux_2_6_30_to_31

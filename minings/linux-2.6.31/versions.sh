@@ -1,3 +1,5 @@
-./commit-metrics linux_2_6_31_master -t tag -mic 2 -mc 50 $@ \
-v2.6.31-rc1:v2.6.31 \
-v2.6.31:v2.6.31.5
+#!/bin/bash
+
+./commit-metrics -mic 2 -mc 50 $@ \
+linux_2_6_31_rc1_to_0 \
+linux_2_6_31_0_to_9
