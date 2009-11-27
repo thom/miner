@@ -7,11 +7,8 @@ import java.util.LinkedList;
 import com.infosys.setlabs.dao.DAOTransaction;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
-import com.infosys.setlabs.miner.dao.CommitDAO;
 import com.infosys.setlabs.miner.dao.CommitMetricsDAO;
-import com.infosys.setlabs.miner.domain.Commit;
 import com.infosys.setlabs.miner.domain.CommitMetrics;
-import com.infosys.setlabs.miner.domain.CommitMetrics.IdType;
 
 /**
  * CommitMetrics Manager
@@ -19,6 +16,10 @@ import com.infosys.setlabs.miner.domain.CommitMetrics.IdType;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class CommitMetricsManager extends Manager {
+	private HashMap<String, String> connectionArgs = null;
+	private int minimumCommitSize;
+	private int maximumCommitSize;
+
 	/**
 	 * Creates a new metrics manager
 	 * 
@@ -29,15 +30,52 @@ public class CommitMetricsManager extends Manager {
 	public CommitMetricsManager(HashMap<String, String> connectionArgs)
 			throws MinerException {
 		super(connectionArgs);
+		this.connectionArgs = connectionArgs;
+	}
+
+	/**
+	 * Returns the minimum commit size
+	 * 
+	 * @return minimumCommitSize
+	 */
+	public int getMinimumCommitSize() {
+		return minimumCommitSize;
+	}
+
+	/**
+	 * Sets the minimum commit size
+	 * 
+	 * @param minimumCommitSize
+	 *            minimum commit size to set
+	 */
+	public void setMinimumCommitSize(int minimumCommitSize) {
+		this.minimumCommitSize = minimumCommitSize;
+	}
+
+	/**
+	 * Returns the maximum commit size
+	 * 
+	 * @return maximumCommitSize
+	 */
+	public int getMaximumCommitSize() {
+		return maximumCommitSize;
+	}
+
+	/**
+	 * Sets the maximum commit size
+	 * 
+	 * @param maximumCommitSize
+	 *            maximum commit size to set
+	 */
+	public void setMaximumCommitSize(int maximumCommitSize) {
+		this.maximumCommitSize = maximumCommitSize;
 	}
 
 	/**
 	 * Returns commit metrics for a list of ranges
 	 * 
-	 * @param ranges
-	 *            list of ranges
-	 * @param idType
-	 *            ID type
+	 * @param databases
+	 *            list of databases
 	 * @param mimimumCommitSize
 	 *            minimum commit size to set
 	 * @param maximumCommitSize
@@ -45,47 +83,49 @@ public class CommitMetricsManager extends Manager {
 	 * @return LinkedList<CommitMetrics>
 	 * @throws MinerException
 	 */
-	public LinkedList<CommitMetrics> commitMetrics(ArrayList<String> ranges,
-			IdType idType, int minimumCommitSize, int maximumCommitSize)
-			throws MinerException {
+	public LinkedList<CommitMetrics> commitMetrics(ArrayList<String> databases,
+			int minimumCommitSize, int maximumCommitSize) throws MinerException {
 		LinkedList<CommitMetrics> result = new LinkedList<CommitMetrics>();
+		CommitMetricsManager commitMetricsManager = null;
+
 		int id = 1;
-		for (String range : ranges) {
-			result.add(commitMetrics(range, idType, minimumCommitSize,
-					maximumCommitSize));
-			result.getLast().setId(id);
-			id++;
+
+		try {
+			for (String database : databases) {
+				// Configure database name
+				connectionArgs.put("database", database);
+
+				// Connect to the database
+				commitMetricsManager = new CommitMetricsManager(connectionArgs);
+
+				// Get commit metrics
+				commitMetricsManager.setMinimumCommitSize(minimumCommitSize);
+				commitMetricsManager.setMaximumCommitSize(maximumCommitSize);
+				CommitMetrics cm = commitMetricsManager.commitMetrics();
+
+				cm.setId(id);
+				result.add(cm);
+				id++;
+
+				commitMetricsManager.close();
+			}
+		} finally {
+			if (commitMetricsManager != null) {
+				commitMetricsManager.close();
+			}
 		}
+
 		return result;
 	}
 
 	/**
 	 * Returns metrics for a given range of commits
 	 * 
-	 * @param range
-	 *            range of commit IDs
-	 * @param idType
-	 *            type of the IDs in the range
-	 * @param mimimumCommitSize
-	 *            minimum commit size to set
-	 * @param maximumCommitSize
-	 *            maximumCommitSize to set
 	 * @return metrics
 	 */
-	public CommitMetrics commitMetrics(String range, IdType idType,
-			int minimumCommitSize, int maximumCommitSize) throws MinerException {
+	public CommitMetrics commitMetrics() throws MinerException {
 		CommitMetrics result = null;
-		int startId = 0;
-		int stopId = 0;
 		DAOTransaction trans = null;
-
-		String[] ids = range.split(":");
-		if (ids.length < 2) {
-			throw new MinerException(new Exception("'" + range
-					+ "' is not a valid range of IDs"));
-		}
-		String start = ids[0];
-		String stop = ids[1];
 
 		try {
 			// Start new transaction
@@ -95,23 +135,10 @@ public class CommitMetricsManager extends Manager {
 			CommitMetricsDAO commitMetricsDAO = this.getFactory()
 					.getCommitMetricsDAO(this.getSession());
 
-			// Get commits
-			startId = getCommit(start, idType).getId();
-			stopId = getCommit(stop, idType).getId();
-
-			// If ID type is TAG, we need to extract 1 from the stop ID
-			if (stopId > startId && idType == IdType.TAG) {
-				stopId -= 1;
-			}
-
 			// Get metrics
-			result = commitMetricsDAO.metrics(startId, stopId,
-					minimumCommitSize, maximumCommitSize);
-
-			// Set information about commits
-			result.setStart(start);
-			result.setStop(stop);
-			result.setIdType(idType);
+			commitMetricsDAO.setMinimumCommitSize(minimumCommitSize);
+			commitMetricsDAO.setMaximumCommitSize(maximumCommitSize);
+			result = commitMetricsDAO.metrics();
 
 			// Commit transaction
 			trans.commit();
@@ -125,36 +152,6 @@ public class CommitMetricsManager extends Manager {
 			}
 			throw new MinerException(de);
 		}
-		return result;
-	}
-
-	private Commit getCommit(String id, IdType idType) throws MinerException,
-			DataAccessException {
-		Commit result = null;
-		CommitDAO commitDAO = this.getFactory().getCommitDAO(this.getSession());
-
-		switch (idType) {
-			case ID :
-				try {
-					result = commitDAO.find(Integer.parseInt(id));
-				} catch (NumberFormatException e) {
-					throw new MinerException(new Exception("'" + id
-							+ "' is not a valid ID"));
-				}
-				break;
-			case REV :
-				result = commitDAO.findByRev(id);
-				break;
-			case TAG :
-				result = commitDAO.findByTag(id);
-				break;
-		}
-
-		if (result == null) {
-			throw new MinerException(new Exception("No such "
-					+ idType.toString() + " '" + id + "'"));
-		}
-
 		return result;
 	}
 }

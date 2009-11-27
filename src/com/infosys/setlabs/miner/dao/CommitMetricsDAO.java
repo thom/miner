@@ -10,19 +10,40 @@ import com.infosys.setlabs.miner.domain.CommitMetrics;
  */
 public interface CommitMetricsDAO {
 	/**
+	 * Returns the minimum commit size
+	 * 
+	 * @return minimumCommitSize
+	 */
+	public int getMinimumCommitSize();
+
+	/**
+	 * Sets the minimum commit size
+	 * 
+	 * @param minimumCommitSize
+	 *            minimum commit size to set
+	 */
+	public void setMinimumCommitSize(int minimumCommitSize);
+
+	/**
+	 * Returns the maximum commit size
+	 * 
+	 * @return maximumCommitSize
+	 */
+	public int getMaximumCommitSize();
+
+	/**
+	 * Sets the maximum commit size
+	 * 
+	 * @param maximumCommitSize
+	 *            maximum commit size to set
+	 */
+	public void setMaximumCommitSize(int maximumCommitSize);
+
+	/**
 	 * Returns commit metrics
 	 * 
-	 * @param start
-	 *            ID to start with
-	 * @param stop
-	 *            ID to stop with
-	 * @param mimimumCommitSize
-	 *            minimum commit size to set
-	 * @param maximumCommitSize
-	 *            maximumCommitSize to set
 	 * @return CommitMetrics
 	 * @throws DataAccessException
 	 */
-	public CommitMetrics metrics(int start, int stop, int minimumCommitSize,
-			int maximumCommitSize) throws DataAccessException;
+	public CommitMetrics metrics() throws DataAccessException;
 }

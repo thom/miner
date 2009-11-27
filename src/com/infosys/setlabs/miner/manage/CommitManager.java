@@ -76,18 +76,23 @@ public class CommitManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
+			CommitDAO commitDAO = this.getFactory().getCommitDAO(
+					this.getSession());
+
 			switch (idType) {
 				case ID :
-					result = this.getFactory().getCommitDAO(this.getSession())
-							.find(Integer.parseInt(id));
+					try {
+						result = commitDAO.find(Integer.parseInt(id));
+					} catch (NumberFormatException e) {
+						throw new MinerException(new Exception("'" + id
+								+ "' is not a valid ID"));
+					}
 					break;
 				case REV :
-					result = this.getFactory().getCommitDAO(this.getSession())
-							.findByRev(id);
+					result = commitDAO.findByRev(id);
 					break;
 				case TAG :
-					result = this.getFactory().getCommitDAO(this.getSession())
-							.findByTag(id);
+					result = commitDAO.findByTag(id);
 					break;
 			}
 

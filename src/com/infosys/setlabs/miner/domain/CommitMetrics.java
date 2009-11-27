@@ -2,12 +2,11 @@ package com.infosys.setlabs.miner.domain;
 
 public class CommitMetrics {
 	private int id;
-	private String start;
-	private String stop;
-	private IdType idType;
 	private double localization;
 	private int filesMoved;
 	private int commits;
+	private int minimumCommitSize;
+	private int maximumCommitSize;
 
 	private boolean csv;
 
@@ -51,63 +50,6 @@ public class CommitMetrics {
 	 */
 	public int getId() {
 		return id;
-	}
-
-	/**
-	 * Returns the start ID
-	 * 
-	 * @return start
-	 */
-	public String getStart() {
-		return start;
-	}
-
-	/**
-	 * Sets the start ID
-	 * 
-	 * @param start
-	 *            ID to start with
-	 */
-	public void setStart(String start) {
-		this.start = start;
-	}
-
-	/**
-	 * Returns the stop ID
-	 * 
-	 * @return stop
-	 */
-	public String getStop() {
-		return stop;
-	}
-
-	/**
-	 * Sets the stop ID
-	 * 
-	 * @param stop
-	 *            ID to stop with
-	 */
-	public void setStop(String stop) {
-		this.stop = stop;
-	}
-
-	/**
-	 * Returns the ID type
-	 * 
-	 * @return idType
-	 */
-	public IdType getIdType() {
-		return idType;
-	}
-
-	/**
-	 * Sets the ID type
-	 * 
-	 * @param idType
-	 *            ID type to set
-	 */
-	public void setIdType(IdType idType) {
-		this.idType = idType;
 	}
 
 	/**
@@ -170,6 +112,44 @@ public class CommitMetrics {
 	}
 
 	/**
+	 * Returns the minimum commit size
+	 * 
+	 * @return minimumCommitSize
+	 */
+	public int getMinimumCommitSize() {
+		return minimumCommitSize;
+	}
+
+	/**
+	 * Sets the minimum commit size
+	 * 
+	 * @param minimumCommitSize
+	 *            minimum commit size to set
+	 */
+	public void setMinimumCommitSize(int minimumCommitSize) {
+		this.minimumCommitSize = minimumCommitSize;
+	}
+
+	/**
+	 * Returns the maximum commit size
+	 * 
+	 * @return maximumCommitSize
+	 */
+	public int getMaximumCommitSize() {
+		return maximumCommitSize;
+	}
+
+	/**
+	 * Sets the maximum commit size
+	 * 
+	 * @param maximumCommitSize
+	 *            maximum commit size to set
+	 */
+	public void setMaximumCommitSize(int maximumCommitSize) {
+		this.maximumCommitSize = maximumCommitSize;
+	}
+
+	/**
 	 * Should the output be comma separated values?
 	 * 
 	 * @return csv
@@ -193,19 +173,16 @@ public class CommitMetrics {
 		String result = "";
 		if (isCSV()) {
 			if (getId() == 1) {
-				result += "ID,Localization,Moves,Commits,Start,Stop,Type\n";
+				result += "ID,Localization,Moves,Commits\n";
 			}
 			result += getId() + "," + getLocalization() + "," + getFilesMoved()
-					+ "," + getCommits() + "," + getStart() + "," + getStop()
-					+ "," + getIdType() + "s";
+					+ "," + getCommits();
 		} else {
-			result += "ID:\t\t" + getId() + "\n";
-			result += "Start ID:\t" + getStart() + "\n";
-			result += "Stop ID:\t" + getStop() + "\n";
-			result += "ID types:\t" + getIdType() + "s\n";
-			result += "Localization:\t" + getLocalization() + "\n";
-			result += "Moves:\t\t" + getFilesMoved() + "\n";
-			result += "Commits:\t" + getCommits();
+			result += "Localization:\t\t" + getLocalization() + "\n";
+			result += "Moves to other dir:\t" + getFilesMoved() + "\n";
+			result += "Commits:\t\t" + getCommits() + "\n";
+			result += "Minimum commit size:\t" + getMinimumCommitSize() + "\n";
+			result += "Maximum commit size:\t" + getMaximumCommitSize();
 		}
 		return result;
 	}

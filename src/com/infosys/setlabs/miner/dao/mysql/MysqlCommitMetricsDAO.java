@@ -16,6 +16,9 @@ import com.infosys.setlabs.miner.domain.CommitMetrics;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
+	private int minimumCommitSize;
+	private int maximumCommitSize;
+
 	/**
 	 * Creates a new DAO
 	 * 
@@ -26,11 +29,9 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 		super(conn);
 	}
 
-	protected String localizationSQL(int minimumCommitSize,
-			int maximumCommitSize) {
+	protected String localizationSQL() {
 		String filter = "WHERE miner_files_touched >= " + minimumCommitSize
-				+ " AND " + "miner_files_touched <= " + maximumCommitSize
-				+ " AND id BETWEEN ? AND ?";
+				+ " AND miner_files_touched <= " + maximumCommitSize;
 		return String.format("SELECT "
 				+ "@r := (SELECT COUNT(id) FROM %s %s) AS commits, "
 				+ "(SUM(1 - (IF(modules_touched = 1, 0, "
@@ -48,35 +49,40 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 	}
 
 	@Override
-	public CommitMetrics metrics(int startId, int stopId,
-			int minimumCommitSize, int maximumCommitSize)
-			throws DataAccessException {
+	public int getMinimumCommitSize() {
+		return minimumCommitSize;
+	}
+
+	@Override
+	public void setMinimumCommitSize(int minimumCommitSize) {
+		this.minimumCommitSize = minimumCommitSize;
+	}
+
+	@Override
+	public int getMaximumCommitSize() {
+		return maximumCommitSize;
+	}
+
+	@Override
+	public void setMaximumCommitSize(int maximumCommitSize) {
+		this.maximumCommitSize = maximumCommitSize;
+	}
+
+	@Override
+	public CommitMetrics metrics() throws DataAccessException {
 		CommitMetrics result = new CommitMetrics();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		// Switch begin and end if they are reversed
-		if (startId > stopId) {
-			int tmp = startId;
-			startId = stopId;
-			stopId = tmp;
-		}
-
-		result.setStart(Integer.toString(startId));
-		result.setStop(Integer.toString(stopId));
-
 		try {
-			ps = this.getConnection().prepareStatement(
-					localizationSQL(minimumCommitSize, maximumCommitSize));
-			ps.setInt(1, startId);
-			ps.setInt(2, stopId);
-			ps.setInt(3, startId);
-			ps.setInt(4, stopId);
+			ps = this.getConnection().prepareStatement(localizationSQL());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result.setCommits(rs.getInt("commits"));
 				result.setLocalization(rs.getDouble("localization"));
 				result.setFilesMoved(numberOfFilesMoved());
+				result.setMinimumCommitSize(minimumCommitSize);
+				result.setMaximumCommitSize(maximumCommitSize);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

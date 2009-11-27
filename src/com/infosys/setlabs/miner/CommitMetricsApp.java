@@ -11,11 +11,8 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.CommitMetrics;
-import com.infosys.setlabs.miner.domain.MinerInfo;
-import com.infosys.setlabs.miner.domain.CommitMetrics.IdType;
 import com.infosys.setlabs.miner.manage.CommitMetricsManager;
 import com.infosys.setlabs.miner.manage.Manager;
-import com.infosys.setlabs.miner.manage.MinerInfoManager;
 
 /**
  * Gives information about frequent item sets
@@ -57,7 +54,6 @@ public class CommitMetricsApp {
 
 		// Set connection arguments
 		connectionArgs = new HashMap<String, String>();
-		connectionArgs.put("database", values.getDb());
 		connectionArgs.put("user", values.getUser());
 		connectionArgs.put("password", values.getPw());
 		connectionArgs.put("server", values.getServer());
@@ -65,17 +61,6 @@ public class CommitMetricsApp {
 
 		// Set database engine
 		Manager.setCurrentDatabaseEngine(DAOFactory.DatabaseEngine.MYSQL);
-
-		// Get miner info
-		MinerInfoManager minerInfoManager = new MinerInfoManager(connectionArgs);
-		MinerInfo minerInfo = minerInfoManager.find(MinerInfo.defaultName);
-		minerInfoManager.close();
-
-		// Check prerequisites
-		if (minerInfo == null || !minerInfo.isShiatsu()) {
-			throw new MinerException(new Exception(
-					"The data must be massaged before running commit-metrics."));
-		}
 	}
 
 	/**
@@ -90,10 +75,10 @@ public class CommitMetricsApp {
 			// Connect to the database
 			commitMetricsManager = new CommitMetricsManager(connectionArgs);
 
-			// Get commit metrics for all ranges
+			// Get commit metrics
 			for (CommitMetrics cm : commitMetricsManager.commitMetrics(values
-					.getRanges(), values.getIdType(),
-					values.getMinCommitSize(), values.getMaxCommitSize())) {
+					.getDatabases(), values.getMinCommitSize(), values
+					.getMaxCommitSize())) {
 				cm.setCSV(values.isCSV());
 				System.out.println(cm);
 				if (!values.isCSV()) {
@@ -125,8 +110,8 @@ public class CommitMetricsApp {
 	 * @author Thomas Weibel <thomas_401709@infosys.com>
 	 */
 	private static class CommandLineValues {
-		@Argument(index = 0, usage = "name of the database to connect to", metaVar = "DATABASE", required = true)
-		private String db;
+		@Argument(index = 0, usage = "databases to get metrics for", metaVar = "DATABASE1 [DATABASE2...]", required = true)
+		private ArrayList<String> databases;
 
 		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
 		private String user;
@@ -149,19 +134,13 @@ public class CommitMetricsApp {
 		@Option(name = "-mc", aliases = {"--max-commit-size"}, usage = "maximum size of commits (number of code files) added to the transactions file (-1: no limit (default))")
 		private int maxCommitSize = 50;
 
-		@Option(name = "-t", aliases = {"--type", "--id-type"}, usage = "type of the IDs (id: commit IDs (default), rev: revisions, tag: tags", metaVar = "id|rev|tag")
-		private IdType idType = IdType.ID;
-
-		@Argument(index = 1, usage = "Ranges of IDs of the commits to get metrics for", metaVar = "START1:STOP1 [START2:STOP2 ...]", required = true)
-		private ArrayList<String> ranges;
-
 		/**
-		 * Returns database name
+		 * Returns databases
 		 * 
-		 * @return db
+		 * @return databases
 		 */
-		public String getDb() {
-			return db;
+		public ArrayList<String> getDatabases() {
+			return databases;
 		}
 
 		/**
@@ -227,24 +206,6 @@ public class CommitMetricsApp {
 		 */
 		public int getMaxCommitSize() {
 			return maxCommitSize;
-		}
-
-		/**
-		 * Returns the ID type
-		 * 
-		 * @return idType
-		 */
-		public IdType getIdType() {
-			return idType;
-		}
-
-		/**
-		 * Returns commit ID ranges
-		 * 
-		 * @return ranges
-		 */
-		public ArrayList<String> getRanges() {
-			return ranges;
 		}
 	}
 }
