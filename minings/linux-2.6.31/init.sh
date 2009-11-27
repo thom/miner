@@ -10,7 +10,8 @@ name=default
 
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(
-	"master linux_2_6_31_master"
+	"v2.6.31-rc1..v2.6.31 linux_2_6_31_rc1_to_0"
+	"v2.6.31..v2.6.31.9 linux_2_6_31_0_to_9"
 )
 
 for mining in "${minings[@]}"; do
