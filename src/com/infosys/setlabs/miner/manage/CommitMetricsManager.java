@@ -104,6 +104,7 @@ public class CommitMetricsManager extends Manager {
 				CommitMetrics cm = commitMetricsManager.commitMetrics();
 
 				cm.setId(id);
+				cm.setDatabase(database);
 				result.add(cm);
 				id++;
 

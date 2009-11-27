@@ -2,6 +2,7 @@ package com.infosys.setlabs.miner.domain;
 
 public class CommitMetrics {
 	private int id;
+	private String database;
 	private double localization;
 	private int filesMoved;
 	private int commits;
@@ -50,6 +51,25 @@ public class CommitMetrics {
 	 */
 	public int getId() {
 		return id;
+	}
+
+	/**
+	 * Sets the database
+	 * 
+	 * @param database
+	 *            database to set
+	 */
+	public void setDatabase(String database) {
+		this.database = database;
+	}
+
+	/**
+	 * Returns the database
+	 * 
+	 * @return database
+	 */
+	public String getDatabase() {
+		return database;
 	}
 
 	/**
@@ -173,11 +193,14 @@ public class CommitMetrics {
 		String result = "";
 		if (isCSV()) {
 			if (getId() == 1) {
-				result += "ID,Localization,Moves,Commits\n";
+				result += "ID,Database,Localization,Moves,Commits,"
+						+ "Minimum commit size,Maximum commit size\n";
 			}
-			result += getId() + "," + getLocalization() + "," + getFilesMoved()
-					+ "," + getCommits();
+			result += getId() + "," + getDatabase() + "," + getLocalization()
+					+ "," + getFilesMoved() + "," + getCommits() + ","
+					+ getMinimumCommitSize() + "," + getMaximumCommitSize();
 		} else {
+			result += "Database:\t\t" + getDatabase() + "\n";
 			result += "Localization:\t\t" + getLocalization() + "\n";
 			result += "Moves to other dir:\t" + getFilesMoved() + "\n";
 			result += "Commits:\t\t" + getCommits() + "\n";
