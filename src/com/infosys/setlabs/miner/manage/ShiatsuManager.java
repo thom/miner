@@ -138,6 +138,13 @@ public class ShiatsuManager extends Manager {
 
 			minerFileDAO.initialize();
 
+			// Commit transaction
+			trans.commit();
+
+			// Start new transaction
+			trans = this.getSession().getTransaction();
+			trans.begin();
+
 			for (MinerFile minerFile : minerFileDAO.findAll()) {
 				// Get path and set miner file path
 				minerFile.setPath(repositoryFileDAO.getPath(minerFile.getId()));
@@ -158,7 +165,7 @@ public class ShiatsuManager extends Manager {
 					m.find();
 					moduleName = m.group(1);
 				}
-				
+
 				module = moduleDAO.find(moduleName);
 				if (module == null) {
 					module = new Module(moduleName);
@@ -166,7 +173,7 @@ public class ShiatsuManager extends Manager {
 				} else {
 					minerFile.setModule(module);
 				}
-				
+
 				minerFileDAO.update(minerFile);
 			}
 
@@ -183,7 +190,7 @@ public class ShiatsuManager extends Manager {
 			throw new MinerException(de);
 		}
 	}
-	
+
 	private void randomizeModules() throws MinerException {
 		DAOTransaction trans = null;
 		try {

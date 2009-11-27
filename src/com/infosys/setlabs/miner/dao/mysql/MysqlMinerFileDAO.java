@@ -144,8 +144,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				+ "FROM %s f, actions a, file_copies fc "
 				+ "WHERE a.type = 'V' AND a.id = fc.action_id "
 				+ "AND f.id = a.file_id "
-				+ "AND fc.new_file_name <> f.file_name "
-				+ "ORDER BY a.commit_id) AS f2 "
+				+ "ORDER BY a.commit_id DESC) AS f2 "
 				+ "SET f1.file_name = f2.new_file_name WHERE f1.id = f2.id",
 				getName(), getName());
 	}
