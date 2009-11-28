@@ -1,22 +1,26 @@
 #!/bin/bash
 
 repository="/home/thom/workspace/repositories/wine"
-module_depth=4
+module_depth=3
 commits=4
-min_support=10
+min_support=4
 maximum_items=-1
 maximum_commits=50
 name=default
 
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(
-	"wine-0.9 wine_0_9"
-	"wine-0.9.30 wine_0_9_30"
-	"wine-1.0 wine_1_0"
-	"wine-1.1.0 wine_1_1_0"
-	"wine-1.1.15 wine_1_1_15"
-	"wine-1.1.30 wine_1_1_30"
-	"master wine_master"
+	"wine-0.9..wine-0.9.10 wine_0_9_to_0_9_10"
+	"wine-0.9.10..wine-0.9.20 wine_0_9_10_to_0_9_20"
+	"wine-0.9.20..wine-0.9.30 wine_0_9_20_to_0_9_30"
+	"wine-0.9.30..wine-0.9.40 wine_0_9_30_to_0_9_40"
+	"wine-0.9.40..wine-0.9.50 wine_0_9_40_to_0_9_50"
+	"wine-0.9.50..wine-0.9.61 wine_0_9_50_to_0_9_61"
+	"wine-0.9.61..wine-1.0 wine_0_9_61_to_wine_1_0"
+	"wine-1.0..wine-1.1.0 wine_1_0_to_wine_1_1_0"
+	"wine-1.1.0..wine-1.1.10 wine_1_1_0_to_wine_1_1_10"
+	"wine-1.1.10..wine-1.1.20 wine_1_1_10_to_wine_1_1_20"
+	"wine-1.1.20..wine-1.1.33 wine_1_1_20_to_wine_1_1_33"
 )
 
 for mining in "${minings[@]}"; do

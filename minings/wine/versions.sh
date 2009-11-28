@@ -1,12 +1,14 @@
 #!/bin/bash
 
-./commit-metrics wine_master -t tag -mic 2 -mc 50  $@ \
-wine-0.9:wine-0.9.61 \
-wine-0.9.61:wine-1.0-rc1 \
-wine-1.0-rc1:wine-1.0-rc2 \
-wine-1.0-rc2:wine-1.0-rc3 \
-wine-1.0-rc3:wine-1.0-rc4 \
-wine-1.0-rc4:wine-1.0-rc5 \
-wine-1.0-rc5:wine-1.0 \
-wine-1.0:wine-1.1.0 \
-wine-1.1.0:wine-1.1.33
+./commit-metrics -mic 2 -mc 50  $@ \
+wine_0_9_to_0_9_10 \
+wine_0_9_10_to_0_9_20 \
+wine_0_9_20_to_0_9_30 \
+wine_0_9_30_to_0_9_40 \
+wine_0_9_40_to_0_9_50 \
+wine_0_9_50_to_0_9_61 \
+wine_0_9_61_to_wine_1_0 \
+wine_1_0_to_wine_1_1_0 \
+wine_1_1_0_to_wine_1_1_10 \
+wine_1_1_10_to_wine_1_1_20 \
+wine_1_1_20_to_wine_1_1_33
