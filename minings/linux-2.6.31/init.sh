@@ -1,7 +1,7 @@
 #!/bin/bash
 
 repository="/home/thom/workspace/repositories/linux-2.6.31.y"
-module_depth=4
+module_depth=3
 commits=2
 min_support=2
 maximum_items=-1
@@ -10,8 +10,8 @@ name=default
 
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(
-	"v2.6.31-rc1..v2.6.31 linux_2_6_31_rc1_to_0"
-	"v2.6.31..v2.6.31.6 linux_2_6_31_0_to_6"
+	"v2.6.31-rc1..v2.6.31 linux_2_6_31_rc1_to_2_6_31"
+	"v2.6.31..v2.6.31.6 linux_2_6_31_to_2_6_31_6"
 )
 
 for mining in "${minings[@]}"; do

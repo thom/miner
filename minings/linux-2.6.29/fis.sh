@@ -1,5 +1,5 @@
 #!/bin/bash
 
 ./fis-metrics $@ \
-linux_2_6_29_rc1_to_0 \
-linux_2_6_29_0_to_6
+linux_2_6_29_rc1_to_2_6_29 \
+linux_2_6_29_to_2_6_29_6
