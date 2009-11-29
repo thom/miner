@@ -10,9 +10,6 @@ name=default
 
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(
-	"v2.6.21..v2.6.22 linux_2_6_21_to_2_6_22"
-	"v2.6.22..v2.6.23 linux_2_6_22_to_2_6_23"
-	"v2.6.23..v2.6.24 linux_2_6_23_to_2_6_24"
 	"v2.6.24..v2.6.25 linux_2_6_24_to_2_6_25"
 	"v2.6.25..v2.6.26 linux_2_6_25_to_2_6_26"
 	"v2.6.26..v2.6.27 linux_2_6_26_to_2_6_27"
