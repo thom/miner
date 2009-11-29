@@ -15,7 +15,9 @@ import com.infosys.setlabs.miner.domain.CommitMetrics;
  * 
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
-public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
+public class MysqlCommitMetricsDAO extends MysqlMinerFileMetricsDAO
+		implements
+			CommitMetricsDAO {
 	private int minimumCommitSize;
 	private int maximumCommitSize;
 
@@ -38,14 +40,6 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 				+ "(modules_touched / miner_files_touched)))) / @r) "
 				+ "AS localization FROM %s %s", MysqlCommitDAO.tableName,
 				filter, MysqlCommitDAO.tableName, filter);
-	}
-
-	protected String numberOfFilesMovedSQL() {
-		return String.format("SELECT COUNT(*) as count "
-				+ "FROM (SELECT f.id FROM %s f, file_links fl "
-				+ "WHERE f.id = fl.file_id GROUP BY f.id "
-				+ "HAVING COUNT(fl.parent_id) > 1) AS moved",
-				MysqlMinerFileDAO.tableName);
 	}
 
 	@Override
@@ -80,6 +74,7 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 			while (rs.next()) {
 				result.setCommits(rs.getInt("commits"));
 				result.setLocalization(rs.getDouble("localization"));
+				result.setFilesAdded(numberOfFilesAdded());
 				result.setFilesMoved(numberOfFilesMoved());
 				result.setMinimumCommitSize(minimumCommitSize);
 				result.setMaximumCommitSize(maximumCommitSize);
@@ -91,25 +86,6 @@ public class MysqlCommitMetricsDAO extends JdbcDAO implements CommitMetricsDAO {
 			this.closeStatement(ps);
 		}
 
-		return result;
-	}
-
-	private int numberOfFilesMoved() {
-		int result = 0;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = this.getConnection().prepareStatement(numberOfFilesMovedSQL());
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				result = rs.getInt("count");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.closeResultSet(rs);
-			this.closeStatement(ps);
-		}
 		return result;
 	}
 }

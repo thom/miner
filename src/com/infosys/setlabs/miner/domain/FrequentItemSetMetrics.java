@@ -11,6 +11,7 @@ public class FrequentItemSetMetrics {
 	private int filesInFrequentItemSet;
 	private int files;
 	private int filesModified;
+	private int filesAdded;
 	private int filesMoved;
 	private int modules;
 	private int frequentItemSets;
@@ -119,6 +120,25 @@ public class FrequentItemSetMetrics {
 	 */
 	public void setFilesModified(int filesModified) {
 		this.filesModified = filesModified;
+	}
+
+	/**
+	 * Returns the number of code files that have been added
+	 * 
+	 * @return filesAdded
+	 */
+	public int getFilesAdded() {
+		return filesAdded;
+	}
+
+	/**
+	 * Sets the number of code files that have been added
+	 * 
+	 * @param filesAdded
+	 *            number of code files added
+	 */
+	public void setFilesAdded(int filesAdded) {
+		this.filesAdded = filesAdded;
 	}
 
 	/**
@@ -246,15 +266,17 @@ public class FrequentItemSetMetrics {
 						+ minerInfo.getMinimumModifications()
 						+ " commits,Files in frequent item sets,Code files with >= "
 						+ minerInfo.getMinimumModifications()
-						+ " commits in FIS (%),Code files moved to another directory,"
+						+ " commits in FIS (%),Code files added,"
+						+ "Code files moved to another directory,"
 						+ "Modules,Frequent item sets," + "Localization,"
 						+ minerInfo.getCSVLabels() + "\n";
 			}
 			result += getId() + "," + getDatabase() + "," + getFiles() + ","
 					+ getFilesModified() + "," + getFilesInFrequentItemSet()
 					+ "," + includedFilesInFrequentItemSet() + ","
-					+ getFilesMoved() + "," + getModules() + ","
-					+ getFrequentItemSets() + "," + getLocalization() + ",";
+					+ getFilesAdded() + "," + getFilesMoved() + ","
+					+ getModules() + "," + getFrequentItemSets() + ","
+					+ getLocalization() + ",";
 			minerInfo.setCSV(true);
 		} else {
 			result += "Database\t\t\t\t" + getDatabase() + "\n";
@@ -268,6 +290,7 @@ public class FrequentItemSetMetrics {
 					+ minerInfo.getMinimumModifications()
 					+ " commits in FIS:\t" + includedFilesInFrequentItemSet()
 					+ "%\n";
+			result += "Code files added:\t\t\t" + getFilesAdded() + "\n";
 			result += "Code files moved to another directory:\t"
 					+ getFilesMoved() + "\n";
 			result += "Modules:\t\t\t\t" + getModules() + "\n";

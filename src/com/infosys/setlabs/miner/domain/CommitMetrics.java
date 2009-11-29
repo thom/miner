@@ -4,6 +4,7 @@ public class CommitMetrics {
 	private int id;
 	private String database;
 	private double localization;
+	private int filesAdded;
 	private int filesMoved;
 	private int commits;
 	private int minimumCommitSize;
@@ -89,6 +90,25 @@ public class CommitMetrics {
 	 */
 	public void setLocalization(double localization) {
 		this.localization = localization;
+	}
+
+	/**
+	 * Returns the number of code files that have been added
+	 * 
+	 * @return filesAdded
+	 */
+	public int getFilesAdded() {
+		return filesAdded;
+	}
+
+	/**
+	 * Sets the number of code files that have been added
+	 * 
+	 * @param filesAdded
+	 *            number of code files added
+	 */
+	public void setFilesAdded(int filesAdded) {
+		this.filesAdded = filesAdded;
 	}
 
 	/**
@@ -193,15 +213,17 @@ public class CommitMetrics {
 		String result = "";
 		if (isCSV()) {
 			if (getId() == 1) {
-				result += "ID,Database,Localization,Moves,Commits,"
+				result += "ID,Database,Localization,Adds,Moves,Commits,"
 						+ "Minimum commit size,Maximum commit size\n";
 			}
 			result += getId() + "," + getDatabase() + "," + getLocalization()
-					+ "," + getFilesMoved() + "," + getCommits() + ","
-					+ getMinimumCommitSize() + "," + getMaximumCommitSize();
+					+ "," + getFilesAdded() + "," + getFilesMoved() + ","
+					+ getCommits() + "," + getMinimumCommitSize() + ","
+					+ getMaximumCommitSize();
 		} else {
 			result += "Database:\t\t" + getDatabase() + "\n";
 			result += "Localization:\t\t" + getLocalization() + "\n";
+			result += "Files added:\t\t" + getFilesAdded() + "\n";
 			result += "Moves to other dir:\t" + getFilesMoved() + "\n";
 			result += "Commits:\t\t" + getCommits() + "\n";
 			result += "Minimum commit size:\t" + getMinimumCommitSize() + "\n";
