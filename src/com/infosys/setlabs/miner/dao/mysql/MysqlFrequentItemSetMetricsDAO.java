@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.FrequentItemSetMetricsDAO;
 import com.infosys.setlabs.miner.domain.FrequentItemSetMetrics;
 import com.infosys.setlabs.miner.domain.MinerInfo;
