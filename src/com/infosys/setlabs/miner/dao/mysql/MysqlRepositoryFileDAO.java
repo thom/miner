@@ -52,13 +52,16 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 	protected String selectPathSQL() {
 		return String.format("SELECT f.id, f.file_name, fl.parent_id "
 				+ "FROM %s f, file_links fl "
-				+ "WHERE f.id = fl.file_id AND f.id = ?", tableName);
+				+ "WHERE f.id = fl.file_id AND f.id = ? ORDER BY fl.commit_id",
+				tableName);
 	}
 
 	protected String selectNewestFileNameSQL() {
-		return "SELECT new_file_name FROM file_copies "
-				+ "WHERE new_file_name <> '' AND from_id = to_id AND from_id = ? "
-				+ "ORDER BY to_id, from_commit_id";
+		return String.format("SELECT f.id, fc.new_file_name "
+				+ "FROM %s f, actions a, file_copies fc "
+				+ "WHERE a.type = 'V' AND a.id = fc.action_id "
+				+ "AND f.id = a.file_id " + "AND f.id = ? "
+				+ "ORDER BY a.commit_id", tableName);
 	}
 
 	@Override
