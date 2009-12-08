@@ -208,7 +208,7 @@ public class GitupApp {
 		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server", metaVar = "HOSTNAME")
 		private String port;
 
-		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of apriori frequent item set miner, can also be configured in conf/setup.properties")
+		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of cvsanaly2, can also be configured in conf/setup.properties")
 		private String exec = "cvsanaly2";
 
 		@Option(name = "-k", aliases = {"--keep", "--keep-log"}, usage = "keep generated log")
