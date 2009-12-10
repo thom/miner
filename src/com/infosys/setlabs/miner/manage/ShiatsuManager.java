@@ -11,7 +11,6 @@ import com.infosys.setlabs.miner.dao.CommitDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
 import com.infosys.setlabs.miner.dao.MinerInfoDAO;
 import com.infosys.setlabs.miner.dao.ModuleDAO;
-import com.infosys.setlabs.miner.dao.RepositoryFileDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.domain.Module;
@@ -135,8 +134,6 @@ public class ShiatsuManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			RepositoryFileDAO repositoryFileDAO = this.getFactory().getFileDAO(
-					this.getSession());
 			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
 					this.getSession());
 			ModuleDAO moduleDAO = this.getFactory().getMinerModuleDAO(
@@ -154,7 +151,7 @@ public class ShiatsuManager extends Manager {
 
 			for (MinerFile minerFile : minerFileDAO.findAll()) {
 				// Get path and set miner file path
-				minerFile.setPath(repositoryFileDAO.getPath(minerFile.getId()));
+				minerFile.setPath(minerFileDAO.getPath(minerFile.getId()));
 
 				// Delete miner files matching files to exclude or paths to
 				// exclude

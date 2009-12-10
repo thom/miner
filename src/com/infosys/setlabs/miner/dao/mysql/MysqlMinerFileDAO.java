@@ -144,10 +144,25 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				+ "(SELECT f.id, fc.new_file_name "
 				+ "FROM %s f, actions a, file_copies fc "
 				+ "WHERE a.type = 'V' AND a.id = fc.action_id "
-				+ "AND f.id = a.file_id "
-				+ "ORDER BY a.commit_id DESC) AS f2 "
+				+ "AND f.id = a.file_id " + "ORDER BY a.commit_id DESC) AS f2 "
 				+ "SET f1.file_name = f2.new_file_name WHERE f1.id = f2.id",
 				getName(), getName());
+	}
+	
+	// TODO: Use actions_file_names
+	protected String selectNewestFileNameSQL() {
+		return String.format("SELECT f.id, fc.new_file_name "
+				+ "FROM %s f, actions a, file_copies fc "
+				+ "WHERE a.type = 'V' AND a.id = fc.action_id "
+				+ "AND f.id = a.file_id " + "AND f.id = ? "
+				+ "ORDER BY a.commit_id", "files");
+	}	
+	
+	protected String selectPathSQL() {
+		return String.format("SELECT f.id, f.file_name, fl.parent_id "
+				+ "FROM %s f, file_links fl "
+				+ "WHERE f.id = fl.file_id AND f.id = ? ORDER BY fl.commit_id",
+				"files");
 	}
 
 	@Override
@@ -346,6 +361,79 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 			e.printStackTrace();
 		} finally {
 			this.closeStatement(ps);
+		}
+	}
+
+	@Override
+	public String getPath(int id) throws DataAccessException {
+		return getPathRecursive(id);
+	}
+
+	private String getPathRecursive(int id) throws DataAccessException {
+		// Base case: "./"
+		if (id == -1) {
+			return "." + System.getProperty("file.separator");
+		}
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = this.getConnection().prepareStatement(selectPathSQL());
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+
+			// Retrieve the data from the result set
+			if (rs.last()) {
+				int parentId = rs.getInt("parent_id");
+				if (parentId == -1) {
+					return getPathRecursive(parentId)
+							+ getNewestFileName(id, rs.getString("file_name"));
+				} else {
+					return getPathRecursive(parentId)
+							+ System.getProperty("file.separator")
+							+ getNewestFileName(id, rs.getString("file_name"));
+				}
+			} else {
+				throw new DataAccessException("Couldn't find file with ID '"
+						+ id + "'");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
+
+		// This is never reached!
+		return "";
+	}
+
+	private String getNewestFileName(int id, String oldFileName)
+			throws DataAccessException {
+		String newFileName = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = this.getConnection().prepareStatement(
+					selectNewestFileNameSQL());
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				newFileName = rs.getString("new_file_name");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeResultSet(rs);
+			this.closeStatement(ps);
+		}
+
+		if (newFileName != null) {
+			return newFileName;
+		} else {
+			return oldFileName;
 		}
 	}
 }

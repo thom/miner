@@ -59,17 +59,6 @@ public abstract class DAOFactory {
 	public abstract DAOSession getSession() throws DataAccessException;
 
 	/**
-	 * Abstract method for file data access object.
-	 * 
-	 * @param session
-	 *            session to connect to
-	 * @return RepositoryFileDAO
-	 * @throws DataAccessException
-	 */
-	public abstract RepositoryFileDAO getFileDAO(DAOSession session)
-			throws DataAccessException;
-
-	/**
 	 * Abstract method for basket format data access object
 	 * 
 	 * @param session

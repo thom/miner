@@ -50,4 +50,14 @@ public interface MinerFileDAO extends ObjectDAO<MinerFile>, CreateTablesDAO {
 	 * @throws DataAccessException
 	 */
 	public int count(int minimumModifications) throws DataAccessException;
+	
+	/**
+	 * Returns the path of a repository file
+	 * 
+	 * @param id
+	 *            ID to find path for
+	 * @return path
+	 * @throws DataAccessException
+	 */
+	public String getPath(int id) throws DataAccessException;	
 }

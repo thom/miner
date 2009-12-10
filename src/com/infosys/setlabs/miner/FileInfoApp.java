@@ -12,7 +12,6 @@ import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.RepositoryFile;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerFileManager;
-import com.infosys.setlabs.miner.manage.RepositoryFileManager;
 
 /**
  * Gives information about files
@@ -71,7 +70,6 @@ public class FileInfoApp {
 	 */
 	public void print() throws MinerException {
 		MinerFileManager minerFileManager = null;
-		RepositoryFileManager repositoryFileManager = null;
 		RepositoryFile file = null;
 
 		try {
@@ -83,16 +81,7 @@ public class FileInfoApp {
 			file = minerFileManager.find(values.getId());
 
 			if (file == null) {
-				// Connect to MySQL database
-				repositoryFileManager = new RepositoryFileManager(
-						connectionArgs);
-
-				// Get file path
-				file = repositoryFileManager.find(values.getId());
-			}
-
-			if (file == null) {
-				System.out.println("Error: Couldn't find file with ID '"
+				System.out.println("Error: Couldn't find miner file with ID '"
 						+ values.getId() + "' in the database.");
 			} else {
 				System.out.println(file);
@@ -103,7 +92,7 @@ public class FileInfoApp {
 			}
 		}
 	}
-	
+
 	/**
 	 * Starts the ID to file name mapper
 	 * 
