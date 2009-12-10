@@ -10,6 +10,8 @@ public class MinerFile extends RepositoryFile {
 	private int modifications;
 	private Module module;
 
+	// TODO: move implementation of repository file to here
+
 	/**
 	 * Creates a new miner file
 	 */

@@ -138,26 +138,21 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				+ "WHERE f1.id = f2.id", getName(), getName());
 	}
 
-	// TODO: use actions_file_names
 	protected String setNewestFileNameSQL() {
 		return String.format("UPDATE %s AS f1, "
-				+ "(SELECT f.id, fc.new_file_name "
-				+ "FROM %s f, actions a, file_copies fc "
-				+ "WHERE a.type = 'V' AND a.id = fc.action_id "
-				+ "AND f.id = a.file_id " + "ORDER BY a.commit_id DESC) AS f2 "
+				+ "(SELECT afn.file_id as id, afn.new_file_name "
+				+ "FROM actions_file_names afn WHERE afn.type = 'V' "
+				+ "ORDER BY afn.commit_id DESC) AS f2 "
 				+ "SET f1.file_name = f2.new_file_name WHERE f1.id = f2.id",
-				getName(), getName());
+				getName());
 	}
-	
-	// TODO: Use actions_file_names
+
 	protected String selectNewestFileNameSQL() {
-		return String.format("SELECT f.id, fc.new_file_name "
-				+ "FROM %s f, actions a, file_copies fc "
-				+ "WHERE a.type = 'V' AND a.id = fc.action_id "
-				+ "AND f.id = a.file_id " + "AND f.id = ? "
-				+ "ORDER BY a.commit_id", "files");
-	}	
-	
+		return String.format("SELECT afn.file_id as id, afn.new_file_name "
+				+ "FROM actions_file_names afn WHERE afn.type = 'V' "
+				+ "AND afn.file_id = ? ORDER BY afn.commit_id", "files");
+	}
+
 	protected String selectPathSQL() {
 		return String.format("SELECT f.id, f.file_name, fl.parent_id "
 				+ "FROM %s f, file_links fl "
