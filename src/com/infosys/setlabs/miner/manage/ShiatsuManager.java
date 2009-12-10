@@ -38,15 +38,22 @@ public class ShiatsuManager extends Manager {
 			throws MinerException {
 		super(connectionArgs);
 
+		String fs = System.getProperty("file.separator");
+
+		// Ugly, uglier, this array...
 		maxModuleDepthPattern = new Pattern[5];
-		maxModuleDepthPattern[0] = Pattern.compile("(\\./)");
-		maxModuleDepthPattern[1] = Pattern.compile("(\\./.*?/|\\./)");
-		maxModuleDepthPattern[2] = Pattern
-				.compile("(\\./.*?/.*?/|\\./.*?/|\\./)");
-		maxModuleDepthPattern[3] = Pattern
-				.compile("(\\./.*?/.*?/.*?/|\\./.*?/.*?/|\\./.*?/|\\./)");
-		maxModuleDepthPattern[4] = Pattern
-				.compile("(\\./.*?/.*?/.*?/.*?/|\\./.*?/.*?/.*?/|\\./.*?/.*?/|\\./.*?/|\\./)");
+		maxModuleDepthPattern[0] = Pattern.compile("(\\." + fs + ")");
+		maxModuleDepthPattern[1] = Pattern.compile("(\\." + fs + ".*?" + fs
+				+ "|\\." + fs + ")");
+		maxModuleDepthPattern[2] = Pattern.compile("(\\." + fs + ".*?" + fs
+				+ ".*?" + fs + "|\\." + fs + ".*?" + fs + "|\\." + fs + ")");
+		maxModuleDepthPattern[3] = Pattern.compile("(\\." + fs + ".*?" + fs
+				+ ".*?" + fs + ".*?" + fs + "|\\." + fs + ".*?" + fs + ".*?"
+				+ fs + "|\\." + fs + ".*?" + fs + "|\\." + fs + ")");
+		maxModuleDepthPattern[4] = Pattern.compile("(\\." + fs + ".*?" + fs
+				+ ".*?" + fs + ".*?" + fs + ".*?" + fs + "|\\." + fs + ".*?"
+				+ fs + ".*?" + fs + ".*?" + fs + "|\\." + fs + ".*?" + fs
+				+ ".*?" + fs + "|\\." + fs + ".*?" + fs + "|\\." + fs + ")");
 	}
 
 	/**

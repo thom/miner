@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.infosys.setlabs.dao.DataAccessException;
-import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.CommitMetricsDAO;
 import com.infosys.setlabs.miner.domain.CommitMetrics;
 
