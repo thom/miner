@@ -138,6 +138,7 @@ public class MysqlMinerFileDAO extends JdbcDAO implements MinerFileDAO {
 				+ "WHERE f1.id = f2.id", getName(), getName());
 	}
 
+	// TODO: use actions_file_names
 	protected String setNewestFileNameSQL() {
 		return String.format("UPDATE %s AS f1, "
 				+ "(SELECT f.id, fc.new_file_name "

@@ -56,6 +56,7 @@ public class MysqlRepositoryFileDAO extends JdbcDAO
 				tableName);
 	}
 
+	// TODO: Use actions_file_names
 	protected String selectNewestFileNameSQL() {
 		return String.format("SELECT f.id, fc.new_file_name "
 				+ "FROM %s f, actions a, file_copies fc "
