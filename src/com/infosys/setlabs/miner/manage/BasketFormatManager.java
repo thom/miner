@@ -36,17 +36,16 @@ public class BasketFormatManager extends Manager {
 	 * @return transactions in basket format
 	 * @throws MinerException
 	 */
-	public void format(File output, boolean revs, int modifications,
-			int minSize, int maxSize) throws MinerException {
+	public void format(File output, boolean allFiles, boolean revs,
+			int modifications, int minSize, int maxSize) throws MinerException {
 		DAOTransaction trans = null;
 		try {
 			// Start new transaction
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
-			// TODO: Add filter for "allFiles"
 			this.getFactory().getBasketFormatDAO(this.getSession()).format(
-					output, revs, modifications, minSize, maxSize);
+					output, allFiles, revs, modifications, minSize, maxSize);
 
 			// Commit transaction
 			trans.commit();

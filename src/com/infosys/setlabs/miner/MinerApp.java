@@ -192,9 +192,9 @@ public class MinerApp {
 					+ values.getMinCommitSize());
 			System.out.println("Maximum commits for a transaction is "
 					+ values.getMaxCommitSize());
-			minerManager.format(transactions, values.isRevs(), values
-					.getModifications(), values.getMinCommitSize(), values
-					.getMaxCommitSize());
+			minerManager.format(transactions, values.isAllFiles(), values
+					.isRevs(), values.getModifications(), values
+					.getMinCommitSize(), values.getMaxCommitSize());
 			System.out.println("DONE  > format\n");
 		} else {
 			System.out

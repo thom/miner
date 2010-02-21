@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.BasketFormatDAO;
+import com.infosys.setlabs.miner.domain.MinerFile;
 
 /**
  * MySQL Basket Format DAO
@@ -29,13 +30,13 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 		super(conn);
 	}
 
-	// TODO: Add filter for "allFiles"
-	protected String selectSQL() {
+	protected String selectSQL(boolean allFiles) {
 		return "SELECT a.commit_id, s.rev, "
 				+ "GROUP_CONCAT(m.id ORDER BY m.id ASC SEPARATOR \" \") "
 				+ "AS modified_files "
 				+ "FROM actions a, miner_files m, scmlog s "
 				+ "WHERE m.id = a.file_id AND a.commit_id = s.id AND m.modifications >= ? "
+				+ (allFiles ? "" : "AND m.type = '" + MinerFile.Type.CODE + "'")
 				+ "GROUP BY a.commit_id ORDER BY a.commit_id ASC";
 	}
 
@@ -44,8 +45,9 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 	}
 
 	@Override
-	public void format(File output, boolean revs, int modifications,
-			int minSize, int maxSize) throws DataAccessException {
+	public void format(File output, boolean allFiles, boolean revs,
+			int modifications, int minSize, int maxSize)
+			throws DataAccessException {
 		// Minimum size has to be at least 2
 		if (minSize < 2) {
 			throw new DataAccessException(new Exception(
@@ -62,7 +64,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 			ps = this.getConnection().prepareStatement(
 					setGroupConcatMaxLenSQL());
 			ps.execute();
-			ps = this.getConnection().prepareStatement(selectSQL());
+			ps = this.getConnection().prepareStatement(selectSQL(allFiles));
 			ps.setInt(1, modifications);
 			rs = ps.executeQuery();
 			while (rs.next()) {

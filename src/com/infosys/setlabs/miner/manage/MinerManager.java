@@ -38,8 +38,8 @@ public class MinerManager extends Manager {
 	 * 
 	 * @throws MinerException
 	 */
-	public void format(File transactions, boolean revs, int modifications,
-			int minSize, int maxSize) throws MinerException {
+	public void format(File transactions, boolean allFiles, boolean revs,
+			int modifications, int minSize, int maxSize) throws MinerException {
 		BasketFormatManager basketFormatManager = null;
 
 		try {
@@ -47,8 +47,8 @@ public class MinerManager extends Manager {
 			basketFormatManager = new BasketFormatManager(connectionArgs);
 
 			// Format and write transactions to a file
-			basketFormatManager.format(transactions, revs, modifications,
-					minSize, maxSize);
+			basketFormatManager.format(transactions, allFiles, revs,
+					modifications, minSize, maxSize);
 		} finally {
 			if (basketFormatManager != null) {
 				basketFormatManager.close();
@@ -77,13 +77,14 @@ public class MinerManager extends Manager {
 	private String[] getCmd(String exec, double minSupport, int minItems,
 			int maxItems, String transactions, String frequentItemSets) {
 		if (maxItems > -1) {
-			String[] result = {exec, "-tm", "-s" + minSupport, "-m" + minItems,
-					"-n" + maxItems, "-v:%a %4S", transactions,
-					frequentItemSets};
+			String[] result = { exec, "-tm", "-s" + minSupport,
+					"-m" + minItems, "-n" + maxItems, "-v:%a %4S",
+					transactions, frequentItemSets };
 			return result;
 		} else {
-			String[] result = {exec, "-tm", "-s" + minSupport, "-m" + minItems,
-					"-v:%a %4S", transactions, frequentItemSets};
+			String[] result = { exec, "-tm", "-s" + minSupport,
+					"-m" + minItems, "-v:%a %4S", transactions,
+					frequentItemSets };
 			return result;
 		}
 	}

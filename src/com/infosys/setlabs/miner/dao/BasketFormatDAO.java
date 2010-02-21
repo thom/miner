@@ -15,6 +15,8 @@ public interface BasketFormatDAO {
 	 * 
 	 * @param output
 	 *            file to write the output to
+	 * @param allFiles
+	 *            should all files be added? (default: only code files)
 	 * @param revs
 	 *            should revisions be written in comments?
 	 * @param modifications
@@ -25,8 +27,9 @@ public interface BasketFormatDAO {
 	 * @param maxSize
 	 *            maximum commit size
 	 * @return transactions in basket format
-	 * @throws DataAccessException 
+	 * @throws DataAccessException
 	 */
-	public void format(File output, boolean revs, int modifications,
-			int minSize, int maxSize) throws DataAccessException;
+	public void format(File output, boolean allFiles, boolean revs,
+			int modifications, int minSize, int maxSize)
+			throws DataAccessException;
 }
