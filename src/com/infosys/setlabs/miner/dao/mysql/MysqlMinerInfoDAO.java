@@ -26,6 +26,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 		super(conn);
 	}
 
+	// TODO: add new field "all_files"
 	protected String createTableSQL() {
 		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "

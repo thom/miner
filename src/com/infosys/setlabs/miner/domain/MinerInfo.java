@@ -16,6 +16,8 @@ public class MinerInfo {
 
 	// Did the data already get a massage?
 	private boolean shiatsu;
+	
+	// TODO: Add field allFiles
 
 	// Maximum module depth used
 	private int maximumModuleDepth;
@@ -366,6 +368,7 @@ public class MinerInfo {
 		} else {
 			result += "Name\t\t\t\t\t" + getName() + "\n";
 			result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
+			// TODO: all files or only code files?
 			result += "Maximum module depth:\t\t\t"
 					+ val(getMaximumModuleDepth()) + "\n";
 			result += "Minimum modifications (commits):\t"

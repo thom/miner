@@ -22,6 +22,9 @@ public class Commit {
 
 	// Number of modules touched by commit
 	int modulesTouched;
+	
+	// TODO: Add codeFilesTouched
+	// TODO: Add codeModulesTouched
 
 	// Files
 	private List<MinerFile> files = new ArrayList<MinerFile>();
@@ -157,13 +160,15 @@ public class Commit {
 	}
 
 	@Override
-	public String toString() {
+	public String toString() {		
 		String result = "";
 		result += "ID:\t\t\t" + getId() + "\n";
 		result += "Revision:\t\t" + getRev() + "\n";
 		result += "Files touched:\t\t" + getFilesTouched() + "\n";
 		result += "Modules touched:\t" + getModulesTouched() + "\n";
 		result += "\n" + getComment() + "\n";
+		// TODO: Output "Code files touched"
+		// TODO: Output "Code modules touched"
 
 		result += "Files:\n-------------------------------------------------------------------------------";
 		for (MinerFile file : getFiles()) {

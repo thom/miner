@@ -29,6 +29,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 		super(conn);
 	}
 
+	// TODO: Add filter for "allFiles"
 	protected String selectSQL() {
 		return "SELECT a.commit_id, s.rev, "
 				+ "GROUP_CONCAT(m.id ORDER BY m.id ASC SEPARATOR \" \") "

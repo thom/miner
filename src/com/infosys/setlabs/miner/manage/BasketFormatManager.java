@@ -44,6 +44,7 @@ public class BasketFormatManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
+			// TODO: Add filter for "allFiles"
 			this.getFactory().getBasketFormatDAO(this.getSession()).format(
 					output, revs, modifications, minSize, maxSize);
 

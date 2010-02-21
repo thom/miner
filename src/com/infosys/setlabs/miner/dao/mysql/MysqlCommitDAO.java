@@ -31,6 +31,8 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 		super(conn);
 	}
 
+	// TODO: Add field miner_code_files_touched
+	// TODO: Add field code_modules_touched
 	protected String createTableSQL() {
 		return String.format("CREATE TABLE %s "
 				+ "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "

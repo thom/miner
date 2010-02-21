@@ -101,6 +101,8 @@ public class ShiatsuManager extends Manager {
 			CommitDAO commitDAO = this.getFactory().getCommitDAO(
 					this.getSession());
 			commitDAO.createTables();
+			
+			// TODO: Fix commits when using code files only
 
 			// Create miner info table
 			MinerInfoDAO minerInfoDAO = this.getFactory().getMinerInfoDAO(
