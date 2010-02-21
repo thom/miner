@@ -114,22 +114,22 @@ public class FileInfoApp {
 		@Argument(index = 0, usage = "name of the database to connect to", metaVar = "DATABASE", required = true)
 		private String db;
 
-		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
+		@Option(name = "-u", aliases = { "--user", "--login" }, usage = "user name to log in to the database", metaVar = "USER")
 		private String user;
 
-		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
+		@Option(name = "-p", aliases = { "--password", "--pw" }, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
-		@Option(name = "-S", aliases = {"--server"}, usage = "name of the host where database server is running (default: localhost)", metaVar = "HOSTNAME")
+		@Option(name = "-S", aliases = { "--server" }, usage = "name of the host where database server is running (default: localhost)", metaVar = "HOSTNAME")
 		private String server = "localhost";
 
-		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
+		@Option(name = "-P", aliases = { "--port" }, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
 
 		@Argument(index = 1, usage = "ID of the file", metaVar = "ID", required = true)
 		private int id;
 
-		@Option(name = "-r", aliases = {"--randomize", "--randomize-modules"}, usage = "sets random modules for files")
+		@Option(name = "-r", aliases = { "--randomize", "--randomize-modules" }, usage = "sets random modules for files")
 		private boolean randomize = false;
 
 		/**

@@ -109,25 +109,25 @@ public class ShiatsuApp {
 		@Argument(index = 0, usage = "name of the database to connect to", metaVar = "DATABASE", required = true)
 		private String db;
 
-		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
+		@Option(name = "-u", aliases = { "--user", "--login" }, usage = "user name to log in to the database", metaVar = "USER")
 		private String user;
 
-		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
+		@Option(name = "-p", aliases = { "--password", "--pw" }, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
-		@Option(name = "-S", aliases = {"--server"}, usage = "name of the host where database server is running (default: localhost)", metaVar = "HOSTNAME")
+		@Option(name = "-S", aliases = { "--server" }, usage = "name of the host where database server is running (default: localhost)", metaVar = "HOSTNAME")
 		private String server = "localhost";
 
-		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
+		@Option(name = "-P", aliases = { "--port" }, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
 
-		@Option(name = "-m", aliases = {"--max-depth", "--max-module-depth"}, usage = "sets the maximum depth of modules (-1 (default, no maxium depth), 0, 1, 2, 3, 4)")
+		@Option(name = "-m", aliases = { "--max-depth", "--max-module-depth" }, usage = "sets the maximum depth of modules (-1 (default, no maxium depth), 0, 1, 2, 3, 4)")
 		private int maxModuleDepth = -1;
 
-		@Option(name = "-ep", aliases = {"--exclude-paths"}, usage = "regular expression of paths to exclude from the database")
+		@Option(name = "-ep", aliases = { "--exclude-paths" }, usage = "regular expression of paths to exclude from the database")
 		private String pathsToExclude = "";
 
-		@Option(name = "-ef", aliases = {"--exclude-files"}, usage = "regular expression of files to exclude from the database")
+		@Option(name = "-ef", aliases = { "--exclude-files" }, usage = "regular expression of files to exclude from the database")
 		private String filesToExclude = "";
 
 		/**

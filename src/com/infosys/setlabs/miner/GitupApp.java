@@ -184,43 +184,43 @@ public class GitupApp {
 		@Argument(index = 0, usage = "URI of the git repository", metaVar = "REPOSITORY", required = true)
 		private String repository;
 
-		@Option(name = "-s", aliases = {"--show, --show-branches-tags"}, usage = "list the branches and tags of the repository")
+		@Option(name = "-s", aliases = { "--show, --show-branches-tags" }, usage = "list the branches and tags of the repository")
 		private boolean showBranchesAndTags;
 
-		@Option(name = "-b", aliases = {"--branch"}, usage = "branch to use (default: master)", metaVar = "BRANCH")
+		@Option(name = "-b", aliases = { "--branch" }, usage = "branch to use (default: master)", metaVar = "BRANCH")
 		private String branch = "master";
 
-		@Option(name = "-f", aliases = {"--config-file"}, usage = "use a custom configuration file", metaVar = "CONFIG")
+		@Option(name = "-f", aliases = { "--config-file" }, usage = "use a custom configuration file", metaVar = "CONFIG")
 		private String conf;
 
-		@Option(name = "-d", aliases = {"--db", "--database"}, usage = "name of the database to use (default: cvsanaly)", metaVar = "DB")
+		@Option(name = "-d", aliases = { "--db", "--database" }, usage = "name of the database to use (default: cvsanaly)", metaVar = "DB")
 		private String db = "cvsanaly";
 
-		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
+		@Option(name = "-u", aliases = { "--user", "--login" }, usage = "user name to log in to the database", metaVar = "USER")
 		private String user;
 
-		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
+		@Option(name = "-p", aliases = { "--password", "--pw" }, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
-		@Option(name = "-S", aliases = {"--server"}, usage = "name of the host where database server is running", metaVar = "HOSTNAME")
+		@Option(name = "-S", aliases = { "--server" }, usage = "name of the host where database server is running", metaVar = "HOSTNAME")
 		private String server;
 
-		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server", metaVar = "HOSTNAME")
+		@Option(name = "-P", aliases = { "--port" }, usage = "port of the database server", metaVar = "HOSTNAME")
 		private String port;
 
-		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of cvsanaly2, can also be configured in conf/setup.properties")
+		@Option(name = "-e", aliases = { "--exec", "--executable" }, usage = "path to the executable of cvsanaly2, can also be configured in conf/setup.properties")
 		private String exec = "cvsanaly2";
 
-		@Option(name = "-k", aliases = {"--keep", "--keep-log"}, usage = "keep generated log")
+		@Option(name = "-k", aliases = { "--keep", "--keep-log" }, usage = "keep generated log")
 		private boolean keepLog = true;
 
-		@Option(name = "-o", aliases = {"--overwrite", "--overwrite-log"}, usage = "overwrite generated log")
+		@Option(name = "-o", aliases = { "--overwrite", "--overwrite-log" }, usage = "overwrite generated log")
 		private boolean overwriteLog = false;
 
-		@Option(name = "-l", aliases = {"--log", "--log-file"}, usage = "file containing git log messages (if the file doesn't already exist, the gitup tool creates it and commit messages to it)")
+		@Option(name = "-l", aliases = { "--log", "--log-file" }, usage = "file containing git log messages (if the file doesn't already exist, the gitup tool creates it and commit messages to it)")
 		private String log;
 
-		@Option(name = "-a", aliases = {"--all"}, usage = "use commits of all branches")
+		@Option(name = "-a", aliases = { "--all" }, usage = "use commits of all branches")
 		private boolean all = false;
 
 		/**

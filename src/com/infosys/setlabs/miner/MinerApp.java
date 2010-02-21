@@ -113,6 +113,7 @@ public class MinerApp {
 		// Set maximum module depth
 		maximumModuleDepth = minerInfoDefault.getMaximumModuleDepth();
 	}
+
 	/**
 	 * Prints miner information
 	 * 
@@ -141,18 +142,18 @@ public class MinerApp {
 
 			// Determine what to do in which mode
 			switch (values.getMode()) {
-				case FORMAT :
-					format();
-					break;
-				case APRIORI :
-					format();
-					apriori();
-					break;
-				default : // ALL
-					format();
-					apriori();
-					frequentItemSets();
-					break;
+			case FORMAT:
+				format();
+				break;
+			case APRIORI:
+				format();
+				apriori();
+				break;
+			default: // ALL
+				format();
+				apriori();
+				frequentItemSets();
+				break;
 			}
 
 			System.out.println("DONE  > miner");
@@ -201,6 +202,7 @@ public class MinerApp {
 							+ transactions.getAbsolutePath() + "\n");
 		}
 	}
+
 	/**
 	 * Call apriori with the specified parameters
 	 * 
@@ -255,6 +257,7 @@ public class MinerApp {
 			minerInfo.setMinimumCommitSize(values.getMinCommitSize());
 			minerInfo.setMaximumCommitSize(values.getMaxCommitSize());
 			minerInfo.setShiatsu(true);
+			minerInfo.setAllFiles(values.isAllFiles());
 			minerInfo.setMaximumModuleDepth(maximumModuleDepth);
 			minerInfo.setMiner(true);
 			minerInfo.setMinimumItems(values.getMinItems());
@@ -326,67 +329,67 @@ public class MinerApp {
 		@Argument(index = 0, usage = "name of the database to connect to", metaVar = "DATABASE", required = true)
 		private String db;
 
-		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
+		@Option(name = "-u", aliases = { "--user", "--login" }, usage = "user name to log in to the database", metaVar = "USER")
 		private String user;
 
-		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
+		@Option(name = "-p", aliases = { "--password", "--pw" }, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
-		@Option(name = "-S", aliases = {"--server"}, usage = "name of the host where database server is running (default: localhost)", metaVar = "HOSTNAME")
+		@Option(name = "-S", aliases = { "--server" }, usage = "name of the host where database server is running (default: localhost)", metaVar = "HOSTNAME")
 		private String server = "localhost";
 
-		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
+		@Option(name = "-P", aliases = { "--port" }, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
 
-		@Option(name = "-info", aliases = {"--info", "--information"}, usage = "show information about last mining")
+		@Option(name = "-info", aliases = { "--info", "--information" }, usage = "show information about last mining")
 		private boolean info;
 
-		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of apriori frequent item set miner")
+		@Option(name = "-e", aliases = { "--exec", "--executable" }, usage = "path to the executable of apriori frequent item set miner")
 		private String exec;
 
-		@Option(name = "-a", aliases = {"--all", "--all-files"}, usage = "use all files for mining (default: only code files)")
-		private boolean allFiles = false;		
+		@Option(name = "-a", aliases = { "--all", "--all-files" }, usage = "use all files for mining (default: only code files)")
+		private boolean allFiles = false;
 
-		@Option(name = "-i", aliases = {"--items", "--minimum-items"}, usage = "minimum number of items per set")
+		@Option(name = "-i", aliases = { "--items", "--minimum-items" }, usage = "minimum number of items per set")
 		private int minItems;
 
-		@Option(name = "-mi", aliases = {"--maximum-items"}, usage = "maximum number of items per set (-1: no limit)")
+		@Option(name = "-mi", aliases = { "--maximum-items" }, usage = "maximum number of items per set (-1: no limit)")
 		private int maxItems;
 
-		@Option(name = "-s", aliases = {"--support", "--minimum-support"}, usage = "minimum support of a set (positive: percentage, negative: absolute number)")
+		@Option(name = "-s", aliases = { "--support", "--minimum-support" }, usage = "minimum support of a set (positive: percentage, negative: absolute number)")
 		private float minSupport;
 
-		@Option(name = "-k", aliases = {"--keep", "--keep-files"}, usage = "keep all generated files")
+		@Option(name = "-k", aliases = { "--keep", "--keep-files" }, usage = "keep all generated files")
 		private boolean keepFiles;
 
-		@Option(name = "-o", aliases = {"--overwrite", "--overwrite-files"}, usage = "overwrite all generated files, even those given as input")
+		@Option(name = "-o", aliases = { "--overwrite", "--overwrite-files" }, usage = "overwrite all generated files, even those given as input")
 		private boolean overwriteFiles;
 
-		@Option(name = "-v", aliases = {"--revs", "--revisions"}, usage = "add revision IDs as comments above transactions in the transactions file")
+		@Option(name = "-v", aliases = { "--revs", "--revisions" }, usage = "add revision IDs as comments above transactions in the transactions file")
 		private boolean revs;
 
-		@Option(name = "-c", aliases = {"--commits", "--min-modifications"}, usage = "minimum number of commits (modifications) a code file has to have to be added to the transactions file (default: >= 4)")
+		@Option(name = "-c", aliases = { "--commits", "--min-modifications" }, usage = "minimum number of commits (modifications) a code file has to have to be added to the transactions file (default: >= 4)")
 		private int modifications = 4;
 
-		@Option(name = "-mic", aliases = {"--min-commit-size"}, usage = "minimum size of commits (number of code files) added to the transactions file (has to be >= 2, default: 2)")
+		@Option(name = "-mic", aliases = { "--min-commit-size" }, usage = "minimum size of commits (number of code files) added to the transactions file (has to be >= 2, default: 2)")
 		private int minCommitSize = 2;
 
-		@Option(name = "-mc", aliases = {"--max-commit-size"}, usage = "maximum size of commits (number of code files) added to the transactions file (-1: no limit (default))")
+		@Option(name = "-mc", aliases = { "--max-commit-size" }, usage = "maximum size of commits (number of code files) added to the transactions file (-1: no limit (default))")
 		private int maxCommitSize = 50;
 
-		@Option(name = "-m", aliases = {"--mode"}, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
+		@Option(name = "-m", aliases = { "--mode" }, usage = "mode to run (all: default, format: only formatting will happen, no frequent item set mining, apriori: call frequent item set miner", metaVar = "all|format|apriori")
 		private Mode mode = Mode.ALL;
 
-		@Option(name = "-t", aliases = {"--trans", "--transactions"}, usage = "file containing transactions in basket format (if the file doesn't already exist, the miner tool creates it and writes data to it)")
+		@Option(name = "-t", aliases = { "--trans", "--transactions" }, usage = "file containing transactions in basket format (if the file doesn't already exist, the miner tool creates it and writes data to it)")
 		private String transactions;
 
-		@Option(name = "-f", aliases = {"--fis", "--frequent-item-sets"}, usage = "file containing frequent item sets (if the file doesn't already exist, the miner tool creates it and writes data to it)")
+		@Option(name = "-f", aliases = { "--fis", "--frequent-item-sets" }, usage = "file containing frequent item sets (if the file doesn't already exist, the miner tool creates it and writes data to it)")
 		private String frequentItemSets;
 
-		@Option(name = "-n", aliases = {"--name"}, usage = "set the name of the mining")
+		@Option(name = "-n", aliases = { "--name" }, usage = "set the name of the mining")
 		private String name = MinerInfo.defaultName;
 
-		@Option(name = "-r", aliases = {"--randomize", "--randomize-modules"}, usage = "sets random modules for files")
+		@Option(name = "-r", aliases = { "--randomize", "--randomize-modules" }, usage = "sets random modules for files")
 		private boolean randomize = false;
 
 		/**
@@ -489,7 +492,7 @@ public class MinerApp {
 		public String getExec() {
 			return exec;
 		}
-		
+
 		/**
 		 * Does the user want to mine all files?
 		 * 
@@ -497,7 +500,7 @@ public class MinerApp {
 		 */
 		public boolean isAllFiles() {
 			return allFiles;
-		}		
+		}
 
 		/**
 		 * Returns value of minimum number of items per set

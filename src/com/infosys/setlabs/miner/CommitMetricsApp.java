@@ -92,6 +92,7 @@ public class CommitMetricsApp {
 			}
 		}
 	}
+
 	/**
 	 * Starts frequent item set info
 	 * 
@@ -113,28 +114,28 @@ public class CommitMetricsApp {
 		@Argument(index = 0, usage = "databases to get metrics for", metaVar = "DATABASE1 [DATABASE2...]", required = true)
 		private ArrayList<String> databases;
 
-		@Option(name = "-u", aliases = {"--user", "--login"}, usage = "user name to log in to the database", metaVar = "USER")
+		@Option(name = "-u", aliases = { "--user", "--login" }, usage = "user name to log in to the database", metaVar = "USER")
 		private String user;
 
-		@Option(name = "-p", aliases = {"--password", "--pw"}, usage = "password used to log in to the database", metaVar = "PASSWORD")
+		@Option(name = "-p", aliases = { "--password", "--pw" }, usage = "password used to log in to the database", metaVar = "PASSWORD")
 		private String pw;
 
-		@Option(name = "-S", aliases = {"--server"}, usage = "name of the host where database server is running (default: localhost)", metaVar = "HOSTNAME")
+		@Option(name = "-S", aliases = { "--server" }, usage = "name of the host where database server is running (default: localhost)", metaVar = "HOSTNAME")
 		private String server = "localhost";
 
-		@Option(name = "-P", aliases = {"--port"}, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
+		@Option(name = "-P", aliases = { "--port" }, usage = "port of the database server (default: 3306)", metaVar = "HOSTNAME")
 		private String port = "3306";
 
-		@Option(name = "-c", aliases = {"--csv"}, usage = "should the output be comma separated values?")
+		@Option(name = "-c", aliases = { "--csv" }, usage = "should the output be comma separated values?")
 		private boolean csv = false;
-		
-		@Option(name = "-a", aliases = {"--all", "--all-files"}, usage = "use all files for mining (default: only code files)")
+
+		@Option(name = "-a", aliases = { "--all", "--all-files" }, usage = "use all files for mining (default: only code files)")
 		private boolean allFiles = false;
 
-		@Option(name = "-mic", aliases = {"--min-commit-size"}, usage = "minimum size of commits (number of code files) added to the transactions file (has to be >= 2, default: 2)")
+		@Option(name = "-mic", aliases = { "--min-commit-size" }, usage = "minimum size of commits (number of code files) added to the transactions file (has to be >= 2, default: 2)")
 		private int minCommitSize = 2;
 
-		@Option(name = "-mc", aliases = {"--max-commit-size"}, usage = "maximum size of commits (number of code files) added to the transactions file (-1: no limit (default))")
+		@Option(name = "-mc", aliases = { "--max-commit-size" }, usage = "maximum size of commits (number of code files) added to the transactions file (-1: no limit (default))")
 		private int maxCommitSize = 50;
 
 		/**
@@ -190,7 +191,7 @@ public class CommitMetricsApp {
 		public boolean isCSV() {
 			return csv;
 		}
-		
+
 		/**
 		 * Does the user want the metrics for all files?
 		 * 
