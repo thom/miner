@@ -102,6 +102,11 @@ public class ShiatsuManager extends Manager {
 					this.getSession());
 			commitDAO.createTables();
 
+			// Create miner actions table
+			// TODO: Create miner actions table
+			// TODO: Update file IDs in miner actions table
+			// TODO: Replace all uses of actions with miner actions
+
 			// Create miner info table
 			MinerInfoDAO minerInfoDAO = this.getFactory().getMinerInfoDAO(
 					this.getSession());
@@ -181,7 +186,8 @@ public class ShiatsuManager extends Manager {
 
 					minerFile.setModule(moduleDAO.create(module));
 				} else {
-					if (minerFile.getType() == Type.CODE && !module.hasCodeFiles()) {
+					if (minerFile.getType() == Type.CODE
+							&& !module.hasCodeFiles()) {
 						module.setCodeFiles(true);
 						moduleDAO.update(module);
 					}

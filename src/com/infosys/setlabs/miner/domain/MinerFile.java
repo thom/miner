@@ -7,21 +7,21 @@ package com.infosys.setlabs.miner.domain;
  */
 public class MinerFile {
 	private int id;
-	
+
 	// Newest file name
 	private String fileName;
 	private String path;
 	private Type type;
 	private int modifications;
-	private Module module;	
+	private Module module;
 
 	/**
 	 * File types
 	 */
 	public static enum Type {
 		CODE, BUILD, UI, I18N, DOCUMENTATION, DEVEL_DOC, PACKAGE, IMAGE, MULTIMEDIA, DIRECTORY, UNKNOWN
-	}	
-	
+	}
+
 	/**
 	 * Creates a new miner file
 	 */
@@ -179,7 +179,7 @@ public class MinerFile {
 	public void changeModuleId(int id) {
 		this.module.setId(id);
 	}
-	
+
 	@Override
 	public String toString() {
 		String result = "";
@@ -187,7 +187,7 @@ public class MinerFile {
 		result += "File name:\t" + getFileName() + "\n";
 		result += "Path:\t\t" + getPath() + "\n";
 		result += "Directory:\t" + getDirectory() + "\n";
-		result += "Type:\t\t" + getType().toString().toLowerCase() + "\n";		
+		result += "Type:\t\t" + getType().toString().toLowerCase() + "\n";
 		result += "Modifications:\t" + getModifications() + "\n\n";
 		result += "Module:\n";
 		result += getModule();
