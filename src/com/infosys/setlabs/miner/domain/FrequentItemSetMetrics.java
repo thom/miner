@@ -259,7 +259,6 @@ public class FrequentItemSetMetrics {
 
 	@Override
 	public String toString() {
-		// TODO: indicate whether all files or only code files
 		String result = "";
 		if (isCSV()) {
 			if (getId() == 1) {

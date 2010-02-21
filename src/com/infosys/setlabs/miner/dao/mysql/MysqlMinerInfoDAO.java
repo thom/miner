@@ -26,13 +26,12 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 		super(conn);
 	}
 
-	// TODO: add new field "all_files"
 	protected String createTableSQL() {
 		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
 				+ "name VARCHAR(255) NOT NULL DEFAULT 'default', "
-				+ "shiatsu BOOLEAN, maximum_module_depth INT, "
-				+ "minimum_modifications INT, "
+				+ "shiatsu BOOLEAN, all_files BOOLEAN, "
+				+ "maximum_module_depth INT, minimum_modifications INT, "
 				+ "minimum_commit_size INT, maximum_commit_size INT, "
 				+ "excluded_paths MEDIUMTEXT, excluded_files MEDIUMTEXT, "
 				+ "miner BOOLEAN, minimum_items INT, maximum_items INT, "
@@ -43,44 +42,49 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 				// InnoDB here
 				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8", tableName);
 	}
+
 	protected String dropTableSQL() {
 		return String.format("DROP TABLE IF EXISTS %s", tableName);
 	}
 
 	protected String selectSQL() {
-		return String.format("SELECT id, name, shiatsu, maximum_module_depth, "
-				+ "minimum_modifications, minimum_commit_size, "
-				+ "maximum_commit_size, excluded_paths, excluded_files, "
+		return String.format("SELECT id, name, shiatsu, all_files, "
+				+ "maximum_module_depth, minimum_modifications, "
+				+ "minimum_commit_size, maximum_commit_size, "
+				+ "excluded_paths, excluded_files, "
 				+ "miner, minimum_items, maximum_items, "
 				+ "minimum_support, has_randomized_modules "
 				+ "FROM %s WHERE id=?", tableName);
 	}
 
 	protected String selectByNameSQL() {
-		return String.format("SELECT id, name, shiatsu, maximum_module_depth, "
-				+ "minimum_modifications, minimum_commit_size, "
-				+ "maximum_commit_size, excluded_paths, excluded_files, "
+		return String.format("SELECT id, name, shiatsu, all_files, "
+				+ "maximum_module_depth, minimum_modifications, "
+				+ "minimum_commit_size, maximum_commit_size, "
+				+ "excluded_paths, excluded_files, "
 				+ "miner, minimum_items, maximum_items, "
 				+ "minimum_support, has_randomized_modules "
 				+ "FROM %s WHERE name=?", tableName);
 	}
 
 	protected String selectAllSQL() {
-		return String.format("SELECT id, name, shiatsu, maximum_module_depth, "
-				+ "minimum_modifications, minimum_commit_size, "
-				+ "maximum_commit_size, excluded_paths, excluded_files, "
+		return String.format("SELECT id, name, shiatsu, all_files, "
+				+ "maximum_module_depth, minimum_modifications, "
+				+ "minimum_commit_size, maximum_commit_size, "
+				+ "excluded_paths, excluded_files, "
 				+ "miner, minimum_items, maximum_items, "
 				+ "minimum_support, has_randomized_modules " + "FROM %s",
 				tableName);
 	}
+
 	protected String createSQL() {
-		return String.format("INSERT INTO %s (id, name, shiatsu, "
+		return String.format("INSERT INTO %s (id, name, shiatsu, all_files, "
 				+ "maximum_module_depth, minimum_modifications, "
 				+ "minimum_commit_size, maximum_commit_size, "
 				+ "excluded_paths, excluded_files, "
 				+ "miner, minimum_items, maximum_items, "
 				+ "minimum_support, has_randomized_modules) "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", tableName);
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", tableName);
 	}
 
 	protected String deleteSQL() {
@@ -88,7 +92,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 	}
 
 	protected String updateSQL() {
-		return String.format("UPDATE %s SET name=?, shiatsu=?, "
+		return String.format("UPDATE %s SET name=?, shiatsu=?, all_files=?, "
 				+ "maximum_module_depth=?, minimum_modifications=?, "
 				+ "minimum_commit_size=?, maximum_commit_size=?, "
 				+ "excluded_paths=?, excluded_files=?, "
@@ -111,6 +115,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 				result.setId(rs.getInt("id"));
 				result.setName(rs.getString("name"));
 				result.setShiatsu(rs.getBoolean("shiatsu"));
+				result.setAllFiles(rs.getBoolean("all_files"));
 				result.setMaximumModuleDepth(rs.getInt("maximum_module_depth"));
 				result.setMinimumModifications(rs
 						.getInt("minimum_modifications"));
@@ -148,6 +153,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 				result.setId(rs.getInt("id"));
 				result.setName(rs.getString("name"));
 				result.setShiatsu(rs.getBoolean("shiatsu"));
+				result.setAllFiles(rs.getBoolean("all_files"));
 				result.setMaximumModuleDepth(rs.getInt("maximum_module_depth"));
 				result.setMinimumModifications(rs
 						.getInt("minimum_modifications"));
@@ -184,6 +190,7 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 				minerInfo.setId(rs.getInt("id"));
 				minerInfo.setName(rs.getString("name"));
 				minerInfo.setShiatsu(rs.getBoolean("shiatsu"));
+				minerInfo.setAllFiles(rs.getBoolean("all_files"));
 				minerInfo.setMaximumModuleDepth(rs
 						.getInt("maximum_module_depth"));
 				minerInfo.setMinimumModifications(rs
@@ -223,17 +230,18 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 			ps.setInt(1, minerInfo.getId());
 			ps.setString(2, minerInfo.getName());
 			ps.setBoolean(3, minerInfo.isShiatsu());
-			ps.setInt(4, minerInfo.getMaximumModuleDepth());
-			ps.setInt(5, minerInfo.getMinimumModifications());
-			ps.setInt(6, minerInfo.getMinimumCommitSize());
-			ps.setInt(7, minerInfo.getMaximumCommitSize());
-			ps.setString(8, minerInfo.getPathsToExclude());
-			ps.setString(9, minerInfo.getFilesToExclude());
-			ps.setBoolean(10, minerInfo.isMiner());
-			ps.setInt(11, minerInfo.getMinimumItems());
-			ps.setInt(12, minerInfo.getMaximumItems());
-			ps.setDouble(13, minerInfo.getMinimumSupport());
-			ps.setBoolean(14, minerInfo.hasRandomizedModules());
+			ps.setBoolean(4, minerInfo.isAllFiles());
+			ps.setInt(5, minerInfo.getMaximumModuleDepth());
+			ps.setInt(6, minerInfo.getMinimumModifications());
+			ps.setInt(7, minerInfo.getMinimumCommitSize());
+			ps.setInt(8, minerInfo.getMaximumCommitSize());
+			ps.setString(9, minerInfo.getPathsToExclude());
+			ps.setString(10, minerInfo.getFilesToExclude());
+			ps.setBoolean(11, minerInfo.isMiner());
+			ps.setInt(12, minerInfo.getMinimumItems());
+			ps.setInt(13, minerInfo.getMaximumItems());
+			ps.setDouble(14, minerInfo.getMinimumSupport());
+			ps.setBoolean(15, minerInfo.hasRandomizedModules());
 			ps.execute();
 
 			rs = ps.getGeneratedKeys();
@@ -269,18 +277,19 @@ public class MysqlMinerInfoDAO extends JdbcDAO implements MinerInfoDAO {
 			ps = this.getConnection().prepareStatement(updateSQL());
 			ps.setString(1, minerInfo.getName());
 			ps.setBoolean(2, minerInfo.isShiatsu());
-			ps.setInt(3, minerInfo.getMaximumModuleDepth());
-			ps.setInt(4, minerInfo.getMinimumModifications());
-			ps.setInt(5, minerInfo.getMinimumCommitSize());
-			ps.setInt(6, minerInfo.getMaximumCommitSize());
-			ps.setString(7, minerInfo.getPathsToExclude());
-			ps.setString(8, minerInfo.getFilesToExclude());
-			ps.setBoolean(9, minerInfo.isMiner());
-			ps.setInt(10, minerInfo.getMinimumItems());
-			ps.setInt(11, minerInfo.getMaximumItems());
-			ps.setDouble(12, minerInfo.getMinimumSupport());
-			ps.setBoolean(13, minerInfo.hasRandomizedModules());
-			ps.setInt(14, minerInfo.getId());
+			ps.setBoolean(3, minerInfo.isAllFiles());
+			ps.setInt(4, minerInfo.getMaximumModuleDepth());
+			ps.setInt(5, minerInfo.getMinimumModifications());
+			ps.setInt(6, minerInfo.getMinimumCommitSize());
+			ps.setInt(7, minerInfo.getMaximumCommitSize());
+			ps.setString(8, minerInfo.getPathsToExclude());
+			ps.setString(9, minerInfo.getFilesToExclude());
+			ps.setBoolean(10, minerInfo.isMiner());
+			ps.setInt(11, minerInfo.getMinimumItems());
+			ps.setInt(12, minerInfo.getMaximumItems());
+			ps.setDouble(13, minerInfo.getMinimumSupport());
+			ps.setBoolean(14, minerInfo.hasRandomizedModules());
+			ps.setInt(15, minerInfo.getId());
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();

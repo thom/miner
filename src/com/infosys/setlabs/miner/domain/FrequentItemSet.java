@@ -166,8 +166,7 @@ public class FrequentItemSet {
 	}
 
 	@Override
-	public String toString() {
-		// TODO: indicate whether all files or only code files		
+	public String toString() {		
 		String result = "";
 		result += "ID:\t\t\t\t" + getId() + "\n";
 		result += "Size:\t\t\t\t" + getSize() + "\n";

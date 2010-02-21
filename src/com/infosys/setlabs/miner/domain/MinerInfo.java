@@ -16,8 +16,9 @@ public class MinerInfo {
 
 	// Did the data already get a massage?
 	private boolean shiatsu;
-	
-	// TODO: Add field allFiles
+
+	// Did the mining include all files?
+	private boolean allFiles;
 
 	// Maximum module depth used
 	private int maximumModuleDepth;
@@ -110,6 +111,25 @@ public class MinerInfo {
 	 */
 	public void setShiatsu(boolean shiatsu) {
 		this.shiatsu = shiatsu;
+	}
+
+	/**
+	 * Did the mining include all files?
+	 * 
+	 * @return allFiles
+	 */
+	public boolean isAllFiles() {
+		return allFiles;
+	}
+
+	/**
+	 * Set all files
+	 * 
+	 * @param allFiles
+	 *            did the mining include all files?
+	 */
+	public void setAllFiles(boolean allFiles) {
+		this.allFiles = allFiles;
 	}
 
 	/**
@@ -342,7 +362,7 @@ public class MinerInfo {
 	 * @return CSV labels
 	 */
 	public String getCSVLabels() {
-		return "Mining name,Maximum module depth,"
+		return "Mining name,All files?, Maximum module depth,"
 				+ "Minimum modifications (commits),Minimum commit size,"
 				+ "Maximum commit size,Excluded paths,Excluded files,"
 				+ "Randomized modularization?,"
@@ -356,7 +376,8 @@ public class MinerInfo {
 	public String toString() {
 		String result = "";
 		if (isCSV()) {
-			result += getName() + "," + val(getMaximumModuleDepth()) + ","
+			result += getName() + "," + isAllFiles() + ","
+					+ val(getMaximumModuleDepth()) + ","
 					+ getMinimumModifications() + ","
 					+ val(getMinimumCommitSize()) + ","
 					+ val(getMaximumCommitSize()) + ","
@@ -368,7 +389,7 @@ public class MinerInfo {
 		} else {
 			result += "Name\t\t\t\t\t" + getName() + "\n";
 			result += "Massaged data?\t\t\t\t" + isShiatsu() + "\n";
-			// TODO: all files or only code files?
+			result += "All files?\t\t\t\t" + isAllFiles() + "\n";
 			result += "Maximum module depth:\t\t\t"
 					+ val(getMaximumModuleDepth()) + "\n";
 			result += "Minimum modifications (commits):\t"
