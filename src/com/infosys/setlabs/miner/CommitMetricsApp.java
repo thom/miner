@@ -127,6 +127,9 @@ public class CommitMetricsApp {
 
 		@Option(name = "-c", aliases = {"--csv"}, usage = "should the output be comma separated values?")
 		private boolean csv = false;
+		
+		@Option(name = "-a", aliases = {"--all", "--all-files"}, usage = "use all files for mining (default: only code files)")
+		private boolean allFiles = false;
 
 		@Option(name = "-mic", aliases = {"--min-commit-size"}, usage = "minimum size of commits (number of code files) added to the transactions file (has to be >= 2, default: 2)")
 		private int minCommitSize = 2;
@@ -186,6 +189,15 @@ public class CommitMetricsApp {
 		 */
 		public boolean isCSV() {
 			return csv;
+		}
+		
+		/**
+		 * Does the user want the metrics for all files?
+		 * 
+		 * @return allFiles
+		 */
+		public boolean isAllFiles() {
+			return allFiles;
 		}
 
 		/**
