@@ -344,6 +344,9 @@ public class MinerApp {
 		@Option(name = "-e", aliases = {"--exec", "--executable"}, usage = "path to the executable of apriori frequent item set miner")
 		private String exec;
 
+		@Option(name = "-a", aliases = {"--all", "--all-files"}, usage = "use all files for mining (default: only code files)")
+		private boolean allFiles = false;		
+
 		@Option(name = "-i", aliases = {"--items", "--minimum-items"}, usage = "minimum number of items per set")
 		private int minItems;
 
@@ -486,6 +489,15 @@ public class MinerApp {
 		public String getExec() {
 			return exec;
 		}
+		
+		/**
+		 * Does the user want to mine all files?
+		 * 
+		 * @return allFiles
+		 */
+		public boolean isAllFiles() {
+			return allFiles;
+		}		
 
 		/**
 		 * Returns value of minimum number of items per set
