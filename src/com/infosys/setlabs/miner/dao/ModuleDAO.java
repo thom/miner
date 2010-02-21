@@ -24,9 +24,9 @@ public interface ModuleDAO extends ObjectDAO<Module>, CreateTablesDAO {
 	/**
 	 * Returns the number of modules
 	 * 
-	 * @param hasCodeFiles
-	 *            only count modules containing code files
+	 * @param allFiles
+	 *            also count modules without code files
 	 * @return number of modules
 	 */
-	public int count(boolean hasCodeFiles);
+	public int count(boolean allFiles);
 }

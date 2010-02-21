@@ -125,7 +125,7 @@ public class FrequentItemSetMetricsManager extends Manager {
 				frequentItemSetMetricsManager.setMinimumModifications(minerInfo
 						.getMinimumModifications());
 				FrequentItemSetMetrics fim = frequentItemSetMetricsManager
-						.frequentItemSetMetrics();
+						.frequentItemSetMetrics(minerInfo.isAllFiles());
 				fim.setId(id);
 				fim.setDatabase(database);
 				fim.setMinerInfo(minerInfo);
@@ -147,7 +147,7 @@ public class FrequentItemSetMetricsManager extends Manager {
 		return result;
 	}
 
-	private FrequentItemSetMetrics frequentItemSetMetrics()
+	private FrequentItemSetMetrics frequentItemSetMetrics(boolean allFiles)
 			throws MinerException {
 		FrequentItemSetMetrics result = null;
 		DAOTransaction trans = null;
@@ -179,8 +179,7 @@ public class FrequentItemSetMetricsManager extends Manager {
 			// Set miner modules
 			ModuleDAO moduleDAO = this.getFactory().getMinerModuleDAO(
 					this.getSession());
-			// TODO: Set option if all files or only code files are asked
-			result.setModules(moduleDAO.count(true));
+			result.setModules(moduleDAO.count(allFiles));
 
 			// Commit transaction
 			trans.commit();

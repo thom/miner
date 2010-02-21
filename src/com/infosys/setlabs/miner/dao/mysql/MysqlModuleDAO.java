@@ -74,10 +74,9 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 				+ "code_files=? WHERE id=?", tableName);
 	}
 
-	protected String countSQL() {
-		return String.format(
-				"SELECT COUNT(id) AS count FROM %s where code_files=?",
-				tableName);
+	protected String countSQL(boolean allFiles) {
+		return String.format("SELECT COUNT(id) AS count FROM %s"
+				+ (allFiles ? "" : " WHERE code_files=1"), tableName);
 	}
 
 	@Override
@@ -206,13 +205,12 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 	}
 
 	@Override
-	public int count(boolean hasCodeFiles) {
+	public int count(boolean allFiles) {
 		int result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = this.getConnection().prepareStatement(countSQL());
-			ps.setBoolean(1, hasCodeFiles);
+			ps = this.getConnection().prepareStatement(countSQL(allFiles));
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = rs.getInt("count");
