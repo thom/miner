@@ -8,6 +8,7 @@ package com.infosys.setlabs.miner.domain;
 public class Module {
 	private int id;
 	private String moduleName;
+	private boolean codeFiles;
 
 	/**
 	 * Creates a module with id <code>id</code>
@@ -67,11 +68,31 @@ public class Module {
 		this.moduleName = moduleName;
 	}
 
+	/**
+	 * Has the module any code files?
+	 * 
+	 * @return codeFiles
+	 */
+	public boolean hasCodeFiles() {
+		return codeFiles;
+	}
+
+	/**
+	 * Sets whether the module has any code files
+	 * 
+	 * @param codeFiles
+	 *            does the module have any code files?
+	 */
+	public void setCodeFiles(boolean codeFiles) {
+		this.codeFiles = codeFiles;
+	}
+
 	@Override
 	public String toString() {
 		String result = "";
 		result += "ID:\t\t" + getId() + "\n";
-		result += "Module name:\t" + getModuleName();
+		result += "Module name:\t" + getModuleName() + "\n";
+		result += "Code files?:\t" + hasCodeFiles();
 		return result;
 	}
 }

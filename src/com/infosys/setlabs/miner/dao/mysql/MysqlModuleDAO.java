@@ -19,8 +19,8 @@ import com.infosys.setlabs.miner.domain.Module;
  * @author Thomas Weibel <thomas_401709@infosys.com>
  */
 public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
-	public static String tableName = "miner_modules";	
-	
+	public static String tableName = "miner_modules";
+
 	/**
 	 * Creates a new DAO
 	 * 
@@ -34,7 +34,7 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 	protected String createTableSQL() {
 		return String.format("CREATE TABLE %s ("
 				+ "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-				+ "module_name MEDIUMTEXT NOT NULL, "
+				+ "module_name MEDIUMTEXT NOT NULL, code_files BOOLEAN, "
 				+ "UNIQUE(module_name(255))"
 				// MyISAM doesn't support foreign keys, but as CVSAnaly2 uses
 				// MyISAM too, we can't use InnoDB here
@@ -46,21 +46,23 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 	}
 
 	protected String selectSQL() {
-		return String.format("SELECT id, module_name FROM %s WHERE id=?", tableName);
+		return String.format("SELECT id, module_name, code_files "
+				+ "FROM %s WHERE id=?", tableName);
 	}
 
 	protected String selectByNameSQL() {
-		return String.format("SELECT id, module_name "
+		return String.format("SELECT id, module_name, code_files "
 				+ "FROM %s WHERE module_name=?", tableName);
 	}
 
 	protected String selectAllSQL() {
-		return String.format("SELECT id, module_name FROM %s", tableName);
+		return String.format("SELECT id, module_name, code_files FROM %s",
+				tableName);
 	}
 
 	protected String createSQL() {
-		return String.format("INSERT INTO %s (id, module_name) "
-				+ "VALUES (?,?)", tableName);
+		return String.format("INSERT INTO %s (id, module_name, "
+				+ "code_files) VALUES (?,?,?)", tableName);
 	}
 
 	protected String deleteSQL() {
@@ -68,12 +70,14 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 	}
 
 	protected String updateSQL() {
-		return String.format("UPDATE miner_modules SET module_name=? "
-				+ "WHERE id=?", tableName);
+		return String.format("UPDATE miner_modules SET module_name=?, "
+				+ "code_files=? WHERE id=?", tableName);
 	}
 
 	protected String countSQL() {
-		return String.format("SELECT COUNT(id) AS count FROM %s", tableName);
+		return String.format(
+				"SELECT COUNT(id) AS count FROM %s where code_files=?",
+				tableName);
 	}
 
 	@Override
@@ -88,6 +92,7 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 			while (rs.next()) {
 				result = new Module(rs.getInt("id"));
 				result.setModuleName(rs.getString("module_name"));
+				result.setCodeFiles(rs.getBoolean("code_files"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -110,6 +115,7 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 			while (rs.next()) {
 				result = new Module(rs.getInt("id"));
 				result.setModuleName(rs.getString("module_name"));
+				result.setCodeFiles(rs.getBoolean("code_files"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -131,6 +137,7 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 			while (rs.next()) {
 				Module module = new Module(rs.getInt("id"));
 				module.setModuleName(rs.getString("module_name"));
+				module.setCodeFiles(rs.getBoolean("code_files"));
 				result.add(module);
 			}
 		} catch (SQLException e) {
@@ -143,8 +150,7 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 	}
 
 	@Override
-	public Module create(Module module)
-			throws DataAccessException {
+	public Module create(Module module) throws DataAccessException {
 		Module result = module;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -154,6 +160,7 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 					Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, module.getId());
 			ps.setString(2, module.getModuleName());
+			ps.setBoolean(3, module.hasCodeFiles());
 			ps.execute();
 
 			rs = ps.getGeneratedKeys();
@@ -188,7 +195,8 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 		try {
 			ps = this.getConnection().prepareStatement(updateSQL());
 			ps.setString(1, module.getModuleName());
-			ps.setInt(2, module.getId());
+			ps.setBoolean(2, module.hasCodeFiles());
+			ps.setInt(3, module.getId());
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -198,12 +206,13 @@ public class MysqlModuleDAO extends JdbcDAO implements ModuleDAO {
 	}
 
 	@Override
-	public int count() {
+	public int count(boolean hasCodeFiles) {
 		int result = 0;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			ps = this.getConnection().prepareStatement(countSQL());
+			ps.setBoolean(1, hasCodeFiles);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = rs.getInt("count");

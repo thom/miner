@@ -179,7 +179,8 @@ public class FrequentItemSetMetricsManager extends Manager {
 			// Set miner modules
 			ModuleDAO moduleDAO = this.getFactory().getMinerModuleDAO(
 					this.getSession());
-			result.setModules(moduleDAO.count());
+			// TODO: Set option if all files or only code files are asked
+			result.setModules(moduleDAO.count(true));
 
 			// Commit transaction
 			trans.commit();

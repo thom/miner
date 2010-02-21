@@ -14,6 +14,7 @@ import com.infosys.setlabs.miner.dao.ModuleDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
 import com.infosys.setlabs.miner.domain.MinerInfo;
 import com.infosys.setlabs.miner.domain.Module;
+import com.infosys.setlabs.miner.domain.MinerFile.Type;
 
 /**
  * Shiatsu manager
@@ -173,8 +174,18 @@ public class ShiatsuManager extends Manager {
 				module = moduleDAO.find(moduleName);
 				if (module == null) {
 					module = new Module(moduleName);
+
+					if (minerFile.getType() == Type.CODE) {
+						module.setCodeFiles(true);
+					}
+
 					minerFile.setModule(moduleDAO.create(module));
 				} else {
+					if (minerFile.getType() == Type.CODE && !module.hasCodeFiles()) {
+						module.setCodeFiles(true);
+						moduleDAO.update(module);
+					}
+
 					minerFile.setModule(module);
 				}
 

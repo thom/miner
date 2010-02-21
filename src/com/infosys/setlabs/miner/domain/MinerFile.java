@@ -12,7 +12,6 @@ public class MinerFile {
 	private String fileName;
 	private String path;
 	private Type type;
-	private boolean deleted;
 	private int modifications;
 	private Module module;	
 
@@ -134,25 +133,6 @@ public class MinerFile {
 	}
 
 	/**
-	 * Was the file already deleted?
-	 * 
-	 * @return deleted
-	 */
-	public boolean isDeleted() {
-		return deleted;
-	}
-
-	/**
-	 * Sets a file to deleted
-	 * 
-	 * @param deleted
-	 *            was the file already deleted?
-	 */
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
-
-	/**
 	 * Returns how many modifications a file had
 	 * 
 	 * @return modifications
@@ -208,7 +188,6 @@ public class MinerFile {
 		result += "Path:\t\t" + getPath() + "\n";
 		result += "Directory:\t" + getDirectory() + "\n";
 		result += "Type:\t\t" + getType().toString().toLowerCase() + "\n";		
-		result += "Deleted?:\t" + isDeleted() + "\n";
 		result += "Modifications:\t" + getModifications() + "\n\n";
 		result += "Module:\n";
 		result += getModule();
