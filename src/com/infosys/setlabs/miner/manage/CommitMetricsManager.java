@@ -84,7 +84,8 @@ public class CommitMetricsManager extends Manager {
 	 * @throws MinerException
 	 */
 	public LinkedList<CommitMetrics> commitMetrics(ArrayList<String> databases,
-			int minimumCommitSize, int maximumCommitSize) throws MinerException {
+			boolean allFiles, int minimumCommitSize, int maximumCommitSize)
+			throws MinerException {
 		LinkedList<CommitMetrics> result = new LinkedList<CommitMetrics>();
 		CommitMetricsManager commitMetricsManager = null;
 
@@ -101,7 +102,7 @@ public class CommitMetricsManager extends Manager {
 				// Get commit metrics
 				commitMetricsManager.setMinimumCommitSize(minimumCommitSize);
 				commitMetricsManager.setMaximumCommitSize(maximumCommitSize);
-				CommitMetrics cm = commitMetricsManager.commitMetrics();
+				CommitMetrics cm = commitMetricsManager.commitMetrics(allFiles);
 
 				cm.setId(id);
 				cm.setDatabase(database);
@@ -124,7 +125,7 @@ public class CommitMetricsManager extends Manager {
 	 * 
 	 * @return metrics
 	 */
-	public CommitMetrics commitMetrics() throws MinerException {
+	public CommitMetrics commitMetrics(boolean allFiles) throws MinerException {
 		CommitMetrics result = null;
 		DAOTransaction trans = null;
 
@@ -139,7 +140,7 @@ public class CommitMetricsManager extends Manager {
 			// Get metrics
 			commitMetricsDAO.setMinimumCommitSize(minimumCommitSize);
 			commitMetricsDAO.setMaximumCommitSize(maximumCommitSize);
-			result = commitMetricsDAO.metrics();
+			result = commitMetricsDAO.metrics(allFiles);
 
 			// Commit transaction
 			trans.commit();

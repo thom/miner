@@ -262,12 +262,12 @@ public class FrequentItemSetMetrics {
 		String result = "";
 		if (isCSV()) {
 			if (getId() == 1) {
-				result += "ID,Database,Code files,Code files with >= "
+				result += "ID,Database,Files,Files with >= "
 						+ minerInfo.getMinimumModifications()
-						+ " commits,Files in frequent item sets,Code files with >= "
+						+ " commits,Files in frequent item sets,Files with >= "
 						+ minerInfo.getMinimumModifications()
-						+ " commits in FIS (%),Code files added,"
-						+ "Code files moved to another directory,"
+						+ " commits in FIS (%),Files added,"
+						+ "Files moved to another directory,"
 						+ "Modules,Frequent item sets," + "Localization,"
 						+ minerInfo.getCSVLabels() + "\n";
 			}
@@ -280,18 +280,18 @@ public class FrequentItemSetMetrics {
 			minerInfo.setCSV(true);
 		} else {
 			result += "Database\t\t\t\t" + getDatabase() + "\n";
-			result += "Code files\t\t\t\t" + getFiles() + "\n";
-			result += "Code files with >= "
+			result += "Files\t\t\t\t\t" + getFiles() + "\n";
+			result += "Files with >= "
 					+ minerInfo.getMinimumModifications() + " commits:\t\t"
 					+ getFilesModified() + "\n";
 			result += "Files in frequent item set:\t\t"
 					+ getFilesInFrequentItemSet() + "\n";
-			result += "Code files with >= "
+			result += "Files with >= "
 					+ minerInfo.getMinimumModifications()
-					+ " commits in FIS:\t" + includedFilesInFrequentItemSet()
+					+ " commits in FIS:\t\t" + includedFilesInFrequentItemSet()
 					+ "%\n";
-			result += "Code files added:\t\t\t" + getFilesAdded() + "\n";
-			result += "Code files moved to another directory:\t"
+			result += "Files added:\t\t\t\t" + getFilesAdded() + "\n";
+			result += "Files moved to another directory:\t"
 					+ getFilesMoved() + "\n";
 			result += "Modules:\t\t\t\t" + getModules() + "\n";
 			result += "Frequent item sets:\t\t\t" + getFrequentItemSets()

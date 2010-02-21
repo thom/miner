@@ -36,21 +36,26 @@ public interface MinerFileDAO extends ObjectDAO<MinerFile>, CreateTablesDAO {
 	/**
 	 * Returns the number of files
 	 * 
+	 * @param allFiles
+	 *            count all files
 	 * @return number of files
 	 * @throws DataAccessException
 	 */
-	public int count() throws DataAccessException;
+	public int count(boolean allFiles) throws DataAccessException;
 
 	/**
 	 * Returns the number of files with a minimum of modifications
 	 * 
+	 * @param allFiles
+	 *            count all files
 	 * @param minimumModifications
 	 *            minimum of modifications required
 	 * @return number of files
 	 * @throws DataAccessException
 	 */
-	public int count(int minimumModifications) throws DataAccessException;
-	
+	public int count(boolean allFiles, int minimumModifications)
+			throws DataAccessException;
+
 	/**
 	 * Returns the path of a repository file
 	 * 
@@ -59,5 +64,5 @@ public interface MinerFileDAO extends ObjectDAO<MinerFile>, CreateTablesDAO {
 	 * @return path
 	 * @throws DataAccessException
 	 */
-	public String getPath(int id) throws DataAccessException;	
+	public String getPath(int id) throws DataAccessException;
 }

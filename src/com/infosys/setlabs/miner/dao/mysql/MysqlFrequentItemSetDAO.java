@@ -123,7 +123,7 @@ public class MysqlFrequentItemSetDAO extends JdbcDAO
 	}
 
 	protected String countFilesSQL() {
-		// Use this instead of "SELECT COUNT(DISTINCT file_ID) AS count FROM %s"
+		// Use this instead of "SELECT COUNT(DISTINCT file_id) AS count FROM %s"
 		// as it is much faster in MySQL!
 		return String.format("SELECT COUNT(*) AS count "
 				+ "FROM (SELECT DISTINCT(file_id) FROM %s) AS files",

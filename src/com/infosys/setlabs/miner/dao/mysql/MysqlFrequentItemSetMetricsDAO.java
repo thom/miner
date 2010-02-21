@@ -50,7 +50,7 @@ public class MysqlFrequentItemSetMetricsDAO extends MysqlMinerFileMetricsDAO
 	}
 
 	@Override
-	public FrequentItemSetMetrics metrics() {
+	public FrequentItemSetMetrics metrics(boolean allFiles) {
 		FrequentItemSetMetrics result = new FrequentItemSetMetrics();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -60,8 +60,8 @@ public class MysqlFrequentItemSetMetricsDAO extends MysqlMinerFileMetricsDAO
 			while (rs.next()) {
 				result.setLocalization(rs.getDouble("localization"));
 				result.setFrequentItemSets(rs.getInt("fis_count"));
-				result.setFilesAdded(numberOfFilesAdded());
-				result.setFilesMoved(numberOfFilesMoved());
+				result.setFilesAdded(numberOfFilesAdded(allFiles));
+				result.setFilesMoved(numberOfFilesMoved(allFiles));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

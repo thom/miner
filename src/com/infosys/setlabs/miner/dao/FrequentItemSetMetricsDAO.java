@@ -26,7 +26,9 @@ public interface FrequentItemSetMetricsDAO {
 	/**
 	 * Returns metrics
 	 * 
+	 * @param allFiles
+	 *            do we want the metrics for all files?
 	 * @return FrequentItemSetMetrics
 	 */
-	public FrequentItemSetMetrics metrics();
+	public FrequentItemSetMetrics metrics(boolean allFiles);
 }

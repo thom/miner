@@ -77,8 +77,8 @@ public class CommitMetricsApp {
 
 			// Get commit metrics
 			for (CommitMetrics cm : commitMetricsManager.commitMetrics(values
-					.getDatabases(), values.getMinCommitSize(), values
-					.getMaxCommitSize())) {
+					.getDatabases(), values.isAllFiles(), values
+					.getMinCommitSize(), values.getMaxCommitSize())) {
 				cm.setCSV(values.isCSV());
 				System.out.println(cm);
 				if (!values.isCSV()) {

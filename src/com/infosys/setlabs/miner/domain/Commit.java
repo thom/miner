@@ -23,8 +23,11 @@ public class Commit {
 	// Number of modules touched by commit
 	int modulesTouched;
 	
-	// TODO: Add codeFilesTouched
-	// TODO: Add codeModulesTouched
+	// Number of files touched by commit
+	int codeFilesTouched;
+
+	// Number of modules touched by commit
+	int codeModulesTouched;
 
 	// Files
 	private List<MinerFile> files = new ArrayList<MinerFile>();
@@ -139,6 +142,44 @@ public class Commit {
 	public void setModulesTouched(int modulesTouched) {
 		this.modulesTouched = modulesTouched;
 	}
+	
+	/**
+	 * Returns the number of code files touched
+	 * 
+	 * @return codefilesTouched
+	 */
+	public int getCodeFilesTouched() {
+		return codeFilesTouched;
+	}
+
+	/**
+	 * Sets the number of code files touched
+	 * 
+	 * @param codeFilesTouched
+	 *            number of code files touched
+	 */
+	public void setCodeFilesTouched(int codeFilesTouched) {
+		this.codeFilesTouched = codeFilesTouched;
+	}
+
+	/**
+	 * Returns the number of code modules touched
+	 * 
+	 * @return codeModulesTouched
+	 */
+	public int getCodeModulesTouched() {
+		return codeModulesTouched;
+	}
+
+	/**
+	 * Sets the number of code modules touched
+	 * 
+	 * @param codeModulesTouched
+	 *            number of code modules touched
+	 */
+	public void setCodeModulesTouched(int codeModulesTouched) {
+		this.codeModulesTouched = codeModulesTouched;
+	}	
 
 	/**
 	 * Returns the files belonging to the commit
@@ -166,9 +207,9 @@ public class Commit {
 		result += "Revision:\t\t" + getRev() + "\n";
 		result += "Files touched:\t\t" + getFilesTouched() + "\n";
 		result += "Modules touched:\t" + getModulesTouched() + "\n";
+		result += "Code files touched:\t" + getCodeFilesTouched() + "\n";
+		result += "Code modules touched:\t" + getCodeModulesTouched() + "\n";		
 		result += "\n" + getComment() + "\n";
-		// TODO: Output "Code files touched"
-		// TODO: Output "Code modules touched"
 
 		result += "Files:\n-------------------------------------------------------------------------------";
 		for (MinerFile file : getFiles()) {

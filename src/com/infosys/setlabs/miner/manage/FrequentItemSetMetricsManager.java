@@ -96,8 +96,7 @@ public class FrequentItemSetMetricsManager extends Manager {
 				// Set database and mining name
 				String[] arguments = mining.split(":");
 				String database = arguments[0];
-				String name = arguments.length == 1
-						? MinerInfo.defaultName
+				String name = arguments.length == 1 ? MinerInfo.defaultName
 						: arguments[1];
 
 				// Configure database name
@@ -161,7 +160,7 @@ public class FrequentItemSetMetricsManager extends Manager {
 					.getFactory().getFrequentItemSetMetricsDAO(
 							this.getSession());
 			frequentItemSetMetricsDAO.setName(getName());
-			result = frequentItemSetMetricsDAO.metrics();
+			result = frequentItemSetMetricsDAO.metrics(allFiles);
 
 			// Set frequent item set files
 			FrequentItemSetDAO frequentItemSetDAO = this.getFactory()
@@ -172,9 +171,9 @@ public class FrequentItemSetMetricsManager extends Manager {
 			// Set miner files
 			MinerFileDAO minerFileDAO = this.getFactory().getMinerFileDAO(
 					this.getSession());
-			result.setFiles(minerFileDAO.count());
+			result.setFiles(minerFileDAO.count(allFiles));
 			result.setFilesModified(minerFileDAO
-					.count(getMinimumModifications()));
+					.count(allFiles, getMinimumModifications()));
 
 			// Set miner modules
 			ModuleDAO moduleDAO = this.getFactory().getMinerModuleDAO(

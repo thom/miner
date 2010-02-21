@@ -42,8 +42,10 @@ public interface CommitMetricsDAO {
 	/**
 	 * Returns commit metrics
 	 * 
+	 * @param allFiles
+	 *            do we want the metrics for all files?
 	 * @return CommitMetrics
 	 * @throws DataAccessException
 	 */
-	public CommitMetrics metrics() throws DataAccessException;
+	public CommitMetrics metrics(boolean allFiles) throws DataAccessException;
 }
