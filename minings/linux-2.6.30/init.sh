@@ -1,6 +1,6 @@
 #!/bin/bash
 
-repository="/home/thom/workspace/repositories/linux-2.6.30.y"
+repository="/home/thom/infosys/repositories/linux-2.6.30.y"
 module_depth=3
 commits=2
 min_support=2

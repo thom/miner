@@ -1,6 +1,6 @@
 #!/bin/bash
 
-repository="/home/thom/workspace/repositories/wine"
+repository="/home/thom/infosys/repositories/wine"
 module_depth=3
 commits=4
 min_support=4

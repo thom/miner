@@ -1,6 +1,6 @@
 #!/bin/bash
 
-repository="/home/thom/workspace/repositories/linux-2.6"
+repository="/home/thom/infosys/repositories/linux-2.6"
 database="linux_2_6_all"
 module_depth=3
 commits=4
