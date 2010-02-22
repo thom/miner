@@ -10,8 +10,10 @@ import org.kohsuke.args4j.Option;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.DAOFactory;
 import com.infosys.setlabs.miner.domain.MinerFile;
+import com.infosys.setlabs.miner.domain.RepositoryFile;
 import com.infosys.setlabs.miner.manage.Manager;
 import com.infosys.setlabs.miner.manage.MinerFileManager;
+import com.infosys.setlabs.miner.manage.RepositoryFileManager;
 
 /**
  * Gives information about files
@@ -71,25 +73,42 @@ public class FileInfoApp {
 	public void print() throws MinerException {
 		MinerFileManager minerFileManager = null;
 		MinerFile file = null;
+		RepositoryFileManager repositoryFileManager = null;
+		RepositoryFile repositoryFile = null;
 
 		try {
 			// Connect to the database
 			minerFileManager = new MinerFileManager(connectionArgs);
+			repositoryFileManager = new RepositoryFileManager(connectionArgs);
 			minerFileManager.setRandomizedModules(values.isRandomize());
 
-			// Get file path
+			// Get file
 			file = minerFileManager.find(values.getId());
 
 			if (file == null) {
-				// TODO: Check repository file
 				System.out.println("Error: Couldn't find miner file with ID '"
 						+ values.getId() + "' in the database.");
+
+				// Get repository file
+				repositoryFile = repositoryFileManager.find(values.getId());
+
+				if (repositoryFile == null) {
+					System.out
+							.println("Error: Couldn't find repository file with ID '"
+									+ values.getId() + "' in the database.");
+				} else {
+					System.out.println(repositoryFile);
+				}
 			} else {
 				System.out.println(file);
 			}
 		} finally {
 			if (minerFileManager != null) {
 				minerFileManager.close();
+			}
+
+			if (repositoryFileManager != null) {
+				repositoryFileManager.close();
 			}
 		}
 	}
