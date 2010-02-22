@@ -34,7 +34,7 @@ public class MysqlRepositoryFileDAO extends MysqlFileDAO implements
 	}
 
 	protected String isDeletedSQL() {
-		return String.format("SELECT * FROM %s f, actions a "
+		return String.format("SELECT * FROM %s f, miner_actions a "
 				+ "WHERE f.id = a.file_id AND a.type = 'D' AND f.id = ?",
 				getName());
 	}

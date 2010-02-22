@@ -127,14 +127,14 @@ public class MysqlMinerFileDAO extends MysqlFileDAO implements MinerFileDAO {
 	}
 
 	protected String deleteDeletedSQL() {
-		return String.format("DELETE f FROM %s f, actions a "
+		return String.format("DELETE f FROM %s f, miner_actions a "
 				+ "WHERE f.id = a.file_id AND a.type = 'D'", getName());
 	}
 
 	protected String setModificationsSQL() {
 		return String.format("UPDATE %s AS f1, "
 				+ "(SELECT f.id, COUNT(f.id) AS modifications "
-				+ "FROM %s f, actions a "
+				+ "FROM %s f, miner_actions a "
 				+ "WHERE a.file_id = f.id GROUP BY f.id) AS f2 "
 				+ "SET f1.modifications = f2.modifications "
 				+ "WHERE f1.id = f2.id", getName(), getName());

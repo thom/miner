@@ -15,7 +15,7 @@ public abstract class MysqlMinerFileMetricsDAO extends JdbcDAO {
 
 	protected String numberOfFilesAddedSQL(boolean allFiles) {
 		return String.format("SELECT COUNT(*) as count "
-				+ "FROM %s f, actions a "
+				+ "FROM %s f, miner_actions a "
 				+ "WHERE a.type = 'A' AND f.id = a.file_id"
 				+ (allFiles ? "" : " AND f.type = '" + MinerFile.Type.CODE
 						+ "'"), MysqlMinerFileDAO.tableName);
@@ -34,7 +34,7 @@ public abstract class MysqlMinerFileMetricsDAO extends JdbcDAO {
 
 	protected String numberOfFilesMovedHeuristicsSQL(boolean allFiles) {
 		return String.format("SELECT COUNT(*) as count "
-				+ "FROM %s f, actions a "
+				+ "FROM %s f, miner_actions a "
 				+ "WHERE a.type = 'MINER_MOVE' AND f.id = a.file_id"
 				+ (allFiles ? "" : " AND f.type = '" + MinerFile.Type.CODE
 						+ "'"), MysqlMinerFileDAO.tableName);

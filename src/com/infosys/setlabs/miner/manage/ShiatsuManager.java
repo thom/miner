@@ -86,6 +86,12 @@ public class ShiatsuManager extends Manager {
 			trans = this.getSession().getTransaction();
 			trans.begin();
 
+			// Create miner actions table
+			MinerFileMovesDAO minerFileMovesDAO = this.getFactory()
+					.getMinerFileMovesDAO(this.getSession());
+			minerFileMovesDAO.createTables();
+			minerFileMovesDAO.initialize();				
+			
 			// Create table for miner files and modules
 			this.getFactory().getMinerFileDAO(this.getSession()).createTables();
 			this.getFactory().getMinerModuleDAO(this.getSession())
@@ -95,18 +101,12 @@ public class ShiatsuManager extends Manager {
 			fillTables();
 
 			// Fill separate miner files table with randomized modules
-			randomizeModules();
-
+			randomizeModules();		
+			
 			// Create commits table
 			CommitDAO commitDAO = this.getFactory().getCommitDAO(
 					this.getSession());
 			commitDAO.createTables();
-
-			// Create miner actions table
-			MinerFileMovesDAO minerFileMovesDAO = this.getFactory()
-					.getMinerFileMovesDAO(this.getSession());
-			minerFileMovesDAO.createTables();
-			minerFileMovesDAO.initialize();
 
 			// Create miner info table
 			MinerInfoDAO minerInfoDAO = this.getFactory().getMinerInfoDAO(

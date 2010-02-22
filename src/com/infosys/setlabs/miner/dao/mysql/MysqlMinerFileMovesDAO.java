@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.MinerFileMovesDAO;
-import com.infosys.setlabs.miner.domain.MinerFile;
 
 public class MysqlMinerFileMovesDAO extends JdbcDAO implements
 		MinerFileMovesDAO {
@@ -24,8 +23,11 @@ public class MysqlMinerFileMovesDAO extends JdbcDAO implements
 	}
 
 	protected String createTableSQL() {
-		return String.format("CREATE TABLE %s " + "SELECT * FROM actions",
-				tableName);
+		return String.format("CREATE TABLE %s LIKE actions;", tableName);
+	}
+
+	protected String initializeTableSQL() {
+		return String.format("INSERT INTO %s SELECT * FROM actions", tableName);
 	}
 
 	protected String dropTableSQL() {
@@ -48,6 +50,7 @@ public class MysqlMinerFileMovesDAO extends JdbcDAO implements
 			ps = this.getConnection().prepareStatement(dropTableSQL());
 			ps.executeUpdate();
 			ps.executeUpdate(createTableSQL());
+			ps.executeUpdate(initializeTableSQL());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

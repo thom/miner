@@ -39,19 +39,19 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 
 				// miner_files_touched
 				+ "(SELECT COUNT(DISTINCT file_id) "
-				+ "FROM actions a, miner_files f "
+				+ "FROM miner_actions a, miner_files f "
 				+ "WHERE a.commit_id = l.id AND a.file_id = f.id) "
 				+ "AS miner_files_touched, "
 
 				// modules_touched
 				+ "(SELECT COUNT(DISTINCT f.miner_module_id) "
-				+ "FROM actions a, miner_files f "
+				+ "FROM miner_actions a, miner_files f "
 				+ "WHERE a.commit_id = l.id AND f.id = a.file_id) "
 				+ "AS modules_touched, "
 
 				// miner_code_files_touched
 				+ "(SELECT COUNT(DISTINCT file_id) "
-				+ "FROM actions a, miner_files f "
+				+ "FROM miner_actions a, miner_files f "
 				+ "WHERE a.commit_id = l.id AND a.file_id = f.id "
 				+ "AND f.type = '"
 				+ MinerFile.Type.CODE
@@ -60,7 +60,7 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 
 				// code_modules_touched
 				+ "(SELECT COUNT(DISTINCT f.miner_module_id) "
-				+ "FROM actions a, miner_files f "
+				+ "FROM miner_actions a, miner_files f "
 				+ "WHERE a.commit_id = l.id AND f.id = a.file_id "
 				+ "AND f.type = '" + MinerFile.Type.CODE + "') "
 				+ "AS code_modules_touched "
@@ -102,7 +102,7 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 
 	protected String selectItemSQL() {
 		return String.format("SELECT file_id "
-				+ "FROM actions WHERE commit_id=?");
+				+ "FROM miner_actions WHERE commit_id=?");
 	}
 
 	@Override
@@ -120,7 +120,8 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 				result.setComment(rs.getString("message"));
 				result.setFilesTouched(rs.getInt("miner_files_touched"));
 				result.setModulesTouched(rs.getInt("modules_touched"));
-				result.setCodeFilesTouched(rs.getInt("miner_code_files_touched"));
+				result.setCodeFilesTouched(rs
+						.getInt("miner_code_files_touched"));
 				result.setCodeModulesTouched(rs.getInt("code_modules_touched"));
 				addFiles(result);
 			}
@@ -147,7 +148,8 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 				result.setComment(rs.getString("message"));
 				result.setFilesTouched(rs.getInt("miner_files_touched"));
 				result.setModulesTouched(rs.getInt("modules_touched"));
-				result.setCodeFilesTouched(rs.getInt("miner_code_files_touched"));
+				result.setCodeFilesTouched(rs
+						.getInt("miner_code_files_touched"));
 				result.setCodeModulesTouched(rs.getInt("code_modules_touched"));
 				addFiles(result);
 			}
@@ -174,7 +176,8 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 				result.setComment(rs.getString("message"));
 				result.setFilesTouched(rs.getInt("miner_files_touched"));
 				result.setModulesTouched(rs.getInt("modules_touched"));
-				result.setCodeFilesTouched(rs.getInt("miner_code_files_touched"));
+				result.setCodeFilesTouched(rs
+						.getInt("miner_code_files_touched"));
 				result.setCodeModulesTouched(rs.getInt("code_modules_touched"));
 				addFiles(result);
 			}
@@ -201,7 +204,8 @@ public class MysqlCommitDAO extends JdbcDAO implements CommitDAO {
 				commit.setComment(rs.getString("message"));
 				commit.setFilesTouched(rs.getInt("miner_files_touched"));
 				commit.setModulesTouched(rs.getInt("modules_touched"));
-				commit.setCodeFilesTouched(rs.getInt("miner_code_files_touched"));
+				commit.setCodeFilesTouched(rs
+						.getInt("miner_code_files_touched"));
 				commit.setCodeModulesTouched(rs.getInt("code_modules_touched"));
 				addFiles(commit);
 				result.add(commit);

@@ -34,7 +34,7 @@ public class MysqlBasketFormatDAO extends JdbcDAO implements BasketFormatDAO {
 		return "SELECT a.commit_id, s.rev, "
 				+ "GROUP_CONCAT(m.id ORDER BY m.id ASC SEPARATOR \" \") "
 				+ "AS modified_files "
-				+ "FROM actions a, miner_files m, scmlog s "
+				+ "FROM miner_actions a, miner_files m, scmlog s "
 				+ "WHERE m.id = a.file_id AND a.commit_id = s.id AND m.modifications >= ? "
 				+ (allFiles ? "" : "AND m.type = '" + MinerFile.Type.CODE + "'")
 				+ "GROUP BY a.commit_id ORDER BY a.commit_id ASC";
