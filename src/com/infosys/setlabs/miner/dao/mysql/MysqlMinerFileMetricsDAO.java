@@ -31,8 +31,14 @@ public abstract class MysqlMinerFileMetricsDAO extends JdbcDAO {
 						+ "HAVING COUNT(fl.parent_id) > 1) AS moved",
 				MysqlMinerFileDAO.tableName);
 	}
-	
-	// TODO: Add numberOfFilesMovedHeuristics(boolean allFiles)
+
+	protected String numberOfFilesMovedHeuristicsSQL(boolean allFiles) {
+		return String.format("SELECT COUNT(*) as count "
+				+ "FROM %s f, actions a "
+				+ "WHERE a.type = 'MINER_MOVE' AND f.id = a.file_id"
+				+ (allFiles ? "" : " AND f.type = '" + MinerFile.Type.CODE
+						+ "'"), MysqlMinerFileDAO.tableName);
+	}
 
 	protected int numberOfFilesMoved(boolean allFiles) {
 		int result = 0;
@@ -44,6 +50,13 @@ public abstract class MysqlMinerFileMetricsDAO extends JdbcDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				result = rs.getInt("count");
+			}
+
+			ps = this.getConnection().prepareStatement(
+					numberOfFilesMovedHeuristicsSQL(allFiles));
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				result += rs.getInt("count");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

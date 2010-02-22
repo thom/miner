@@ -158,9 +158,19 @@ public abstract class DAOFactory {
 	 * Abstract method for commit metrics data access object
 	 * 
 	 * @param session
-	 * @return FrequentItemSetMetricsDAO
+	 * @return CommitMetricsDAO
 	 * @throws DataAccessException
 	 */
 	public abstract CommitMetricsDAO getCommitMetricsDAO(DAOSession session)
+			throws DataAccessException;
+
+	/**
+	 * Abstract method for miner file moves data access object
+	 * 
+	 * @param session
+	 * @return MinerFileMovesDAO
+	 * @throws DataAccessException
+	 */
+	public abstract MinerFileMovesDAO getMinerFileMovesDAO(DAOSession session)
 			throws DataAccessException;
 }

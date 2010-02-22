@@ -9,6 +9,7 @@ import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.miner.common.MinerException;
 import com.infosys.setlabs.miner.dao.CommitDAO;
 import com.infosys.setlabs.miner.dao.MinerFileDAO;
+import com.infosys.setlabs.miner.dao.MinerFileMovesDAO;
 import com.infosys.setlabs.miner.dao.MinerInfoDAO;
 import com.infosys.setlabs.miner.dao.ModuleDAO;
 import com.infosys.setlabs.miner.domain.MinerFile;
@@ -102,7 +103,10 @@ public class ShiatsuManager extends Manager {
 			commitDAO.createTables();
 
 			// Create miner actions table
-			// TODO: Calls to MinerFileMovesDAO: createTables(), initialize()
+			MinerFileMovesDAO minerFileMovesDAO = this.getFactory()
+					.getMinerFileMovesDAO(this.getSession());
+			minerFileMovesDAO.createTables();
+			minerFileMovesDAO.initialize();
 
 			// Create miner info table
 			MinerInfoDAO minerInfoDAO = this.getFactory().getMinerInfoDAO(
