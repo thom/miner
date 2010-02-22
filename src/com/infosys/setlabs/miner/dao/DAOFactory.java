@@ -33,10 +33,10 @@ public abstract class DAOFactory {
 	public static DAOFactory getDAOFactory(DatabaseEngine dbe)
 			throws DataAccessException {
 		switch (dbe) {
-			case MYSQL :
-				return new MysqlDAOFactory();
-			default :
-				return null;
+		case MYSQL:
+			return new MysqlDAOFactory();
+		default:
+			return null;
 		}
 	}
 
@@ -89,6 +89,17 @@ public abstract class DAOFactory {
 	 * @throws DataAccessException
 	 */
 	public abstract MinerFileDAO getMinerFileDAO(DAOSession session)
+			throws DataAccessException;
+
+	/**
+	 * Abstract method for repository file data access object
+	 * 
+	 * @param session
+	 *            session to connect to
+	 * @return RepositoryFileDAO
+	 * @throws DataAccessException
+	 */
+	public abstract RepositoryFileDAO getRepositoryFileDAO(DAOSession session)
 			throws DataAccessException;
 
 	/**

@@ -81,6 +81,7 @@ public class FileInfoApp {
 			file = minerFileManager.find(values.getId());
 
 			if (file == null) {
+				// TODO: Check repository file
 				System.out.println("Error: Couldn't find miner file with ID '"
 						+ values.getId() + "' in the database.");
 			} else {
