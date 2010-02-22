@@ -30,12 +30,17 @@ public class RepositoryFile extends MinerFile {
 	@Override
 	public String toString() {
 		String result = "";
-		result += "This is a repository file, not a miner file!\n";
+		result += "Warning: This is a repository file, not a miner file!\n";
 		result += "ID:\t\t" + getId() + "\n";
 		result += "Deleted?\t" + isDeleted() + "\n";
-		result += "File name:\t" + getFileName() + "\n";
-		result += "Path:\t\t" + getPath() + "\n";
-		result += "Directory:\t" + getDirectory() + "\n";
+		if (getType().equals(Type.DIRECTORY)) {
+			result += "Directory:\t" + getFileName() + "\n";
+			result += "Path:\t\t" + getPath() + "\n";
+		} else {
+			result += "File name:\t" + getFileName() + "\n";
+			result += "Path:\t\t" + getPath() + "\n";
+			result += "Directory:\t" + getDirectory() + "\n";
+		}
 		result += "Type:\t\t" + getType().toString().toLowerCase();
 		return result;
 	}
