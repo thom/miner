@@ -1,13 +1,17 @@
 package com.infosys.setlabs.miner.dao.mysql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.MinerFileMovesDAO;
+import com.infosys.setlabs.miner.domain.MinerFile;
 
 public class MysqlMinerFileMovesDAO extends JdbcDAO implements
 		MinerFileMovesDAO {
+	public static String tableName = "miner_actions";
 
 	/**
 	 * Creates a new DAO
@@ -17,6 +21,15 @@ public class MysqlMinerFileMovesDAO extends JdbcDAO implements
 	 */
 	public MysqlMinerFileMovesDAO(Connection conn) {
 		super(conn);
+	}
+
+	protected String createTableSQL() {
+		return String.format("CREATE TABLE %s " + "SELECT * FROM actions",
+				tableName);
+	}
+
+	protected String dropTableSQL() {
+		return String.format("DROP TABLE IF EXISTS %s", tableName);
 	}
 
 	@Override
@@ -30,7 +43,16 @@ public class MysqlMinerFileMovesDAO extends JdbcDAO implements
 
 	@Override
 	public void createTables() throws DataAccessException {
-		// TODO: Create miner actions table
+		PreparedStatement ps = null;
+		try {
+			ps = this.getConnection().prepareStatement(dropTableSQL());
+			ps.executeUpdate();
+			ps.executeUpdate(createTableSQL());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.closeStatement(ps);
+		}
 	}
 
 }
