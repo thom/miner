@@ -31,6 +31,8 @@ public abstract class MysqlMinerFileMetricsDAO extends JdbcDAO {
 						+ "HAVING COUNT(fl.parent_id) > 1) AS moved",
 				MysqlMinerFileDAO.tableName);
 	}
+	
+	// TODO: Add numberOfFilesMovedHeuristics(boolean allFiles)
 
 	protected int numberOfFilesMoved(boolean allFiles) {
 		int result = 0;

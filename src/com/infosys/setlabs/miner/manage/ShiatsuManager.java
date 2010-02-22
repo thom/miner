@@ -102,9 +102,7 @@ public class ShiatsuManager extends Manager {
 			commitDAO.createTables();
 
 			// Create miner actions table
-			// TODO: Create miner actions table
-			// TODO: Update file IDs in miner actions table
-			// TODO: Replace all uses of actions with miner actions
+			// TODO: Calls to MinerFileMovesDAO: createTables(), initialize()
 
 			// Create miner info table
 			MinerInfoDAO minerInfoDAO = this.getFactory().getMinerInfoDAO(
