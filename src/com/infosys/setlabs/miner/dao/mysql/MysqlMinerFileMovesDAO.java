@@ -54,6 +54,11 @@ public class MysqlMinerFileMovesDAO extends JdbcDAO implements
 		return String.format("DELETE a FROM %s a WHERE id=?", tableName);
 	}
 
+	protected String replaceFileIdsSQL() {
+		return String.format("UPDATE %s SET file_id=? WHERE file_id=?",
+				tableName);
+	}
+
 	@Override
 	public void initialize() throws DataAccessException {
 		PreparedStatement ps = null;
@@ -62,10 +67,7 @@ public class MysqlMinerFileMovesDAO extends JdbcDAO implements
 			// Find moves (D-A pattern with same commit ID)
 			ps = this.getConnection().prepareStatement(findMovesSQL());
 			rs = ps.executeQuery();
-			int i = 1;
 			while (rs.next()) {
-				System.out.println(i + ": " + rs.getString("file_name"));
-				i++;
 				// Modify action "A" to "X"
 				ps = this.getConnection()
 						.prepareStatement(modifyAddActionSQL());
@@ -78,8 +80,12 @@ public class MysqlMinerFileMovesDAO extends JdbcDAO implements
 				ps.setInt(1, rs.getInt("d_action_id"));
 				ps.execute();
 
-				// TODO: Replace all occurrences of old_file_id with new_file_id
+				// Replace all occurrences of old_file_id with new_file_id
 				// in miner_actions table
+				ps = this.getConnection().prepareStatement(replaceFileIdsSQL());
+				ps.setInt(1, rs.getInt("new_file_id"));
+				ps.setInt(2, rs.getInt("old_file_id"));
+				ps.execute();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
