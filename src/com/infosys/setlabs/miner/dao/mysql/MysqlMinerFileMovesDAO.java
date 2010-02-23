@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import com.infosys.setlabs.dao.DataAccessException;
 import com.infosys.setlabs.dao.jdbc.JdbcDAO;
 import com.infosys.setlabs.miner.dao.MinerFileMovesDAO;
-import com.infosys.setlabs.miner.domain.MinerFile;
 
 public class MysqlMinerFileMovesDAO extends JdbcDAO implements
 		MinerFileMovesDAO {
@@ -47,22 +46,40 @@ public class MysqlMinerFileMovesDAO extends JdbcDAO implements
 				+ "ORDER BY a1.commit_id", tableName, tableName);
 	}
 
+	protected String modifyAddActionSQL() {
+		return String.format("UPDATE %s SET type='X' WHERE id=?", tableName);
+	}
+
+	protected String deleteDeleteActionSQL() {
+		return String.format("DELETE a FROM %s a WHERE id=?", tableName);
+	}
+
 	@Override
 	public void initialize() throws DataAccessException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			// Find moves (D-A pattern with same commit ID)			
+			// Find moves (D-A pattern with same commit ID)
 			ps = this.getConnection().prepareStatement(findMovesSQL());
 			rs = ps.executeQuery();
 			int i = 1;
 			while (rs.next()) {
 				System.out.println(i + ": " + rs.getString("file_name"));
 				i++;
-				// TODO: Modify action "A" to "MINER_MOVE"
-				// TODO: Deleted action "D"
-				// TODO: Replace all occurences of old_file_id with new_file_id in
-				// miner_actions table
+				// Modify action "A" to "X"
+				ps = this.getConnection()
+						.prepareStatement(modifyAddActionSQL());
+				ps.setInt(1, rs.getInt("a_action_id"));
+				ps.execute();
+
+				// Deleted action "D"
+				ps = this.getConnection().prepareStatement(
+						deleteDeleteActionSQL());
+				ps.setInt(1, rs.getInt("d_action_id"));
+				ps.execute();
+
+				// TODO: Replace all occurrences of old_file_id with new_file_id
+				// in miner_actions table
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
