@@ -17,6 +17,7 @@ minings=(
 	"wine-1.0..wine-1.1.0 wine_1_0_to_1_1_0"
 	"wine-1.1.0..wine-1.1.20 wine_1_1_0_to_1_1_20"
 	"wine-1.1.20..wine-1.1.33 wine_1_1_20_to_1_1_33"
+	"wine-1.1.33..wine-1.1.41 wine_1_1_33_to_1_1_41"
 )
 
 for mining in "${minings[@]}"; do
