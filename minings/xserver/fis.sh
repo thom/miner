@@ -1,0 +1,14 @@
+#!/bin/bash
+
+./fis-metrics $@ \
+xserver_beginning_to_xf86_4_3_99_902 \
+xserver_xf86_4_3_99_902_to_XORG_6_7_0 \
+xserver_XORG_6_7_0_to_XORG_6_8_0 \
+xserver_XORG_6_8_0_to_XORG_7_0 \
+xserver_XORG_7_0_to_xorg_server_1_1_0 \
+xserver_xorg_server_1_1_0_to_xorg_server_1_2_0 \
+xserver_xorg_server_1_2_0_to_xorg_server_1_3_0_0 \
+xserver_xorg_server_1_3_0_0_to_xorg_server_1_4 \
+xserver_xorg_server_1_4_to_xorg_server_1_5_0 \
+xserver_xorg_server_1_5_0_to_xorg_server_1_6_0 \
+xserver_xorg_server_1_6_0_to_xorg_server_1_7_0
