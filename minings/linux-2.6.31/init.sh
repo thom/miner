@@ -11,7 +11,7 @@ name=default
 # Format of minings: "BRANCH/TAG DATABASE"
 minings=(
 	"v2.6.31-rc1..v2.6.31 linux_2_6_31_rc1_to_2_6_31"
-	"v2.6.31..v2.6.31.6 linux_2_6_31_to_2_6_31_6"
+	"v2.6.31..v2.6.31.12 linux_2_6_31_to_2_6_31_12"
 )
 
 for mining in "${minings[@]}"; do
