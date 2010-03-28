@@ -3,7 +3,7 @@
 repository="/home/thom/infosys/repositories/gimp"
 module_depth=3
 commits=4
-min_support=9
+min_support=10
 maximum_items=-1
 maximum_commits=50
 name=default
